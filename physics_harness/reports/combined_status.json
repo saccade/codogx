@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "run_utc": "2026-10-20T19:40:57.380353+00:00",
+  "environment": {
+    "python": "3.12.14",
+    "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+    "packages": {
+      "numpy": "2.3.5",
+      "scipy": "1.17.0",
+      "sympy": null
+    }
+  },
+  "results": [
+    {
+      "case": "valves",
+      "case_id": "valves-v1",
+      "implementation": "codex",
+      "provenance": "Codex independent implementation; see originals/provenance.json.",
+      "status": "passed",
+      "cached": true,
+      "payload": {
+        "schema_version": 1,
+        "case_id": "valves-v1",
+        "implementation": "codex",
+        "observations": {
+          "cap_movement": 0.02,
+          "cap_punch": 0.0002,
+          "cap_heft": 0.001,
+          "cap_pressure_work": 0.0012000000000000001,
+          "governor_roll0": 0.8000000000000002,
+          "governor_roll1": 1.7999999999999998,
+          "governor_hook0": 4.000000000000001,
+          "governor_hook1": 9.0,
+          "governor_engine_work": 9.999999999999996,
+          "governor_link_work": 4.999999999999999,
+          "diaphragm_gauge0": 100000.0,
+          "diaphragm_gauge1": 90000.0,
+          "diaphragm_spring_work": 0.095,
+          "loop_gain1_max_real": -0.12256116687665349,
+          "loop_gain4_max_real": 0.15729810613837575
+        },
+        "checks": {
+          "original_assertions_passed": true
+        }
+      },
+      "fingerprint": {
+        "source_sha256": "fa844a348a43602e95d8ef2f6674e6e0f8db7f94f67f61dfe5cc013126bd258c",
+        "case_sha256": "dc391cce78ab3e390082237ccb49ac28dec85d3010c76345804e641b4519a3da",
+        "runner_sha256": "6c4c21a5db134d35a7d1380fa823c64735c1de56e14ba4e79e9c6311644c20d0",
+        "registry_entry": {
+          "case": "valves",
+          "implementation": "codex",
+          "entrypoint": "implementations/codex/valves.py",
+          "status": "available",
+          "provenance": "Codex independent implementation; see originals/provenance.json."
+        },
+        "environment": {
+          "python": "3.12.14",
+          "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+          "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+          "packages": {
+            "numpy": "2.3.5",
+            "scipy": "1.17.0",
+            "sympy": null
+          }
+        },
+        "dependencies": {}
+      }
+    },
+    {
+      "case": "valves",
+      "case_id": "valves-v1",
+      "implementation": "claude",
+      "provenance": "Original Claude script not retrieved. Never reconstructed or substituted with Codex code.",
+      "status": "missing",
+      "cached": false,
+      "reason": "Original implementation is not registered and available."
+    },
+    {
+      "case": "sweater_equal",
+      "case_id": "sweater-equal-lags-v1",
+      "implementation": "codex",
+      "provenance": "Codex independent implementation; see originals/provenance.json.",
+      "status": "passed",
+      "cached": true,
+      "payload": {
+        "schema_version": 1,
+        "case_id": "sweater-equal-lags-v1",
+        "implementation": "codex",
+        "observations": {
+          "cold_10_fraction": 0.012437987627616831,
+          "hot_10_fraction": 0.15351827510938587,
+          "cold_30_fraction": 0.09020401043104986,
+          "hot_30_fraction": 0.3934693402873666,
+          "cold_60_fraction": 0.26424111765711533,
+          "hot_60_fraction": 0.6321205588285577,
+          "cold_120_fraction": 0.5939941502901619,
+          "hot_120_fraction": 0.8646647167633873,
+          "cold_180_fraction": 0.8008517265285442,
+          "hot_180_fraction": 0.950212931632136,
+          "balance_residual": 3.852695940054218e-11
+        },
+        "checks": {
+          "original_assertions_passed": true
+        }
+      },
+      "fingerprint": {
+        "source_sha256": "fcfd89b1b6c2e3ce6ee43c35605257adef2ed3208f3bfa4612e83c3cd3b133e3",
+        "case_sha256": "8f18712a26bef691cda06018306ecc12219d2710eb4b291e1ddc5cccac549906",
+        "runner_sha256": "6c4c21a5db134d35a7d1380fa823c64735c1de56e14ba4e79e9c6311644c20d0",
+        "registry_entry": {
+          "case": "sweater_equal",
+          "implementation": "codex",
+          "entrypoint": "implementations/codex/sweater_equal.py",
+          "status": "available",
+          "provenance": "Codex independent implementation; see originals/provenance.json."
+        },
+        "environment": {
+          "python": "3.12.14",
+          "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+          "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+          "packages": {
+            "numpy": "2.3.5",
+            "scipy": "1.17.0",
+            "sympy": null
+          }
+        },
+        "dependencies": {}
+      }
+    },
+    {
+      "case": "sweater_equal",
+      "case_id": "sweater-equal-lags-v1",
+      "implementation": "claude",
+      "provenance": "Original Claude script not retrieved. Never reconstructed or substituted with Codex code.",
+      "status": "missing",
+      "cached": false,
+      "reason": "Original implementation is not registered and available."
+    },
+    {
+      "case": "sweater_two_store",
+      "case_id": "sweater-two-store-v1",
+      "implementation": "codex",
+      "provenance": "Codex independent implementation; see originals/provenance.json.",
+      "status": "passed",
+      "cached": true,
+      "payload": {
+        "schema_version": 1,
+        "case_id": "sweater-two-store-v1",
+        "implementation": "codex",
+        "observations": {
+          "skin_door": 37.19843386197553,
+          "bulk_door": 6.304632519172519,
+          "skin_neck": 4.142081472309291,
+          "bulk_neck": 7.187809010372157,
+          "heat_lost": 1506.4658381321697,
+          "net_heat_inward": 476.91530524780455,
+          "cold_10_retained_K": 0.25478484232297827,
+          "cold_30_retained_K": 1.844725396631485,
+          "cold_60_retained_K": 6.188705780326334,
+          "cold_90_retained_K": 12.086962280168878,
+          "cold_120_retained_K": 18.954885628793484,
+          "cold_150_retained_K": 26.427755413808303,
+          "cold_180_retained_K": 32.43330797253066,
+          "cold_240_retained_K": 38.50942720773639,
+          "cold_300_retained_K": 40.874339490850346,
+          "cold_420_retained_K": 42.15305231427262,
+          "hot_2_retained_K": 1.9206111417809135,
+          "hot_5_retained_K": 3.9554101420342005,
+          "hot_10_retained_K": 6.883236256565871,
+          "hot_20_retained_K": 12.049796375899573,
+          "hot_60_retained_K": 26.212199371427573,
+          "redistribution_residual_J": 2.6645352591003757e-13
+        },
+        "checks": {
+          "heat_does_not_grow_on_carry": true,
+          "closed_redistribution_conserves_heat": true
+        }
+      },
+      "fingerprint": {
+        "source_sha256": "75ddebefd21129cb3a9a627c0a4ad0f7f8b2b9bad212c9c8fa902be0c509bf62",
+        "case_sha256": "d751207e959ecfdb3f3388a640296751aa1be811cdf972a9c6afcdecbc0e18da",
+        "runner_sha256": "6c4c21a5db134d35a7d1380fa823c64735c1de56e14ba4e79e9c6311644c20d0",
+        "registry_entry": {
+          "case": "sweater_two_store",
+          "implementation": "codex",
+          "entrypoint": "implementations/codex/sweater_two_store.py",
+          "status": "available",
+          "provenance": "Codex independent implementation; see originals/provenance.json."
+        },
+        "environment": {
+          "python": "3.12.14",
+          "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+          "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+          "packages": {
+            "numpy": "2.3.5",
+            "scipy": "1.17.0",
+            "sympy": null
+          }
+        },
+        "dependencies": {}
+      }
+    },
+    {
+      "case": "sweater_two_store",
+      "case_id": "sweater-two-store-v1",
+      "implementation": "claude",
+      "provenance": "Original Claude script not retrieved. Never reconstructed or substituted with Codex code.",
+      "status": "missing",
+      "cached": false,
+      "reason": "Original implementation is not registered and available."
+    }
+  ],
+  "comparisons": [
+    {
+      "case": "sweater_equal",
+      "status": "incomplete",
+      "reason": "Fewer than two original implementations passed."
+    },
+    {
+      "case": "sweater_two_store",
+      "status": "incomplete",
+      "reason": "Fewer than two original implementations passed."
+    },
+    {
+      "case": "valves",
+      "status": "incomplete",
+      "reason": "Fewer than two original implementations passed."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+Prepared by Codex (OpenAI), 2026-10-20.
+
+Three Codex check implementations pass against explicit cases.
+Nine runner protocol/cache tests pass.
+An unchanged second run uses the cache.
+Three Claude implementation slots remain MISSING.
+No independent Claude implementation was executed.
+No PDF rendering engine was written or replaced.
+
+Archive discovery: Library contains inflow_outflow_checks.py,
+body_arrow_checks.py, and Codex Regulator Working Notes 2610090849.zip.
+The required archive download helper returned HTTP 403, so those
+originals were not materialized or executed. Current Claude sweater
+and valve originals should be added through the documented contract.
+
+The two-store sweater script is a Codex cross-check of Claude's stated
+equations, not a recovered Claude script.

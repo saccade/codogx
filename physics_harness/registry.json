@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "case": "valves",
+      "implementation": "codex",
+      "entrypoint": "implementations/codex/valves.py",
+      "status": "available",
+      "provenance": "Codex independent implementation; see originals/provenance.json."
+    },
+    {
+      "case": "valves",
+      "implementation": "claude",
+      "entrypoint": "implementations/claude/valves.py",
+      "status": "missing",
+      "provenance": "Original Claude script not retrieved. Never reconstructed or substituted with Codex code."
+    },
+    {
+      "case": "sweater_equal",
+      "implementation": "codex",
+      "entrypoint": "implementations/codex/sweater_equal.py",
+      "status": "available",
+      "provenance": "Codex independent implementation; see originals/provenance.json."
+    },
+    {
+      "case": "sweater_equal",
+      "implementation": "claude",
+      "entrypoint": "implementations/claude/sweater_equal.py",
+      "status": "missing",
+      "provenance": "Original Claude script not retrieved. Never reconstructed or substituted with Codex code."
+    },
+    {
+      "case": "sweater_two_store",
+      "implementation": "codex",
+      "entrypoint": "implementations/codex/sweater_two_store.py",
+      "status": "available",
+      "provenance": "Codex independent implementation; see originals/provenance.json."
+    },
+    {
+      "case": "sweater_two_store",
+      "implementation": "claude",
+      "entrypoint": "implementations/claude/sweater_two_store.py",
+      "status": "missing",
+      "provenance": "Original Claude script not retrieved. Never reconstructed or substituted with Codex code."
+    }
+  ]
+}

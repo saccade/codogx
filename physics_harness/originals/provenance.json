@@ -1,0 +1,14 @@
+{
+  "valves": {
+    "author": "Codex",
+    "original_path": "/workspace/scratch/c6c5d3f3995e/valves/check_valves.py",
+    "archive_path": "originals/check_valves.py",
+    "sha256": "7db4f9878f8aabddfeb653636326b10e08457b23ca9da4620a8f6ea39eb50502"
+  },
+  "sweater_writer": {
+    "author": "Codex",
+    "original_path": "/workspace/scratch/c6c5d3f3995e/dryer/write_explanation.py",
+    "archive_path": "originals/write_explanation.py",
+    "sha256": "ee75b80566f1ee4a03d78ccf41b5fe81a7ce19743210b1110168484a6d0ce801"
+  }
+}

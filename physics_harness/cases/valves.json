@@ -1,0 +1,131 @@
+{
+  "case_id": "valves-v1",
+  "description": "Three illustrative governing mechanisms from Codex 2610201529.",
+  "assumptions": [
+    "Uniform constant pressure during a short ideal cap onset; no jet correction.",
+    "Two point weights move slowly outward at fixed sweep, negligible endpoint radial motion.",
+    "Fixed-volume isothermal receiver; gauge and absolute pressure remain distinct.",
+    "Small-signal governor with two unit response lags; not fitted to a real engine."
+  ],
+  "inputs": {
+    "cap": {
+      "mass": 1.0,
+      "area": 0.0001,
+      "gauge": 120000.0,
+      "weight": 10.0,
+      "duration": 0.01
+    },
+    "governor": {
+      "mass_each": 1.0,
+      "r0": 0.2,
+      "r1": 0.3,
+      "omega": 10.0
+    },
+    "diaphragm": {
+      "area": 0.001,
+      "stiffness": 10000.0,
+      "spring_force": 100.0,
+      "travel": 0.001,
+      "mass0": 0.01,
+      "mass1": 0.0095,
+      "absolute0": 200000.0,
+      "ambient": 100000.0
+    },
+    "loop_gains": [
+      1.0,
+      4.0
+    ]
+  },
+  "observables": {
+    "cap_movement": {
+      "expected": 0.02,
+      "unit": "kg m/s",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "cap_punch": {
+      "expected": 0.0002,
+      "unit": "J",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "cap_heft": {
+      "expected": 0.001,
+      "unit": "J",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "cap_pressure_work": {
+      "expected": 0.0012,
+      "unit": "J",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "governor_roll0": {
+      "expected": 0.8,
+      "unit": "kg m^2/s",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "governor_roll1": {
+      "expected": 1.8,
+      "unit": "kg m^2/s",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "governor_hook0": {
+      "expected": 4.0,
+      "unit": "J",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "governor_hook1": {
+      "expected": 9.0,
+      "unit": "J",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "governor_engine_work": {
+      "expected": 10.0,
+      "unit": "J",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "governor_link_work": {
+      "expected": 5.0,
+      "unit": "J",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "diaphragm_gauge0": {
+      "expected": 100000.0,
+      "unit": "Pa",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "diaphragm_gauge1": {
+      "expected": 90000.0,
+      "unit": "Pa",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "diaphragm_spring_work": {
+      "expected": 0.095,
+      "unit": "J",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "loop_gain1_max_real": {
+      "expected": -0.12256116687665349,
+      "unit": "1/scaled second",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "loop_gain4_max_real": {
+      "expected": 0.15729810613837575,
+      "unit": "1/scaled second",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    }
+  }
+}

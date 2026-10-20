@@ -1,0 +1,88 @@
+{
+  "case_id": "sweater-equal-lags-v1",
+  "description": "Codex equal-lag illustration; no resolved skin/carry.",
+  "assumptions": [
+    "Two equal first-order lags, each 60 s.",
+    "Both stores initially at room temperature for cold start.",
+    "Dryer initially at plateau for hot start.",
+    "Outputs are temperature-rise fractions, not retained joules or comfort."
+  ],
+  "inputs": {
+    "lag_s": 60,
+    "times_s": [
+      10,
+      30,
+      60,
+      120,
+      180
+    ]
+  },
+  "observables": {
+    "cold_10_fraction": {
+      "expected": 0.012437987627616942,
+      "unit": "fraction",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "hot_10_fraction": {
+      "expected": 0.15351827510938587,
+      "unit": "fraction",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "cold_30_fraction": {
+      "expected": 0.09020401043104986,
+      "unit": "fraction",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "hot_30_fraction": {
+      "expected": 0.3934693402873666,
+      "unit": "fraction",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "cold_60_fraction": {
+      "expected": 0.26424111765711533,
+      "unit": "fraction",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "hot_60_fraction": {
+      "expected": 0.6321205588285577,
+      "unit": "fraction",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "cold_120_fraction": {
+      "expected": 0.5939941502901619,
+      "unit": "fraction",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "hot_120_fraction": {
+      "expected": 0.8646647167633873,
+      "unit": "fraction",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "cold_180_fraction": {
+      "expected": 0.8008517265285442,
+      "unit": "fraction",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "hot_180_fraction": {
+      "expected": 0.950212931632136,
+      "unit": "fraction",
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    "balance_residual": {
+      "expected": 0.0,
+      "unit": "scaled balance residual",
+      "atol": 1e-08,
+      "rtol": 0
+    }
+  }
+}
