@@ -1,0 +1,173 @@
+{
+  "case_id": "sweater-two-store-v1",
+  "description": "Claude CL-181 stated model, numerically cross-checked by Codex.",
+  "assumptions": [
+    "Skin and interior have separate constant heat capacities.",
+    "Dryer ramp is prescribed: 1/3 K/s to 50 K above room; no load back-reaction.",
+    "Carry always lasts 15 s, with room and inward heat paths.",
+    "Retained K is capacity-weighted temperature rise; it is not heat in joules."
+  ],
+  "inputs": {
+    "skin_capacity": 60.0,
+    "bulk_capacity": 540.0,
+    "hot_conductance": 30.0,
+    "inner_conductance": 12.0,
+    "room_conductance": 10.0,
+    "plateau_K": 50.0,
+    "ramp_K_per_s": 0.3333333333333333,
+    "carry_s": 15.0,
+    "cold_times_s": [
+      10,
+      30,
+      60,
+      90,
+      120,
+      150,
+      180,
+      240,
+      300,
+      420
+    ],
+    "hot_times_s": [
+      2,
+      5,
+      10,
+      20,
+      60
+    ]
+  },
+  "observables": {
+    "skin_door": {
+      "expected": 37.19843386,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "bulk_door": {
+      "expected": 6.30463252,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "skin_neck": {
+      "expected": 4.14208147,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "bulk_neck": {
+      "expected": 7.18780901,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "heat_lost": {
+      "expected": 1506.4658381321697,
+      "unit": "J",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "net_heat_inward": {
+      "expected": 476.91530524780455,
+      "unit": "J",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "cold_10_retained_K": {
+      "expected": 0.25478484232297827,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "cold_30_retained_K": {
+      "expected": 1.8447253966314856,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "cold_60_retained_K": {
+      "expected": 6.188705780326336,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "cold_90_retained_K": {
+      "expected": 12.086962280168875,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "cold_120_retained_K": {
+      "expected": 18.954885628793498,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "cold_150_retained_K": {
+      "expected": 26.427755413808317,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "cold_180_retained_K": {
+      "expected": 32.433307972522954,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "cold_240_retained_K": {
+      "expected": 38.50942720773337,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "cold_300_retained_K": {
+      "expected": 40.874339490849145,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "cold_420_retained_K": {
+      "expected": 42.15305231427238,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "hot_2_retained_K": {
+      "expected": 1.9206111417809135,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "hot_5_retained_K": {
+      "expected": 3.9554101420342005,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "hot_10_retained_K": {
+      "expected": 6.883236256565871,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "hot_20_retained_K": {
+      "expected": 12.049796375899573,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "hot_60_retained_K": {
+      "expected": 26.212199371427573,
+      "unit": "K",
+      "atol": 1e-06,
+      "rtol": 1e-07
+    },
+    "redistribution_residual_J": {
+      "expected": 0.0,
+      "unit": "J",
+      "atol": 1e-08,
+      "rtol": 0
+    }
+  }
+}
