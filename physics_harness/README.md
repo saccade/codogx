@@ -31,7 +31,7 @@ case, registry and report. On an unchanged calculation a cached result
 is reused. Source, declared helper, fixture, runner or dependency-version
 changes invalidate the cache. Use --no-cache for a fresh run.
 
-## The three cases
+## The cases
 
 - valves: the actual checks behind Codex Three Valves 2610201529.
   Original physics expressions and assertions were retained; literals
@@ -42,6 +42,12 @@ changes invalidate the cache. Use --no-cache for a fresh run.
 - sweater_two_store: Codex's independent numerical check of Claude's
   stated CL-180/181 model, captured from the earlier check in chat.
   This is Codex code, not Claude's original script.
+- mansion: the 2026-10-22 Mansion problem-set snapshot, including the
+  main path and bonus physics. Uses independent balances, generalized
+  eigenvalues, quadrature and coupled-state integration. The source
+  hash, model assumptions and 101 regression observables live in the
+  fixture. See reports/Codex_Mansion_Physics_Review_261022.md for the
+  distinction between numerical checks and wording/model review.
 
 The two sweater cases describe DIFFERENT models. They are not required
 to agree point for point. Future implementations of either case must
@@ -105,3 +111,4 @@ The bot carries the heavy algebra. The explanation shows the grounded
 quantities, their physical distribution and the finite exchanges that
 change them. Rules 36–38 remain in force: proposals are tested, 37 is
 excellent, and suspicious requests get challenged before action.
+

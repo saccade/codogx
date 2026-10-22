@@ -1,0 +1,717 @@
+{
+  "case_id": "mansion-261022-v1",
+  "description": "All thirteen main questions and the physics of all three bonus depths; supplied exact linear models.",
+  "source": {
+    "url": "https://github.com/saccade/claudog/blob/main/mansion/pset/mansion_pset.tex",
+    "git_blob_sha": "fd3c12cc6b217a5323efa4bced7b0c6a9a5ebb80",
+    "sha256": "6a054afe3c15cf8630e00177688ff821a3603f9e0ff149bb2bc9a06c6b732d2f"
+  },
+  "assumptions": [
+    "Small-oscillation models are exact within their linearization; finite pendulums need not recur exactly.",
+    "Flywheel receives the stated constant power; unloaded ladder release is distinct from the imposed-speed snapshot.",
+    "Spool rolls without slipping with sufficient grip; the direction of friction is solved, not assumed.",
+    "Cue contact is horizontal; table impulse is negligible during the ideal short strike. This assumption is not explicit in the source and is reviewed separately.",
+    "Puck starts and ends on circles; radial work is retained even when shortening is slow.",
+    "Transmission line is lossless and nondispersive; its signal speed follows characteristics, not crest speed.",
+    "Coupled machine has ideal reciprocal velocity coupling and no loss; pulses and receiver clocks use inertial SR.",
+    "TEST supplies equal velocity kicks to one uncoupled oscillator; random phase advances are independent uniform."
+  ],
+  "inputs": {
+    "g": 10.0,
+    "c": 300000000.0,
+    "knife": {
+      "m": 1.0,
+      "ell": 1.0,
+      "angle": 0.1
+    },
+    "engine": {
+      "heat": 15.0,
+      "work": 3.0,
+      "frequency": 1.0,
+      "I": 0.5,
+      "w0": 4.0,
+      "time": 4.0
+    },
+    "governor": {
+      "m_each": 1.0,
+      "ell": 0.5,
+      "omega": 5.0
+    },
+    "spool": {
+      "m": 2.0,
+      "R": 0.2,
+      "r": 0.12,
+      "I": 0.04,
+      "F": 6.0
+    },
+    "ladder": {
+      "m": 8.0,
+      "L": 3.0,
+      "foot": 1.8,
+      "height": 2.4,
+      "foot_speed": 0.4
+    },
+    "ball": {
+      "m": 1.0,
+      "R": 0.05,
+      "J": 2.0
+    },
+    "basin": {
+      "center_radius": 0.7142857142857143
+    },
+    "hoop": {
+      "R": 0.25,
+      "omega": 8.0
+    },
+    "puck": {
+      "m": 0.5,
+      "r0": 0.6,
+      "r1": 0.3,
+      "v0": 2.0
+    },
+    "pendulum": {
+      "m": 1.0,
+      "ell": 1.0
+    },
+    "circuit": {
+      "source_voltage": 6.0,
+      "charging_C": 0.1,
+      "resistor": 20.0,
+      "ready_voltage": 4.0,
+      "L": 0.1
+    },
+    "line": {
+      "L_per_m": 5e-07,
+      "C_per_m": 2e-10,
+      "pulse_volts": [
+        6.0,
+        6.0
+      ],
+      "frequencies": [
+        5000000.0,
+        4000000.0
+      ]
+    },
+    "light": {
+      "energies": [
+        0.08,
+        0.02
+      ],
+      "S_interval": 10.0
+    },
+    "chair": {
+      "energy": 0.08
+    },
+    "test": {
+      "taps": 100
+    }
+  },
+  "observables": {
+    "knife_energy": {
+      "expected": 0.05,
+      "unit": "J",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "knife_speed": {
+      "expected": 0.31622776601683794,
+      "unit": "m/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "knife_period": {
+      "expected": 1.98691765315922,
+      "unit": "s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "knife_doubled_mass_period": {
+      "expected": 1.98691765315922,
+      "unit": "s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "engine_heat_out": {
+      "expected": 12,
+      "unit": "J",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "engine_efficiency": {
+      "expected": 0.2,
+      "unit": "1",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "engine_power": {
+      "expected": 3,
+      "unit": "W",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "engine_final_omega": {
+      "expected": 8,
+      "unit": "rad/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "engine_torque_start": {
+      "expected": 0.75,
+      "unit": "N m",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "engine_torque_end": {
+      "expected": 0.375,
+      "unit": "N m",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "governor_cos_angle": {
+      "expected": 0.8,
+      "unit": "1",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "governor_angle": {
+      "expected": 0.6435011087932843,
+      "unit": "rad",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "governor_rise": {
+      "expected": 0.1,
+      "unit": "m",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "governor_threshold": {
+      "expected": 4.47213595499958,
+      "unit": "rad/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "spool_acceleration": {
+      "expected": 0.8,
+      "unit": "m/s^2",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "spool_friction": {
+      "expected": -4.4,
+      "unit": "N along pull",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "spool_balance_angle": {
+      "expected": 0.9272952180016123,
+      "unit": "rad",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "spool_effective_mass": {
+      "expected": 3,
+      "unit": "kg",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "ladder_top_velocity": {
+      "expected": -0.3,
+      "unit": "m/s upward",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "ladder_release_height": {
+      "expected": 1.6,
+      "unit": "m",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "ladder_released_energy": {
+      "expected": 32,
+      "unit": "J",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "ladder_center_speed": {
+      "expected": 2.449489742783178,
+      "unit": "m/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "ladder_translation": {
+      "expected": 24,
+      "unit": "J",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "ladder_rotation": {
+      "expected": 8,
+      "unit": "J",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "ladder_kinetic_per_mass": {
+      "expected": 4,
+      "unit": "J/kg",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "ladder_initial_wall_force": {
+      "expected": 28.8,
+      "unit": "N",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "ball_speed": {
+      "expected": 2,
+      "unit": "m/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "ball_height": {
+      "expected": 0.07,
+      "unit": "m",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "ball_omega": {
+      "expected": 40,
+      "unit": "rad/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "ball_translation": {
+      "expected": 2,
+      "unit": "J",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "ball_rotation": {
+      "expected": 0.8,
+      "unit": "J",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "ball_rough_center_hit_speed": {
+      "expected": 1.4285714285714286,
+      "unit": "m/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "ball_rough_center_hit_table_impulse": {
+      "expected": -0.5714285714285714,
+      "unit": "N s along cue",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "basin_period": {
+      "expected": 1.98691765315922,
+      "unit": "s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "basin_bead_period": {
+      "expected": 1.679251908362714,
+      "unit": "s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "basin_matched_radius": {
+      "expected": 0.7142857142857143,
+      "unit": "m",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "hoop_center": {
+      "expected": 2,
+      "unit": "m/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "hoop_top": {
+      "expected": 4,
+      "unit": "m/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "hoop_bottom": {
+      "expected": 0,
+      "unit": "m/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "hoop_front": {
+      "expected": 2.8284271247461903,
+      "unit": "m/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "puck_final_speed": {
+      "expected": 4,
+      "unit": "m/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "puck_initial_omega": {
+      "expected": 3.3333333333333335,
+      "unit": "rad/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "puck_final_omega": {
+      "expected": 13.333333333333334,
+      "unit": "rad/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "puck_tension_initial": {
+      "expected": 3.3333333333333335,
+      "unit": "N",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "puck_tension_final": {
+      "expected": 26.666666666666668,
+      "unit": "N",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "puck_work": {
+      "expected": 3,
+      "unit": "J",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "pendulum_slow": {
+      "expected": 2.4203025381693606,
+      "unit": "rad/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "pendulum_fast": {
+      "expected": 5.843127212694496,
+      "unit": "rad/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "pendulum_ratio": {
+      "expected": 2.414213562373095,
+      "unit": "1",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "pendulum_ratio_slow": {
+      "expected": 1.4142135623730951,
+      "unit": "1",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "pendulum_ratio_fast": {
+      "expected": -1.4142135623730951,
+      "unit": "1",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "pendulum_slow_period": {
+      "expected": 2.5960330198769226,
+      "unit": "s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "pendulum_fast_period": {
+      "expected": 1.075312085201404,
+      "unit": "s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "pendulum_beat_rate": {
+      "expected": 3.422824674525135,
+      "unit": "rad/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "pendulum_reinforcement_interval": {
+      "expected": 1.8356725525391635,
+      "unit": "s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "circuit_initial_current": {
+      "expected": 0.3,
+      "unit": "A",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "circuit_time_constant": {
+      "expected": 2,
+      "unit": "s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "circuit_ready_current": {
+      "expected": 0.1,
+      "unit": "A",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "circuit_ready_charge": {
+      "expected": 0.4,
+      "unit": "C",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "circuit_ready_energy": {
+      "expected": 0.8,
+      "unit": "J",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "circuit_ready_time": {
+      "expected": 2.1972245773362196,
+      "unit": "s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "circuit_tuned_C": {
+      "expected": 1.7071067811865475,
+      "unit": "F",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "circuit_omega": {
+      "expected": 2.4203025381693606,
+      "unit": "rad/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "circuit_eta": {
+      "expected": 6.82842712474619,
+      "unit": "kg m^2",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "circuit_D": {
+      "expected": 40,
+      "unit": "N m/rad",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "coupling_slow": {
+      "expected": 1.6135350254462404,
+      "unit": "rad/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "coupling_fast": {
+      "expected": 3.6304538072540407,
+      "unit": "rad/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "coupling_product": {
+      "expected": 5.857864376269049,
+      "unit": "s^-2",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "coupling_ratio": {
+      "expected": 2.25,
+      "unit": "1",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "coupling_gap": {
+      "expected": 2.0169187818078007,
+      "unit": "rad/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "coupling_kappa": {
+      "expected": 1.6666666666666667,
+      "unit": "N m/A",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "line_speed": {
+      "expected": 100000000.0,
+      "unit": "m/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "line_impedance": {
+      "expected": 50,
+      "unit": "ohm",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "line_overlap_voltage": {
+      "expected": 12,
+      "unit": "V",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "line_overlap_current": {
+      "expected": 0,
+      "unit": "A",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "line_overlap_energy": {
+      "expected": 1.44e-08,
+      "unit": "J/m",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "line_slow_crest": {
+      "expected": 11111111.111111112,
+      "unit": "m/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "line_fast_crest": {
+      "expected": 900000000.0,
+      "unit": "m/s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "line_fast_over_c": {
+      "expected": 3,
+      "unit": "1",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "light_energy": {
+      "expected": 0.1,
+      "unit": "J",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "light_momentum": {
+      "expected": 2e-10,
+      "unit": "kg m/s",
+      "atol": 1e-24,
+      "rtol": 1e-08
+    },
+    "light_rest_energy": {
+      "expected": 0.08,
+      "unit": "J",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "light_beta": {
+      "expected": 0.6,
+      "unit": "1",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "light_gamma": {
+      "expected": 1.25,
+      "unit": "1",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "light_proper_time": {
+      "expected": 8,
+      "unit": "s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "light_one_pulse_H": {
+      "expected": 0.04,
+      "unit": "J",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "light_rest_mass": {
+      "expected": 8.888888888888888e-19,
+      "unit": "kg",
+      "atol": 1e-24,
+      "rtol": 1e-08
+    },
+    "light_doppler_stretch": {
+      "expected": 2,
+      "unit": "1",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "chair_charge": {
+      "expected": 0.5226251859505506,
+      "unit": "C",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "chair_voltage": {
+      "expected": 0.3061467458920718,
+      "unit": "V",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "chair_period": {
+      "expected": 15.576198119261537,
+      "unit": "s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "chair_S_period": {
+      "expected": 19.47024764907692,
+      "unit": "s",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "chair_S_distance": {
+      "expected": 3504644576.833846,
+      "unit": "m",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "chair_half_charge_ratio": {
+      "expected": 0.38461538461538464,
+      "unit": "1",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "chair_half_mechanical": {
+      "expected": 0.06816568047337278,
+      "unit": "J",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "chair_half_capacitor": {
+      "expected": 0.011834319526627219,
+      "unit": "J",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "chair_max_energy_drift": {
+      "expected": 0,
+      "unit": "J",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "chair_return_error": {
+      "expected": 0,
+      "unit": "scaled state",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "test_coherent_multiple": {
+      "expected": 10000,
+      "unit": "E1",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "test_random_expected_multiple": {
+      "expected": 100,
+      "unit": "E1",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "test_last_kick_multiple": {
+      "expected": 199,
+      "unit": "E1",
+      "atol": 1e-10,
+      "rtol": 1e-08
+    }
+  }
+}

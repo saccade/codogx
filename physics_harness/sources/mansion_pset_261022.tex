@@ -1,0 +1,334 @@
+% The Mansion: the one problem set. The four solution paths are separate documents.
+% Claude (Anthropic), 2026-10-22. Statements and scenes from the whole-house build (set 4), standard
+% language throughout; labels per doc (12:54): mansion 1-a, appendix a a-1, appendix 2 1-alpha,
+% appendix gamma alpha-1. Build: latexmk -xelatex mansion_pset.tex
+\documentclass[11pt]{article}
+\usepackage{fontspec}  % Latin Modern, the default face
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in,headheight=14pt]{geometry}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{siunitx}
+\sisetup{per-mode=symbol,group-digits=false}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{straight$\to$ mechanics}
+\rhead{The Mansion}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+
+\newcommand{\room}[1]{\par\bigskip{\large\bfseries #1}\par\nopagebreak\smallskip}
+\newcommand{\scene}[1]{\par{\itshape #1}\par}
+\newcommand{\problem}[2]{\par\medskip\textbf{Problem #1:} #2\par\nopagebreak}
+\newcommand{\appx}[2]{\clearpage{\Large\bfseries Appendix #1: #2}\par\medskip}
+\newenvironment{parts}{\begin{itemize}[leftmargin=3.4em,labelwidth=2.8em,labelsep=0.6em,align=left,itemsep=2pt,topsep=3pt]}{\end{itemize}}
+\newcommand{\pt}[1]{\item[\textbf{#1}]}
+\newcommand{\sv}[1]{\textsuperscript{\dag\,#1}}
+
+\begin{document}
+\thispagestyle{plain}
+\noindent straight$\to$ mechanics \hfill Halloween 2026\par
+\vspace{-6pt}\rule{\textwidth}{0.4pt}
+\begin{center}
+{\LARGE\bfseries The Mansion}\\[4pt]
+{\large Problem set}
+\end{center}
+
+\textit{Written by Claude (Anthropic), 2026-10-22 13:30, from the Mansion's statements and scenes. The ideas are dr.\ kraemer's; the words are the models'.}
+
+A value marked \textsuperscript{\dag} is supplied, chosen so the house works; the mark names the appendix part where you can find out why. The thirteen problems are the mansion. Appendices a, 2 and $\gamma$ go further in.
+
+\room{The way in}
+\scene{The inquiry has a place and an hour. Left unspecified: who should arrive, and who will depart.}
+\scene{A visitor arrives to find out how it was all done. The door is unlatched. A loose question sheet lies beside a small blank book, opened to a page half-full of notes.}
+\scene{In the dining room the roast goes cold under its cover. A strip of paper moves beneath a pen. Above it swings a knife.}
+\scene{At the silver pivot, a powdered clown in damask is partway into a curtsy. The flowers on one repaired cuff face inward; every other spray faces out. The curtsy does not deepen.}
+\scene{A trim silver canteen with an enamel juggler on the lid stands on the sideboard. The lock has been polished more recently than the lid.}
+\scene{The visitor watches the knife cycle across and back. On the paper, the curve cycles with it.}
+
+% ---------------------------------------------------------------- the mansion
+\room{Dining room}
+\problem{1}{The knife}
+A knife is modeled as a point mass $m = \SI{1}{kg}$ on a massless rod of length $\ell = \SI{1}{m}$, pivoted to swing freely in a vertical plane. It gets released from rest at $\theta_0 = \SI{0.1}{rad}$ from the downward vertical. Use $g = \SI{10}{m/s^2}$ and the small-angle approximation $1 - \cos\theta \approx \theta^2/2$.
+\begin{parts}
+\pt{1-a} Find the gravitational potential energy of the knife at release, relative to its lowest point.
+\pt{1-b} Find its greatest speed.
+\pt{1-c} For small oscillations the angular frequency is $\omega_0 = \sqrt{g/\ell}$, and the period $T$ satisfies $\omega_0 T = 2\pi$. Find $T$.
+\pt{1-d} How does $T$ change if the mass is doubled?
+\end{parts}
+\scene{The pen begins the curve again. The lid lifts.}
+
+\room{Kitchen}
+\scene{The line on the paper goes on behind the wall. Ahead, something breathes in steam. By the range, a toolbox in scorched canvas.}
+\problem{2}{The engine and the flywheel}
+A small steam engine takes in \SI{15}{J} of heat and does \SI{3}{J} of work each cycle, and it runs a cycle a second.
+\begin{parts}
+\pt{2-a} How much heat does it give off each cycle? What are its efficiency and its average power?
+\pt{2-b} The engine's \SI{3}{W} drives a flywheel with moment of inertia $I = \SI{0.5}{kg.m^2}$, turning at first at \SI{4}{rad/s}, for \SI{4}{s}. How fast is it turning at the end?
+\pt{2-c} The power a torque $\tau$ delivers to a wheel turning at angular speed $\omega$ is $P = \tau\omega$. What's the driving torque at the start, and at the end?
+\end{parts}
+
+\problem{3}{The governor and the spool}
+A centrifugal governor has two \SI{1}{kg} balls, each on a massless \SI{0.5}{m} arm hinged on the axis of a vertical shaft. The shaft turns steadily at \SI{5}{rad/s}\sv{a-2}.
+\begin{parts}
+\pt{3-a} At what angle from the vertical do the arms ride, and how far have the balls risen?
+\pt{3-b} Below what angular speed would the arms hang straight down?
+\pt{3-c} A spool rests on a level counter. It has mass \SI{2}{kg}, outer radius $R = \SI{0.2}{m}$, hub radius $r = \SI{0.12}{m}$, and moment of inertia \SI{0.04}{kg.m^2}\sv{a-4} about its axle. A light cord wound on the hub leaves from the bottom of the hub and is pulled horizontally with a constant \SI{6}{N}. If the spool rolls without slipping, how does it accelerate?
+\pt{3-d} If the cord is instead pulled partly upward, at what angle does the spool stay at rest?
+\end{parts}
+
+\room{Library}
+\scene{Raise the spool's cord past that angle and, still pulled forward, the spool rolls back. It knocks a catch, and the ladder is free to slide. The first question catches the ladder mid-slide; the rest start it again from rest. On the reading table, a velvet kit.}
+\problem{4}{The ladder}
+A uniform ladder, \SI{8}{kg} and \SI{3}{m} long, leans on a frictionless wall from a frictionless floor, its foot \SI{1.8}{m} out from the wall and its top \SI{2.4}{m} up. Its moment of inertia about its center is $mL^2/12$. Use $g = \SI{10}{m/s^2}$.
+\begin{parts}
+\pt{4-a} The foot is pulled away from the wall at \SI{0.4}{m/s} while the top stays against the wall. How fast is the top moving at that instant?
+\pt{4-b} Let go from rest where it started, the ladder keeps touching the wall until its top is \SI{1.6}{m}\sv{b-3} up. How much gravitational potential energy has it let go by then?
+\pt{4-c} While both ends touch, the center moves at $L\omega/2$, where $\omega$ is the ladder's angular speed. How does that energy split between the center's motion and the turning about the center, and how fast is the center going when the top leaves the wall?
+\end{parts}
+
+\room{Billiard room}
+\scene{After the ladder has left the wall, its fall trips the sear on a cocked cue. The spring pays for the shot. The ladder only lets it go. The chalk is on your cuff. On the sideboard, a clockwork diorama under a striped dome. It has a door in this room, the conservatory and the ballroom.}
+\problem{5}{The cue ball}
+A uniform solid ball of mass \SI{1}{kg} and radius $R = \SI{0.05}{m}$ (moment of inertia $2mR^2/5$) sits on a table. A cue gives it a short horizontal impulse of \SI{2}{N.s} at height $H$ above the table.
+\begin{parts}
+\pt{5-a} How fast is the center moving just afterward?
+\pt{5-b} At what $H$ does the ball roll without slipping from the start?
+\pt{5-c} Find its angular speed and its translational and rotational kinetic energies.
+\end{parts}
+
+\room{Conservatory}
+\scene{The cue ball rolls free, then nudges a flap. A second ball, held a little way up the basin, is let go. Its own height pays for its motion. The striped dome's second door is here.}
+\problem{6}{The basin}
+A small uniform solid ball rolls back and forth across the bottom of a curved basin without slipping. Its center moves on a circular arc of radius $a = \frac{5}{7}$\,m\sv{c-2}, and for small swings its period is $T = 2\pi\sqrt{7a/(5g)}$. Use $g = \SI{10}{m/s^2}$.
+\begin{parts}
+\pt{6-a} Find $T$, and compare it with the knife's in problem 1.
+\pt{6-b} A frictionless bead sliding on the same arc has period $2\pi\sqrt{a/g}$. What is it?
+\pt{6-c} Why does the rolling ball take longer?
+\end{parts}
+
+\room{Ballroom}
+\scene{The ball keeps the knife's time, and a beat that matches draws you on. Their cycles keep time; their starting positions are still theirs to choose. The striped dome's third door is here.}
+\problem{7}{The hoop}
+A hoop of radius \SI{0.25}{m} rolls without slipping along a level floor at a steady \SI{8}{rad/s}.
+\begin{parts}
+\pt{7-a} How fast does its center move?
+\pt{7-b} How fast are the points at the top and at the bottom?
+\pt{7-c} And the point level with the center, at the front?
+\end{parts}
+
+\problem{8}{The ribbon}
+A \SI{0.5}{kg} puck slides on a frictionless floor, held by a light ribbon that runs down through a small hole. It goes round a circle of radius \SI{0.6}{m} at \SI{2}{m/s}. The ribbon is slowly drawn down until the puck goes round a circle of radius \SI{0.3}{m}.
+\begin{parts}
+\pt{8-a} How fast is it going now, and at what angular speed?
+\pt{8-b} What's the tension in the ribbon on each circle?
+\pt{8-c} How much work does the ribbon do?
+\end{parts}
+
+\room{Study}
+\scene{What supplied that work, and where could it wait? The study keeps the answer ready: two rods held still and a loop held open. A separate little meter has READY marked beside 4\,V. Its contact must be held while the needle rises. Bent over the bench, the powdered clown has gloves gone gray at the fingertips, and around one wrist, well above the cuff, a row of old needle holes. Someone took that sleeve in, and wore it. Beside the jars, a doctor's bag in striped oilcloth.}
+\problem{9}{The double pendulum}
+Two point masses of \SI{1}{kg} hang one below the other on massless rods each \SI{1}{m} long, swinging in one vertical plane. Use $g = \SI{10}{m/s^2}$. Their small swings are mixtures of two normal modes\sv{d-1}: a slow mode with $\omega_a^2 = 10(2 - \sqrt2)\,\mathrm{s^{-2}}$ ($\omega_a \approx \SI{2.42}{rad/s}$), in which the lower rod's angle is $+\sqrt2$ times the upper rod's, and a fast mode with $\omega_b^2 = 10(2 + \sqrt2)\,\mathrm{s^{-2}}$ ($\omega_b \approx \SI{5.84}{rad/s}$), in which it's $-\sqrt2$ times. Both angles are measured from the downward vertical, positive toward the same side.
+\begin{parts}
+\pt{9-a} Find the period of each mode.
+\pt{9-b} Show that $\omega_b/\omega_a = 1 + \sqrt2$. Does a motion mixing both modes ever exactly repeat?
+\pt{9-c} Describe each mode in words: how does the lower mass move compared with the upper?
+\end{parts}
+
+\problem{10}{The coils and the capacitor}
+\begin{parts}
+\pt{10-a} A \SI{6}{V} source charges an empty \SI{0.1}{F} capacitor through a \SI{20}{\ohm} resistor. Find the starting current and the time constant, and the current, charge and stored energy when the capacitor reaches \SI{4}{V}.
+\pt{10-b} An ideal $LC$ circuit has $L = \SI{0.1}{H}$ and $C = 1/(L\omega_a^2) \approx \SI{1.71}{F}$\sv{e-1}, with $\omega_a$ from problem 9. Find its angular frequency $\omega_0 = 1/\sqrt{LC}$, and compare it with $\omega_a$.
+\pt{10-c} A coil fixed to a pendulum rod sits in a magnetic field. With the rod's angle $a$ and the current $i$ both signed, the current exerts a torque $\tau_{\mathrm{em}} = \kappa i$ on the rod, and the rod's motion induces an emf $\varepsilon = -\kappa\dot a$ in the circuit. Show that the power delivered to the rod, $\kappa i\dot a$, is the electrical power the circuit gives up, and that it runs the other way when $\kappa i$ and $\dot a$ have opposite signs.
+\pt{10-d} Coupling the slow mode of problem 9 to the $LC$ circuit this way gives two modes\sv{2-$\gamma$}, at $\frac23\omega_0$ and $\frac32\omega_0$. Find them, their product, and their ratio.
+\end{parts}
+
+\room{Hall}
+\scene{The rods are left hanging still and the loop open. The hall asks what could announce the release. On the hall stand, a striped hatbox.}
+\problem{11}{The line}
+A lossless transmission line has \SI{0.5}{\micro H/m} of inductance and \SI{0.2}{nF/m} of capacitance. Its wave speed is $u = 1/\sqrt{L'C'}$ and its characteristic impedance is $Z = \sqrt{L'/C'}$. Take $c = \SI{3e8}{m/s}$.
+\begin{parts}
+\pt{11-a} Find $u$ and $Z$.
+\pt{11-b} Two \SI{6}{V} pulses run toward each other and overlap. In each, the current is the voltage over $Z$, in its own direction of travel. Where they overlap, find the voltage, the current, and the energy stored per meter, $(C'V^2 + L'I^2)/2$.
+\pt{11-c} Two sine waves of equal amplitude, at \SI{5}{MHz} and \SI{4}{MHz}\sv{f-3}, run in opposite directions. Their sum has crests moving at $u(f_+ - f_-)/(f_+ + f_-)$ and at $u(f_+ + f_-)/(f_+ - f_-)$\sv{f-2}. Find both speeds and compare the faster with $c$. Can the faster crests carry a signal?
+\end{parts}
+
+\room{Lounge}
+\scene{A signal goes down the line at $u$, and two lamps answer it, aimed at your chair from either side. Across the cold hearth, the old joey keeps a hand on the clock key and looks straight at you. They've been looking since before you sat down. The silk at the shoulders has faded round two small thumbprints. On the mantel, a traveling clock case in faded red leather.}
+\problem{12}{The two lights}
+In a frame $S$, a light pulse of \SI{80}{mJ}\sv{g-3} runs right and one of \SI{20}{mJ}\sv{g-3} runs left. Take $c = \SI{3e8}{m/s}$ and $\gamma = 1/\sqrt{1 - v^2/c^2}$.
+\begin{parts}
+\pt{12-a} Find the pair's total energy and total momentum in $S$.
+\pt{12-b} The pair's invariant mass $M$ satisfies $(Mc^2)^2 = E^2 - (pc)^2$. Find $Mc^2$.
+\pt{12-c} In what frame is the pair's total momentum zero? Find its speed $v$, and $\gamma$.
+\pt{12-d} How much proper time $\Delta t_0$ does a clock at rest in that frame record while \SI{10}{s} pass in $S$?
+\end{parts}
+\scene{In the chair's frame the opposed pulses have equal energy. The receiver captures them and transfers their 80\,mJ to its capacitor. The charging path is disconnected. The loop closes, the rods are released without a kick, and the chair's clock starts.}
+
+\problem{13}{The chair}
+A sealed receiver moves through $S$ at the speed found in 12-c; in its own rest frame $H$, time is $t_H$. Inside is the coupled apparatus of problem 10, starting with \SI{80}{mJ} in its capacitor, the rods hanging still, and no current. Once it's charged, nothing is lost: the energy moves among the capacitor, the coil, and the rods' motion and height, measured from hanging straight down. At $t = t_H = 0$ the receiver's seat is at $x = x_H = 0$. Write the two mode angular frequencies from 10-d as $4\nu$ and $9\nu$, so $\nu = \omega_0/6$. The charge follows $q = q_0\bigl[\frac{9}{13}\cos(4\nu t_H) + \frac{4}{13}\cos(9\nu t_H)\bigr]$\sv{$\alpha$-2}, and the upper rod's angle a sum of $\sin(4\nu t_H)$ and $\sin(9\nu t_H)$\sv{$\alpha$-1}.
+\begin{parts}
+\pt{13-a} Find $q_0$ and the capacitor's starting voltage.
+\pt{13-b} When does the whole starting state first come back? Call that time $T$.
+\pt{13-c} Show that at $T/2$ the current is zero and the rods pass through vertical. What's $q/q_0$ there, and how much of the \SI{80}{mJ} is in the capacitor? Where's the rest?
+\pt{13-d} How long does $T$ last in $S$, and how far does the receiver go in $S$ meanwhile? Using $x_H = \gamma(x - vt)$, find the receiver's position in $H$ throughout.
+\end{parts}
+
+% ---------------------------------------------------------------- appendix a: the cabinet
+\appx{a}{the cabinet}
+\scene{striped canvas in faded red and cream; brass corners; sawdust and lamp oil; painted stars on every lid; no one else in here; each drawer opens from its room's locked box, and you leave the way you came}
+
+\problem{a}{the kitchen's two 3--4--5s}
+\scene{Door: the kitchen. A toolbox in scorched canvas, patched with the same cloth turned inside out, its lid painted with a ringmaster's star; inside, a little governor on a stand and a spool on a strip of counter.}
+Use $g = \SI{10}{m/s^2}$.
+\begin{parts}
+\pt{a-1} A ball hangs on a light arm $\ell = \SI{0.5}{m}$ long, hinged on the axis of a vertical shaft turning steadily at angular speed $\omega$. Show that the arm settles at an angle $\theta$ from the vertical with $\cos\theta = g/(\ell\omega^2)$.
+\pt{a-2} At what $\omega$ are the arm's drop and reach in the ratio 4 to 3, and how far has the ball risen?
+\pt{a-3} A spool of mass $m$, outer radius $R$, hub radius $r$ and moment of inertia $I$ about its axle rests on a level counter. A cord wound on the hub leaves from the bottom of the hub and is pulled horizontally with force $F$. If it rolls without slipping, show that its center accelerates at $a = F(1 - r/R)/(m + I/R^2)$.
+\pt{a-4} For $m = \SI{2}{kg}$ and $R = \SI{0.2}{m}$, what $I$ makes $m + I/R^2$ equal \SI{3}{kg}? What simple shape of spool has that $I$? With $r = \SI{0.12}{m}$ and $F = \SI{6}{N}$, find $a$ and the friction.
+\pt{a-5} The cord is instead pulled partly upward, at an angle $\theta$. Show that the spool can stay put only when $\cos\theta = r/R$, whatever $I$ is, and find $\theta$.
+\end{parts}
+
+\problem{b}{the wall lets go}
+\scene{Door: the library. A gentleman's reading kit in circus colors, its velvet worn to the nap: a folding rule, spectacles, a little ladder leaning on a painted wall.}
+A uniform ladder of mass $m$ and length $L$ leans on a frictionless wall from a frictionless floor, its top at height $h_0$, and is let go from rest. Use $g = \SI{10}{m/s^2}$.
+\begin{parts}
+\pt{b-1} While both ends touch, show that the ladder's center stays $L/2$ from the corner where the wall meets the floor.
+\pt{b-2} While both ends touch, show that the ladder's kinetic energy is $\frac16 mL^2\omega^2$, where $\omega$ is its angular speed.
+\pt{b-3} The wall can push but can't pull. Show that the top leaves the wall at a height of $2h_0/3$.
+\pt{b-4} For $L = \SI{3}{m}$ and $h_0 = \SI{2.4}{m}$, find that height and the center's speed then.
+\end{parts}
+\scene{The back of this drawer opens into the funhouse.}
+
+\problem{c}{turning about the contact}
+\scene{Doors: the conservatory, the billiard room, the ballroom. A clockwork diorama under a striped dome, its base trimmed in baize, taffeta and moss-damp velvet, a strip for each door: a glass marble in a tin basin, a tiny cue, a wire hoop.}
+A uniform solid ball has mass $m$, radius $R$ and moment of inertia $\frac25 mR^2$ about its center. Use $g = \SI{10}{m/s^2}$.
+\begin{parts}
+\pt{c-1} It rolls without slipping, its center at speed $v$. Show that its kinetic energy is $\frac{7}{10}mv^2$, $\frac75$ of a sliding bead's at the same speed.
+\pt{c-2} It rolls back and forth in a basin, its center on an arc of radius $a$. Show that small oscillations have $T = 2\pi\sqrt{7a/(5g)}$, and find the $a$ that matches a simple pendulum \SI{1}{m} long.
+\pt{c-3} The ball sits on a table, and a cue gives it a short horizontal impulse at height $H$ above the table. Show that it rolls at once only if $H = 7R/5$.
+\pt{c-4} A hoop rolls with its center at speed $v$. Find the speeds of its top and bottom points. Which point of the hoop is still?
+\end{parts}
+
+\problem{d}{the second knife's two motions}
+\scene{Door: the dining room. A silver canteen with an enamel juggler on the lid, lined in damask; inside, under glass, one knife hanging from another.}
+Two point masses $m$ hang in series on light rods each $\ell$ long, swinging in one vertical plane. For small angles $\theta_1$ (upper rod) and $\theta_2$ (lower rod) from the downward vertical, positive toward the same side,
+\[ 2\ddot\theta_1 + \ddot\theta_2 = -2(g/\ell)\,\theta_1, \qquad \ddot\theta_1 + \ddot\theta_2 = -(g/\ell)\,\theta_2. \]
+\begin{parts}
+\pt{d-1} In a normal mode both angles go as $\cos\omega t$, with $\theta_2 = +\sqrt2\,\theta_1$ or $\theta_2 = -\sqrt2\,\theta_1$. Find $\omega^2$ for each.
+\pt{d-2} With $\ell = \SI{1}{m}$ and $g = \SI{10}{m/s^2}$, find both $\omega$ and their ratio. Does a motion with both modes ever exactly repeat?
+\end{parts}
+\scene{The back of this drawer opens into the funhouse.}
+
+\problem{e}{a can to match the knife}
+\scene{Door: the study. A doctor's bag in striped oilcloth: a capacitor the size of a teacup, a coil, a card of figures, the first of them 22/7.}
+An $LC$ circuit has $L = \SI{0.1}{H}$.
+\begin{parts}
+\pt{e-1} Find the $C$ that makes $\omega_0 = 1/\sqrt{LC}$ equal the slow mode of problem d, $\omega_0^2 = 10(2 - \sqrt2)\,\mathrm{s^{-2}}$.
+\pt{e-2} With that $C$, how long does one turn of the circuit take, and one turn of the slow mode?
+\end{parts}
+\scene{The back of this drawer opens into the funhouse.}
+
+\problem{f}{two crests from two waves}
+\scene{Door: the hall. A hatbox in red and white stripes, rubberized against the wet; inside, a long coil of wire and two tuning forks.}
+Two waves of equal amplitude $A$ run in opposite directions on a line with wave speed $u$: $A\cos(k_1x - \omega_1t)$ to the right and $A\cos(k_2x + \omega_2t)$ to the left, with $k = \omega/u$ for each.
+\begin{parts}
+\pt{f-1} Show that their sum is $2A\cos\bigl(\tfrac12[(k_1 - k_2)x - (\omega_1 + \omega_2)t]\bigr)\cos\bigl(\tfrac12[(k_1 + k_2)x - (\omega_1 - \omega_2)t]\bigr)$.
+\pt{f-2} Find the speed of each factor's crests, in terms of $u$ and the two frequencies.
+\pt{f-3} For \SI{5}{MHz} and \SI{4}{MHz} and $u = \SI{1e8}{m/s}$, find both speeds.
+\end{parts}
+\scene{The back of this drawer opens into the funhouse.}
+
+\problem{g}{two lights made equal}
+\scene{Door: the lounge. A traveling clock case in faded red leather, lined in quilted silk; inside, two little lamps, one brighter than the other.}
+Seen from a frame moving at $\beta c$ in a light pulse's own direction, the pulse's energy is multiplied by $\sqrt{(1 - \beta)/(1 + \beta)}$; seen from one moving against it, by $\sqrt{(1 + \beta)/(1 - \beta)}$. A pulse of energy $E_1$ runs right and one of $E_2$ runs left, with $E_1 > E_2$.
+\begin{parts}
+\pt{g-1} Find $\beta$ for the frame moving right in which the two energies are equal, in terms of $r = E_1/E_2$.
+\pt{g-2} Show that $\gamma = (r + 1)/(2\sqrt r)$ there.
+\pt{g-3} For $r = 4$, find $\beta$ and $\gamma$, and show that $r - 1$, $2\sqrt r$ and $r + 1$ make a right triangle.
+\end{parts}
+\scene{The back of this drawer opens into the funhouse.}
+
+% ---------------------------------------------------------------- appendix 2: the funhouse
+\appx{2}{the funhouse}
+\scene{mirrors on every wall, some flat and some not; a floor that tilts one way and then the other; everything you know comes back at you flipped; no one else in here}
+
+\problem{1}{the knives, flipped}
+\scene{A long mirror in which the second knife hangs upside down.}
+The double pendulum of problem d has $2\ddot\theta_1 + \ddot\theta_2 = -2(g/\ell)\,\theta_1$ and $\ddot\theta_1 + \ddot\theta_2 = -(g/\ell)\,\theta_2$, with $\ell = \SI{1}{m}$ and $g = \SI{10}{m/s^2}$.
+\begin{parts}
+\pt{1-$\alpha$} In a normal mode $\theta_2 = r\theta_1$ and both angles go as $\cos\omega t$. Use both equations to show that $r^2 = 2$.
+\pt{1-$\beta$} Show that the two modes' angular frequencies satisfy $\omega_b/\omega_a = 1 + \sqrt2$ and $\omega_a/\omega_b = \sqrt2 - 1$, and that $\omega_a^2\omega_b^2 = 2(g/\ell)^2$.
+\pt{1-$\gamma$} At what angular rate does the relative phase of the two modes advance? For equal contributions to $\theta_1$ that begin in phase, how long is the interval between successive reinforcements? Does that interval return the whole state?
+\end{parts}
+\scene{Trapdoor, the swing side: in the floor under the mirror, and through it the same two rods, full size, on a black iron chassis with a chipped ceramic insulator. They're humming. The trapdoor is open.}
+
+\problem{2}{the trade, both ways}
+\scene{Two facing mirrors; the can in one is the coil in the other.}
+The slow mode of the double pendulum acts like one swing $a$ with effective inertia $\eta$ and stiffness $D$, so its free angular frequency is $\omega_0 = \sqrt{D/\eta}$. A coil in a magnetic field couples it to an $LC$ circuit with $\kappa > 0$ and the same $\omega_0 = 1/\sqrt{LC}$:
+\[ \eta\ddot a = -Da + \kappa i, \qquad L\ddot q = -q/C - \kappa\dot a, \qquad i = \dot q. \]
+\begin{parts}
+\pt{2-$\alpha$} Try $a = A\cos\omega t$ and $q = Q\sin\omega t$. Show that $\eta L(\omega_0^2 - \omega^2)^2 = \kappa^2\omega^2$.
+\pt{2-$\beta$} Show that the two positive solutions multiply to $\omega_0^2$ and that their gap $\Delta\omega = \omega_{\mathrm{high}} - \omega_{\mathrm{low}}$ satisfies $\Delta\omega\sqrt{\eta L} = \kappa$.
+\pt{2-$\gamma$} What $\kappa$ puts the two modes at $\frac23\omega_0$ and $\frac32\omega_0$? With $\omega_0 = \SI{2.42}{rad/s}$, find both.
+\end{parts}
+\scene{Trapdoor, the circuit side: windings and a capacitor the size of a hatbox, wired into the same chassis, with the chipped insulator again. The trapdoor is open.}
+
+\problem{3}{two more mirrors}
+\scene{A hall of mirrors that never ends, and a lamp in it that can't decide how bright it is.}
+\begin{parts}
+\pt{3-$\alpha$} For problem f's two distinct positive frequencies, with $f_1 > f_2$, show that the slow and fast crest speeds multiply to $u^2$.
+\pt{3-$\beta$} On a lossless line a wave pattern stores $(C'V^2 + L'I^2)/2$ per meter and carries power $VI$. Show that $|VI|$ is never more than $u$ times the stored energy per meter. Can the fast crest carry a signal?
+\pt{3-$\gamma$} For problem g's lights, show that the two energies multiply to the same number in every frame moving along the line, and check it with \SI{80}{mJ} and \SI{20}{mJ}. For a source receding directly along the line of sight at constant velocity, flashes arrive $s = 2$ times farther apart than their emission interval on the source's clock. Show that $(s + 1/s)/2$ is problem g's $\gamma$.
+\end{parts}
+\scene{Trapdoor, the timing side: a clock face on the same chassis, one hand, marked in turns, with the chipped insulator under it. The trapdoor is open.}
+
+\problem{4}{the corner, turned over}
+\scene{A tilted floor, and a mirror at the end that shows the room upside down.}
+While the ladder of problem b is moving and both ends still touch their supports, its foot is at $(L\cos\varphi, 0)$ and its top at $(0, L\sin\varphi)$, with $0 < \varphi < \pi/2$. The corner where the wall meets the floor is the origin.
+\begin{parts}
+\pt{4-$\alpha$} The foot moves along the floor and the top along the wall. Show that the point that's still for the instant, where the perpendiculars to the two ends' motions meet, is $(L\cos\varphi, L\sin\varphi)$.
+\pt{4-$\beta$} Show that this point is the corner turned a half turn about the ladder's center, so it's always $L/2$ from the center.
+\pt{4-$\gamma$} About that point all the motion is turning. Show that the kinetic energy is $\frac12 m(L^2/3)\omega^2$, and find the energy per kilogram when the top leaves the wall, in problem b's numbers.
+\end{parts}
+\scene{In the far glass, the nine costumes hang empty and inside out. The long coat's lining stops at an ordinary person's height. Through the worn knees of the velvet diamonds, the pattern continues in another color.}
+\scene{Each costume is missing one stitch. It's the same stitch.}
+\scene{They were all cut for one wearer.}
+
+% ---------------------------------------------------------------- appendix gamma: under the stage
+\appx{$\gamma$}{under the stage}
+\scene{a low room under the stage; one machine on a black iron chassis, bigger than it looked through the trapdoors; the chipped ceramic insulator; a hum not quite loud enough to cover the whispers; stagehand blacks on a nail, still warm; no one else down here}
+\scene{22/7 has been painted on the chassis, rubbed off, and painted again. The first drawing is a circle and a square. The toymaker had meant to square the circle and be done.}
+\scene{The blacks on the nail are patched with quilted silk. Its flattened hollows have kept the shape of somebody sitting.}
+
+\problem{$\alpha$}{the machine, all of it}
+\scene{Any of the three trapdoors comes down here.}
+Take the coupled machine of appendix 2, problem 2, with its tones at $\frac23\omega_0$ and $\frac32\omega_0$, written $4\nu$ and $9\nu$, so $\nu = \omega_0/6$. Scale the swing and the charge as $X = \sqrt\eta\,a$ and $Y = \sqrt L\,q$, so that
+\[ \ddot X = -\omega_0^2X + \Delta\omega\,\dot Y, \qquad \ddot Y = -\omega_0^2Y - \Delta\omega\,\dot X, \]
+with the gap $\Delta\omega = 5\nu$. It starts with $Y = Y_0 \ne 0$, $X = 0$, and $\dot X = \dot Y = 0$.
+\begin{parts}
+\pt{$\alpha$-1} Show that the slow mode has $X = -B_1\sin 4\nu t$ and $Y = B_1\cos 4\nu t$, and the fast mode $X = B_2\sin 9\nu t$ and $Y = B_2\cos 9\nu t$.
+\pt{$\alpha$-2} Fit the start and show that $B_1 = \frac{9}{13}Y_0$ and $B_2 = \frac{4}{13}Y_0$.
+\pt{$\alpha$-3} Find the first time the whole state returns, and how the energy is shared between the swing's motion and the capacitor halfway there.
+\pt{$\alpha$-4} Using $\omega_0^2 = 10(2 - \sqrt2)\,\mathrm{s^{-2}}$ and \SI{80}{mJ} in the machine, how long is the return?
+\end{parts}
+\scene{From a corner under the frame: ``Here I zam.''}
+\scene{Its twin meets its eyes.}
+\scene{``Zlam.''}
+\scene{The hum covers them again.}
+
+\problem{$\beta$}{TEST, then RUN}
+\scene{On the chassis: a switch with two positions, TEST and RUN, and a small drive arm linked to the mechanical coordinate $a$.}
+In TEST the electrical loop is open, so $i = 0$. The drive acts only on the mechanical coordinate $a$; the other mechanical mode is absent. Thus $X = \sqrt\eta\,a$ obeys $\ddot X = -\omega_0^2X$ between taps. The drive gives $N$ short impulses, each adding the same positive increment to $\dot X$. Start from rest, and let $E_1$ be the energy one tap gives this oscillator from rest.
+\begin{parts}
+\pt{$\beta$-1} If successive taps are separated by one complete period of this oscillator, show that after $N$ taps its energy is $N^2E_1$, and that the $k$-th tap does $(2k - 1)E_1$ of work.
+\pt{$\beta$-2} If the free phase advances between taps are independent and uniformly distributed over a full cycle, show that the expected energy after $N$ taps is $NE_1$.
+\pt{$\beta$-3} Compare the two after 100 taps.
+\pt{$\beta$-4} In RUN the drive is disconnected and the machine is lossless. Does its energy change when its two tones line up at the return?
+\end{parts}
+
+\end{document}
