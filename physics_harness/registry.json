@@ -42,6 +42,20 @@
       "entrypoint": "implementations/claude/sweater_two_store.py",
       "status": "missing",
       "provenance": "Original Claude script not retrieved. Never reconstructed or substituted with Codex code."
+    },
+    {
+      "case": "mansion",
+      "implementation": "codex",
+      "entrypoint": "implementations/codex/mansion.py",
+      "status": "available",
+      "provenance": "Codex independent force balances, generalized eigenproblem, quadrature and DOP853 integration; source snapshot recorded in fixture."
+    },
+    {
+      "case": "mansion",
+      "implementation": "claude",
+      "entrypoint": "implementations/claude/mansion.py",
+      "status": "missing",
+      "provenance": "Claude has reviewed earlier versions, but no original Mansion implementation is registered in this harness. Do not relabel Codex code."
     }
   ]
 }
