@@ -13,7 +13,6 @@ for n in (.01,.1,.5,1,2,5):
  errors.extend((abs(fp-(d(n)-f(n))), abs(dp-(1-d(n)))))
 assert max(errors)<1e-8
 assert abs(f(.001)/(.001**2/2)-1)<.001
-assert 50*30==500*3
 
 observations={}
 for t in case['inputs']['times_s']:
@@ -23,4 +22,6 @@ for t in case['inputs']['times_s']:
 observations['balance_residual']=max(errors)
 print(json.dumps({'schema_version':1,'case_id':case['case_id'],
  'implementation':'codex','observations':observations,
- 'checks':{'original_assertions_passed':True}}))
+ 'checks':{'two_lag_rate_balances':max(errors)<1e-8,
+           'cold_start_is_quadratic':abs(f(.001)/(.001**2/2)-1)<.001}}))
+

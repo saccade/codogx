@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "run_utc": "2026-10-22T18:50:05.487029+00:00",
+  "run_utc": "2026-10-22T19:16:58.344802+00:00",
   "environment": {
     "python": "3.12.14",
     "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
@@ -12,6 +12,183 @@
     }
   },
   "results": [
+    {
+      "case": "valves",
+      "case_id": "valves-v1",
+      "implementation": "codex",
+      "provenance": "Codex independent implementation; see originals/provenance.json.",
+      "status": "passed",
+      "cached": false,
+      "payload": {
+        "schema_version": 1,
+        "case_id": "valves-v1",
+        "implementation": "codex",
+        "observations": {
+          "cap_movement": 0.02,
+          "cap_punch": 0.0002,
+          "cap_heft": 0.001,
+          "cap_pressure_work": 0.0012000000000000001,
+          "governor_roll0": 0.8000000000000002,
+          "governor_roll1": 1.7999999999999998,
+          "governor_hook0": 4.000000000000001,
+          "governor_hook1": 9.0,
+          "governor_engine_work": 9.999999999999996,
+          "governor_link_work": 4.999999999999999,
+          "diaphragm_gauge0": 100000.0,
+          "diaphragm_gauge1": 90000.0,
+          "diaphragm_spring_work": 0.095,
+          "loop_gain1_max_real": -0.12256116687665349,
+          "loop_gain4_max_real": 0.15729810613837575
+        },
+        "checks": {
+          "cap_pressure_work_becomes_height_and_motion": true,
+          "governor_drive_work_splits_between_stores": true,
+          "gas_and_spring_pressures_agree": true,
+          "weak_governor_loop_is_stable": true,
+          "strong_governor_loop_is_unstable": true
+        }
+      },
+      "fingerprint": {
+        "source_sha256": "511bdc1aa2a19da4ae558a6112613318d3ede1cb0f0b0cb582383713ddcff589",
+        "case_sha256": "4a549bda121a2ff5e660cfbfb1531ef2bcf8d47897ba58b9bff64241741becc2",
+        "runner_sha256": "64b912387c4481276e417dc200ef9097173fed8cda26a7c85279b49d8a236532",
+        "registry_entry": {
+          "case": "valves",
+          "implementation": "codex",
+          "entrypoint": "implementations/codex/valves.py",
+          "status": "available",
+          "provenance": "Codex independent implementation; see originals/provenance.json."
+        },
+        "environment": {
+          "python": "3.12.14",
+          "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+          "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+          "packages": {
+            "numpy": "2.3.5",
+            "scipy": "1.17.0",
+            "sympy": null
+          }
+        },
+        "dependencies": {}
+      }
+    },
+    {
+      "case": "sweater_equal",
+      "case_id": "sweater-equal-lags-v1",
+      "implementation": "codex",
+      "provenance": "Codex independent implementation; see originals/provenance.json.",
+      "status": "passed",
+      "cached": false,
+      "payload": {
+        "schema_version": 1,
+        "case_id": "sweater-equal-lags-v1",
+        "implementation": "codex",
+        "observations": {
+          "cold_10_fraction": 0.012437987627616831,
+          "hot_10_fraction": 0.15351827510938587,
+          "cold_30_fraction": 0.09020401043104986,
+          "hot_30_fraction": 0.3934693402873666,
+          "cold_60_fraction": 0.26424111765711533,
+          "hot_60_fraction": 0.6321205588285577,
+          "cold_120_fraction": 0.5939941502901619,
+          "hot_120_fraction": 0.8646647167633873,
+          "cold_180_fraction": 0.8008517265285442,
+          "hot_180_fraction": 0.950212931632136,
+          "balance_residual": 3.852695940054218e-11
+        },
+        "checks": {
+          "two_lag_rate_balances": true,
+          "cold_start_is_quadratic": true
+        }
+      },
+      "fingerprint": {
+        "source_sha256": "1b823d4f33c86d557c235542cd60ae8b3a388024e16d3807b2e6295214a09c5c",
+        "case_sha256": "89cbeaae2a5b1511452c26509fc17f27af4917ac74d1fa6e2fcd5d9dee622e26",
+        "runner_sha256": "64b912387c4481276e417dc200ef9097173fed8cda26a7c85279b49d8a236532",
+        "registry_entry": {
+          "case": "sweater_equal",
+          "implementation": "codex",
+          "entrypoint": "implementations/codex/sweater_equal.py",
+          "status": "available",
+          "provenance": "Codex independent implementation; see originals/provenance.json."
+        },
+        "environment": {
+          "python": "3.12.14",
+          "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+          "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+          "packages": {
+            "numpy": "2.3.5",
+            "scipy": "1.17.0",
+            "sympy": null
+          }
+        },
+        "dependencies": {}
+      }
+    },
+    {
+      "case": "sweater_two_store",
+      "case_id": "sweater-two-store-v1",
+      "implementation": "codex",
+      "provenance": "Codex independent implementation; see originals/provenance.json.",
+      "status": "passed",
+      "cached": false,
+      "payload": {
+        "schema_version": 1,
+        "case_id": "sweater-two-store-v1",
+        "implementation": "codex",
+        "observations": {
+          "skin_door": 37.19843386197553,
+          "bulk_door": 6.304632519172519,
+          "skin_neck": 4.142081472309291,
+          "bulk_neck": 7.187809010372157,
+          "heat_lost": 1506.4658381321697,
+          "net_heat_inward": 476.91530524780455,
+          "cold_10_retained_K": 0.25478484232297827,
+          "cold_30_retained_K": 1.844725396631485,
+          "cold_60_retained_K": 6.188705780326334,
+          "cold_90_retained_K": 12.086962280168878,
+          "cold_120_retained_K": 18.954885628793484,
+          "cold_150_retained_K": 26.427755413808303,
+          "cold_180_retained_K": 32.43330797253066,
+          "cold_240_retained_K": 38.50942720773639,
+          "cold_300_retained_K": 40.874339490850346,
+          "cold_420_retained_K": 42.15305231427262,
+          "hot_2_retained_K": 1.9206111417809135,
+          "hot_5_retained_K": 3.9554101420342005,
+          "hot_10_retained_K": 6.883236256565871,
+          "hot_20_retained_K": 12.049796375899573,
+          "hot_60_retained_K": 26.212199371427573,
+          "redistribution_residual_J": 2.6645352591003757e-13
+        },
+        "checks": {
+          "heat_does_not_grow_on_carry": true,
+          "closed_redistribution_conserves_heat": true
+        }
+      },
+      "fingerprint": {
+        "source_sha256": "e13b6e325062cf28f1abecce08efef487349c028744fe6af40cf40c50fa57792",
+        "case_sha256": "1e1bd3ad186682547c7cb7eb0be3b7df9706614c3b4b889c29a8fccc96732e1e",
+        "runner_sha256": "64b912387c4481276e417dc200ef9097173fed8cda26a7c85279b49d8a236532",
+        "registry_entry": {
+          "case": "sweater_two_store",
+          "implementation": "codex",
+          "entrypoint": "implementations/codex/sweater_two_store.py",
+          "status": "available",
+          "provenance": "Codex independent implementation; see originals/provenance.json."
+        },
+        "environment": {
+          "python": "3.12.14",
+          "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+          "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+          "packages": {
+            "numpy": "2.3.5",
+            "scipy": "1.17.0",
+            "sympy": null
+          }
+        },
+        "dependencies": {}
+      }
+    },
     {
       "case": "mansion",
       "case_id": "mansion-261022-v1",
@@ -71,31 +248,31 @@
           "puck_tension_initial": 3.3333333333333335,
           "puck_tension_final": 26.666666666666668,
           "puck_work": 3.0,
-          "pendulum_slow": 2.420302538169361,
+          "pendulum_slow": 2.4203025381693606,
           "pendulum_fast": 5.843127212694496,
-          "pendulum_ratio": 2.4142135623730945,
-          "pendulum_slow_period": 2.596033019876922,
+          "pendulum_ratio": 2.414213562373095,
+          "pendulum_slow_period": 2.5960330198769226,
           "pendulum_fast_period": 1.075312085201404,
-          "pendulum_ratio_slow": 1.414213562373095,
-          "pendulum_ratio_fast": -1.414213562373095,
-          "pendulum_beat_rate": 3.4228246745251347,
-          "pendulum_reinforcement_interval": 1.8356725525391637,
+          "pendulum_ratio_slow": 1.4142135623730947,
+          "pendulum_ratio_fast": -1.4142135623730951,
+          "pendulum_beat_rate": 3.422824674525135,
+          "pendulum_reinforcement_interval": 1.8356725525391635,
           "circuit_initial_current": 0.3,
           "circuit_time_constant": 2.0,
           "circuit_ready_current": 0.1,
           "circuit_ready_charge": 0.4,
           "circuit_ready_energy": 0.8,
           "circuit_ready_time": 2.197224577336219,
-          "circuit_tuned_C": 1.7071067811865472,
+          "circuit_tuned_C": 1.7071067811865475,
           "circuit_omega": 2.4203025381693606,
           "circuit_eta": 6.82842712474619,
           "circuit_D": 40.0,
-          "coupling_slow": 1.6135350254462408,
-          "coupling_fast": 3.6304538072540415,
-          "coupling_product": 5.857864376269052,
-          "coupling_ratio": 2.25,
-          "coupling_gap": 2.0169187818078007,
-          "coupling_kappa": 1.6666666666666667,
+          "coupling_slow": 1.61353502544624,
+          "coupling_fast": 3.630453807254041,
+          "coupling_product": 5.857864376269048,
+          "coupling_ratio": 2.250000000000001,
+          "coupling_gap": 2.016918781807801,
+          "coupling_kappa": 1.6666666666666663,
           "line_speed": 100000000.0,
           "line_impedance": 50.0,
           "line_overlap_voltage": 12.0,
@@ -113,27 +290,27 @@
           "light_one_pulse_H": 0.04000000000000001,
           "light_rest_mass": 8.88888888888889e-19,
           "light_doppler_stretch": 2.0,
-          "chair_charge": 0.5226251859505505,
-          "chair_voltage": 0.3061467458920718,
-          "chair_period": 15.576198119261534,
-          "chair_S_period": 19.470247649076917,
-          "chair_S_distance": 3504644576.833845,
-          "chair_half_charge_ratio": 0.3846153846153561,
-          "chair_half_mechanical": 0.06816568047337869,
-          "chair_half_capacitor": 0.011834319526625463,
-          "chair_max_energy_drift": 3.433919815165609e-13,
-          "chair_return_error": 3.298068481352576e-14,
+          "chair_charge": 0.5226251859505506,
+          "chair_voltage": 0.30614674589207186,
+          "chair_period": 15.576198119261537,
+          "chair_S_period": 19.47024764907692,
+          "chair_S_distance": 3504644576.833846,
+          "chair_half_charge_ratio": 0.38461538461535544,
+          "chair_half_mechanical": 0.06816568047337848,
+          "chair_half_capacitor": 0.011834319526625423,
+          "chair_max_energy_drift": 3.4333647036532966e-13,
+          "chair_return_error": 3.351886807142534e-14,
           "test_coherent_multiple": 10000.0,
           "test_random_expected_multiple": 100.0,
           "test_last_kick_multiple": 199.0,
-          "probe_closed_loop_test_energy_multiple": 0.3076923076922956,
+          "probe_closed_loop_test_energy_multiple": 0.30769230769231376,
           "probe_sum_spatial_derivative_at_fast_factor_crest": -0.33238472948828235
         },
         "checks": {
           "knife_small_angle_energy_within_0.1_percent": true,
           "flywheel_work_balance": true,
           "spool_independent_force_torque_balance": true,
-          "spool_contact_power_cancels": true,
+          "spool_grip_has_zero_contact_power": true,
           "ladder_energy_split": true,
           "ladder_instantaneous_center_distance": true,
           "ladder_wall_reaction_zero_at_departure": true,
@@ -146,26 +323,27 @@
           "pendulum_beats_do_not_return_state": true,
           "coupling_eigenfrequencies_match_supplied_tones": true,
           "coupled_energy_is_conserved": true,
-          "coupling_powers_cancel": true,
           "line_energy_flux_bound": true,
           "line_characteristic_speed": true,
           "line_crest_speed_product": true,
           "line_cosine_product_identity": true,
           "boost_equalizes_pulses": true,
           "photon_energy_product_is_invariant": true,
+          "integrated_coupling_powers_cancel": true,
           "chair_returns_all_four_state_variables": true,
           "chair_integrator_conserves_energy": true,
           "chair_halfway_vertical_and_no_current": true,
-          "chair_stays_at_H_origin": true,
-          "first_return_from_positive_cosine_weights": true,
+          "integrated_receiver_stays_at_H_origin": true,
+          "chair_first_return_uses_positive_charge_weights": true,
           "uniform_phase_cross_term_averages_to_zero": true,
+          "random_phase_kick_second_moment_matches_energy": true,
           "kick_work_sums_to_final_energy": true,
           "closed_loop_changes_TEST_resonance": true,
           "factor_crest_is_not_generally_total_wave_crest": true
         }
       },
       "fingerprint": {
-        "source_sha256": "d4768d4c202076c6cea99f8a09a1f2716dc9efd9ac4958a4298fc84a89ec3b05",
+        "source_sha256": "4990859c3c1befed107e89072e6bd6d14cbf6ebee50acc312d3514f8244938c1",
         "case_sha256": "d626f236273b3b79b5bc46667a8ee6f00bd9c0ee9b41f1fa405e60fcc85b6052",
         "runner_sha256": "64b912387c4481276e417dc200ef9097173fed8cda26a7c85279b49d8a236532",
         "registry_entry": {
@@ -192,6 +370,21 @@
   "comparisons": [
     {
       "case": "mansion",
+      "status": "incomplete",
+      "reason": "Fewer than two original implementations passed."
+    },
+    {
+      "case": "sweater_equal",
+      "status": "incomplete",
+      "reason": "Fewer than two original implementations passed."
+    },
+    {
+      "case": "sweater_two_store",
+      "status": "incomplete",
+      "reason": "Fewer than two original implementations passed."
+    },
+    {
+      "case": "valves",
       "status": "incomplete",
       "reason": "Fewer than two original implementations passed."
     }

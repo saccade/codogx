@@ -10,7 +10,7 @@ from pathlib import Path
 
 import numpy as np
 from scipy.integrate import solve_ivp, quad
-from scipy.linalg import expm
+from scipy.linalg import expm, eigh
 
 case = json.loads(Path(sys.argv[1]).read_text())
 p = case['inputs']
@@ -51,7 +51,13 @@ ax,f=np.linalg.solve(A,[F,F*r])
 record('spool', acceleration=ax, friction=f, balance_angle=math.acos(r/R),
        effective_mass=m+I/R**2)
 check('spool_independent_force_torque_balance',close([m*ax,F*r+f*R],[F+f,-I*ax/R]))
-check('spool_contact_power_cancels',close(f*R + f*R*(-1),0))
+# Independently form angular motion from the torque balance, rather than
+# substituting the rolling condition into both terms of a cancellation.
+spool_times=np.linspace(0,.4,11)
+spool_center_speed=ax*spool_times
+spool_angular_speed=(F*r+f*R)/I*spool_times
+spool_contact_speed=spool_center_speed+R*spool_angular_speed
+check('spool_grip_has_zero_contact_power',close(f*spool_contact_speed,0))
 
 # 4 + b + funhouse 4: derivative of the actual constraint and wall reaction.
 c=p['ladder']; m,L,x0,h0=(c[k] for k in ['m','L','foot','height'])
@@ -105,7 +111,7 @@ check('puck_radial_work_exact_between_circular_endpoints',close(fullwork,work))
 # 9 + d + funhouse 1: generalized eigenvalues, not supplied mode formulas.
 M=np.array([[2.,1.],[1.,1.]])*p['pendulum']['m']*p['pendulum']['ell']**2
 K=np.diag([2.,1.])*p['pendulum']['m']*g*p['pendulum']['ell']
-vals,vec=np.linalg.eig(np.linalg.solve(M,K)); ix=np.argsort(vals); vals,vec=vals[ix],vec[:,ix]
+vals,vec=eigh(K,M)  # symmetric definite problem: real, sorted eigenpairs
 wa,wb=np.sqrt(vals); ratios=vec[1]/vec[0]
 record('pendulum',slow=wa,fast=wb,ratio=wb/wa,slow_period=math.tau/wa,
        fast_period=math.tau/wb,ratio_slow=ratios[0],ratio_fast=ratios[1],
@@ -130,7 +136,6 @@ record('coupling',slow=freq[0],fast=freq[1],product=np.prod(freq),ratio=freq[1]/
 check('coupling_eigenfrequencies_match_supplied_tones',close(freq,[4*nu,9*nu]))
 G=np.diag([wa*wa,wa*wa,1,1])
 check('coupled_energy_is_conserved',close(B.T@G+G@B,np.zeros((4,4))))
-check('coupling_powers_cancel',close(kappa*.3*.7-kappa*.7*.3,0))
 
 # 11 + f + funhouse 3: two characteristics and energy transport.
 c=p['line']; Lp,Cp=(c[k] for k in ['L_per_m','C_per_m']); u=1/math.sqrt(Lp*Cp); Z=math.sqrt(Lp/Cp)
@@ -163,6 +168,16 @@ T=math.tau/nu; half=expm(B*T/2)@z0; end=expm(B*T)@z0
 trajectory=solve_ivp(lambda t,z:B@z,[0,T],z0,rtol=2e-12,atol=2e-14,dense_output=True,method='DOP853')
 sample=trajectory.sol(np.linspace(0,T,501))
 energies=np.einsum('ij,ij->j',sample,G@sample)/2
+# Actual mechanical and electrical balances on the integrated trajectory.
+derivatives=B@sample
+rod_angle=sample[0]/math.sqrt(eta); rod_sweep=sample[2]/math.sqrt(eta)
+rod_pickup=derivatives[2]/math.sqrt(eta)
+charge=sample[1]/math.sqrt(L); current=sample[3]/math.sqrt(L)
+current_rate=derivatives[3]/math.sqrt(L)
+rod_power=(eta*rod_pickup+D*rod_angle)*rod_sweep
+electrical_power=(L*current_rate+charge/C)*current
+check('integrated_coupling_powers_cancel',close(rod_power,-electrical_power)
+      and np.max(abs(rod_power))>E0/T)
 q0=y0/math.sqrt(L)
 record('chair',charge=q0,voltage=q0/C,period=T,S_period=gamma*T,
        S_distance=beta*p['c']*gamma*T,half_charge_ratio=half[1]/y0,
@@ -171,8 +186,20 @@ record('chair',charge=q0,voltage=q0/C,period=T,S_period=gamma*T,
 check('chair_returns_all_four_state_variables',close(end,z0))
 check('chair_integrator_conserves_energy',np.max(abs(energies-E0))<1e-10)
 check('chair_halfway_vertical_and_no_current',close(half[[0,3]],[0,0]))
-check('chair_stays_at_H_origin',close(gamma*(beta*p['c']*gamma*T-beta*p['c']*gamma*T),0))
-check('first_return_from_positive_cosine_weights',math.gcd(4,9)==1)
+# Integrate the receiver worldline from its initial event and four-velocity.
+proper_grid=np.linspace(0,T,101)
+worldline=solve_ivp(lambda tau,z:[gamma,beta*p['c']*gamma],(0,T),[0,0],
+                    t_eval=proper_grid,rtol=1e-12,atol=1e-12)
+time_S,position_S=worldline.y
+position_H=gamma*(position_S-beta*p['c']*time_S)
+time_H=gamma*(time_S-beta*position_S/p['c'])
+check('integrated_receiver_stays_at_H_origin',np.max(abs(position_H))<1e-5
+      and close(time_H,proper_grid))
+# Recover the charge weights from q(0) and q''(0), not baseline constants.
+charge_weights=np.linalg.solve([[1,1],[freq[0]**2,freq[1]**2]],[1,wa**2])
+check('chair_first_return_uses_positive_charge_weights',
+      np.all(charge_weights>0) and close(sum(charge_weights),1)
+      and close(freq/nu,[4,9]) and math.gcd(4,9)==1)
 
 # Understage beta: deterministic phase-space kicks and exact phase averaging.
 N=p['test']['taps']; kick=np.array([1.,0.]); coherent=np.zeros(2)
@@ -182,9 +209,19 @@ previous=np.array([2.3,-1.7]); increments=[]
 for angle in angles:
     rotated=np.array([[math.cos(angle),-math.sin(angle)],[math.sin(angle),math.cos(angle)]])@previous
     increments.append(np.dot(rotated+kick,rotated+kick)-np.dot(previous,previous))
-record('test',coherent_multiple=np.dot(coherent,coherent),random_expected_multiple=N,
+mean=np.zeros(2); second_moment=np.zeros((2,2))
+rotations=[np.array([[math.cos(t),-math.sin(t)],[math.sin(t),math.cos(t)]]) for t in angles]
+for _ in range(N):
+    rotated_mean=np.mean([rot@mean for rot in rotations],axis=0)
+    rotated_second=np.mean([rot@second_moment@rot.T for rot in rotations],axis=0)
+    second_moment=(rotated_second+np.outer(rotated_mean,kick)
+                   +np.outer(kick,rotated_mean)+np.outer(kick,kick))
+    mean=rotated_mean+kick
+random_multiple=np.trace(second_moment)/np.dot(kick,kick)
+record('test',coherent_multiple=np.dot(coherent,coherent),random_expected_multiple=random_multiple,
        last_kick_multiple=2*N-1)
 check('uniform_phase_cross_term_averages_to_zero',close(np.mean(increments),1))
+check('random_phase_kick_second_moment_matches_energy',close(random_multiple,N))
 check('kick_work_sums_to_final_energy',sum(2*k-1 for k in range(1,N+1))==N*N)
 
 # Assumption probes: these deliberately answer different physical questions.

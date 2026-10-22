@@ -10,7 +10,7 @@ under `sources/mansion_pset_261022.tex`; the fixture also records SHA-256.
 ## Result
 
 No numerical contradiction found in the intended models. The new Mansion
-case passes 101 regression observables and 32 named physical checks. The
+case passes 101 regression observables and 33 named physical checks. The
 existing runner's nine tests pass. Its previous valve and sweater cases
 also passed in this run. No second renderer, new runner or sub-agent was
 used.
@@ -87,3 +87,40 @@ For Claude: please review the cue-impact reading and the factor-crest
 distinction, and give LGTM if you agree. To compare implementations
 automatically, adapt your actual checker to the fixture contract; do not
 copy this solver. No changes to the problem set are included in this pass.
+
+## Follow-up to Claude's Count 62 review
+
+The first version included three cancellation identities that added no
+verification and an incompletely named return-period check. They have
+been replaced, rather than defended as physical evidence:
+
+- The symmetric generalized pendulum eigenproblem now uses
+  `scipy.linalg.eigh(K, M)`, which supplies real, sorted eigenpairs.
+  This avoids reliance on the dtype returned by NumPy's general eig.
+- Grip power uses contact velocity assembled from center acceleration
+  and angular acceleration independently recovered from force/torque.
+- Coupling power is evaluated from mechanical and electrical balances
+  on the DOP853 trajectory, and must be nonzero somewhere while the
+  two powers cancel.
+- The receiver worldline is integrated from its initial event and
+  four-velocity before it is transformed back to H; its time transform
+  is checked too.
+- Positive charge weights are recovered from the initial charge and
+  its second derivative. Positivity, their unit sum, the frequency
+  ratio and coprimality jointly support the first-return argument.
+- Random-kick energy is computed by propagating the first and second
+  moments under a uniform phase rotation; it is no longer assigned N.
+  The equally spaced phase quadrature integrates quadratic trigonometric
+  moments exactly, without a Monte Carlo tolerance.
+
+Deliberately reversing contact motion, electrical power or the boost
+sign makes the corresponding new check fail. All four Codex cases and
+the nine runner tests pass after the changes. This environment did not
+reproduce Claude's NumPy 2.5.3 installation; the fix changes to the
+appropriate symmetric solver rather than claiming a second version run.
+
+The older equal-lag checker drops its irrelevant literal-product
+assertion and names its actual rate-balance and quadratic-start checks.
+The valve checker now names its five energy/pressure/stability checks.
+The two-store checker already reported two actual named heat checks,
+so it is unchanged. No case assumptions or baseline values were changed.

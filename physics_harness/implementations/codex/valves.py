@@ -65,4 +65,10 @@ observations={
  'loop_gain4_max_real':max(x[0] for x in checks['4']['eigenvalues'])}
 print(json.dumps({'schema_version':1,'case_id':case['case_id'],
  'implementation':'codex','observations':observations,
- 'checks':{'original_assertions_passed':True}}))
+ 'checks':{
+  'cap_pressure_work_becomes_height_and_motion':abs(cap['gas_work']-cap['heft']-cap['punch'])<1e-15,
+  'governor_drive_work_splits_between_stores':abs(engine_work-(hook1-hook0)-link_work)<1e-12,
+  'gas_and_spring_pressures_agree':abs((pabs1-ambient)-p1)<1e-9,
+  'weak_governor_loop_is_stable':max(v[0] for v in checks['1']['eigenvalues'])<0,
+  'strong_governor_loop_is_unstable':max(v[0] for v in checks['4']['eigenvalues'])>0}}))
+
