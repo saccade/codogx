@@ -49,7 +49,7 @@
 +
 --- a/mansion/sets/shares.py
 +++ b/mansion/sets/shares.py
-@@ -1,64 +1,97 @@
+@@ -1,64 +1,99 @@
 -"""No trailing zeros, and fractions wherever a fraction is the true value (doc, 10-23 10:23 and 10:42, R-129).
 -Claude (Anthropic), 2026-10-23. build_sets applies this last, to every path.
 -  - Two-figure padding goes: 6.0 N is 6 N, 0.040 is 0.04, 1.0 × 10⁸ is 10⁸.
@@ -108,6 +108,8 @@
 +def convert(text, log=None, mode="fractions", part=""):
 +    """Only numeric literals change. Roots, letters, and existing ratios are retained."""
 +    assert mode in {"decimals", "fractions"}, mode
++    for old, new in path_features.feature("number-form").get("display_units", {}).items():
++        text = text.replace(old, new)
 +    for old, new in PRE:
 +        text = text.replace(old, new)
 +    out, pos = [], 0
@@ -195,7 +197,7 @@
 +
 --- /dev/null
 +++ b/mansion/sets/path_features.json
-@@ -0,0 +1,423 @@
+@@ -0,0 +1,428 @@
 +{
 +  "schema_version": 1,
 +  "authorship": "Claude's terminology planner extended by Codex (OpenAI), 2026-10-23, for dr. kraemer.",
@@ -241,7 +243,7 @@
 +        "10-d",
 +        "13-c"
 +      ],
-+      "evidence": "doc: path 1 mostly decimals; path 2 drops them soon; path 3 fractions from the start. doc: toward the middle the determined visitor finds decimals obscure the meaning; fractions bring it back.",
++      "evidence": "doc: path 1 mostly decimals; path 2 drops them soon; path 3 fractions from the start. doc: toward the middle the determined visitor finds decimals obscure the meaning; fractions bring it back. doc: 40 g m2.",
 +      "precision": {
 +        "corrected_exact": {
 +          "0.38": "3/8"
@@ -311,7 +313,12 @@
 +      "allowed_modes": [
 +        "decimals",
 +        "fractions"
-+      ]
++      ],
++      "display_units": {
++        "0.040 kg m²": "40 g m²",
++        "0.04 kg m²": "40 g m²",
++        "1/25 kg m²": "40 g m²"
++      }
 +    },
 +    {
 +      "id": "explanation-register",
