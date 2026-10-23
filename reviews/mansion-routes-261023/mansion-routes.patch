@@ -1,0 +1,194 @@
+--- a/mansion/sets/build_sets.py
++++ b/mansion/sets/build_sets.py
+@@ -722,8 +722,20 @@
+     # doc 10-23: path 3 brushes the familiar language aside like cobwebs.
+     # The effective mass still has to be named: three kilograms is not the spool's mass.
+     if k == 3:
++        # Running edits, Path 3; doc authorized GitHub publication on 2026-10-23.
++        expected_lean = '(1-a) Leaning through θ lifts a point ℓ away by ℓ(1 − cos θ). For this small lean, that’s ℓ\u200aθ²/2: 0.0050 m, or 5 mm. The 10 N weight lifted through 5 mm stores 0.050 J. Energy stored in height is heft: the weight pulls, and the height hefts. The knife hefts 0.050 J.'
++        lean = expected_lean.replace('For this small lean, that’s ℓ\u200aθ²/2: 0.0050 m, or 5 mm.', 'For this small lean, the knife rises about ℓ\u200aθ²/2: 5 mm.')
++        out = checked_solution(out, '(1-a)', expected_lean, lean)
++        old_fraction = 'That drop is ℓ cos θ, so cos θ = g/(ℓω²).'
++        new_fraction = 'The arm’s downward fraction is g/(ℓω²). In the statement’s notation, cos θ = g/(ℓω²).'
++        assert sum(x.count(old_fraction) for _, x in out if isinstance(x, str)) == 1, 'reconcile Path 3 a-1 before replacing'
++        out = [(t, x.replace(old_fraction, new_fraction) if isinstance(x, str) else x) for t, x in out]
++        old_zing = 'All the motion is turning, so the energy per kilogram is that profile across the zing, ½ω²:'
++        new_zing = 'The sweep of added sweep is stored as zing. Across the inertia, that zing is stored as hook. Double the inertia at the same sweep and the hook doubles; the zing stays put. All the motion is turning, so the energy per kilogram is that profile across the zing:'
++        assert sum(x.count(old_zing) for _, x in out if isinstance(x, str)) == 1, 'reconcile Path 3 zing introduction before replacing'
++        out = [(t, x.replace(old_zing, new_zing) if isinstance(x, str) else x) for t, x in out]
+         expected = "(a-4) The bottom line counts what must speed up at the axle: the mass, plus the turning carried as inertia over R². For 3.0 kg, I/R² = 1.0 kg, so I = 0.040 kg m², half of mR². That's a uniform disk. Then 6.0 N at 1 − 3/5 is 2.4 N on 3.0 kg: a = 0.80 m/s² →, the way the cord pulls. Friction pulls 4.4 N ←."
+-        replacement = "(a-4) Effectively 3 kg at the axle: 2 in the mass, 1 in the turning. So I/R² = 1 kg, I = 40 g m², half of mR²: a uniform disk. Then 6 N at 1 − 3/5 leaves 2.4 N on 3 kg. The spool picks up at 4/5 m/s² →; the grip hauls 4.4 N ←."
++        replacement = "(a-4) Effectively 3 kg at the axle: 2 in the mass, 1 in the turning. So I/R² = 1 kg, I = 40 g m², half of mR²: a uniform disk. Then 6 N at 1 − 3/5 leaves 2.4 N on 3 kg. The spool picks up at 4/5 m/s² →; the grip hauls the rest of the pull: 30 fifths less the center’s 8, 22/5 N ←."
+         out = checked_solution(out, "(a-4)", expected, replacement)
+     # a-5 explicitly asks for cos theta. Answer once, after the physical reading.
+     if k in (2, 3):
+@@ -737,9 +749,22 @@
+             if isinstance(x, str) and x.startswith("(6-a)"):
+                 out.insert(j, ("i", "Beside the ball, the visitor writes 0.4 for the turning, 1.4 in all. No. A line through both: 2/5, 7/5. Five parts running, two turning. Seven altogether. Now the meaning stays put."))
+                 break
++    # Claude/doc's causal-account handoff (Discussion 55 and 60); local/live only.
++    if k == 1:
++        old_ring = 'Here I/R² = 0.040/0.040 = 1.0 kg.'
++        ring = 'Here I/R² is 1 kg: a 1 kg ring out at the rim, 0.2 m from the axle, would carry the same 40 g m².'
++        assert sum(x.count(old_ring) for _, x in out if isinstance(x, str)) == 1, 'reconcile Path 1 rim-ring account'
++        out = [(t, x.replace(old_ring, ring) if isinstance(x, str) else x) for t, x in out]
++    if k == 2:
++        old_check = 'It pulls back, and about the axle it cranks the spool ↻ harder than the cord cranks it ↺.'
++        check = old_check + ' Count the torques in twenty-fifths of a crank. The cord’s 6 N at 3/25 m gives 18 ↺; the grip’s 22/5 N at 1/5 m gives 22 ↻. The grip wins by 4, exactly what 40 g m² needs to pick up at 4 sweep a second.'
++        assert sum(x.count(old_check) for _, x in out if isinstance(x, str)) == 1, 'reconcile Path 2 turning check'
++        out = [(t, x.replace(old_check, check) if isinstance(x, str) else x) for t, x in out]
+     if shares:   # doc 10:42: no trailing zeros; a fraction wherever a fraction is the true value (R-129)
+         import shares as _shares
+         out = _shares.apply(out, path=k)
++    import clown_noticing
++    out = clown_noticing.apply(out, k)
+     return out
+ 
+ def to_html(items):
+--- a/mansion/sets/p4_reel.py
++++ b/mansion/sets/p4_reel.py
+@@ -26,7 +26,7 @@
+  '1-β': '(1-β) ω_a² = (2 − √2)g/ℓ and ω_b² = (2 + √2)g/ℓ, whose product is 2(g/ℓ)². Fast over slow is 1 + √2, slow over fast √2 − 1, and the two multiply to one: flip the rod, flip the tone.',
+  '1-γ': "(1-γ) Sound both tones and the chord's phase sweeps at the gap, 3.4 sweep: equal shares of the upper lean pile up every 1.8 s, and the half-gap hand that carries them is back at → in twice that. The chord itself never does; the ratio's irrational.",
+  '2-a': "(2-a) Fifteen joules of heat-in, three of work, twelve of heat-out, and the engine's back where it began: 20%, and at a cycle a second, 3.0 W.",
+- '2-b': "(2-b) 0.50 kg m² sweeping at 4.0 hooks 4.0 J. Four seconds at 3.0 W pour in 12 J of hook, 16 J in all, and the wheel's sweeping at 8.0: four times the hook buys twice the sweep. Take the inertia out of the hook and what's left is the zing, ½ω²: the wheel zings at 8 to start and 32 to finish. Power on the inertia is the zlow, and its verb is zlower: 3.0 W on 0.50 kg m² is a zlow of 6, so the engine zlowers the wheel at a steady 6 zing a second, 8 to 32 in four seconds flat. Power on the mass is the zow, and it zowers.",
++ '2-b': "(2-b) 0.50 kg m² sweeping at 4.0 hooks 4.0 J. Four seconds at 3.0 W pour in 12 J of hook, 16 J in all, and the wheel's sweeping at 8.0: four times the hook buys twice the sweep. The sweep of added sweep is stored as zing; inertia across the zing stores hook. The wheel zings at 8 to start and 32 to finish. Power on the inertia is the zlow, and its verb is zlower: 3.0 W on 0.50 kg m² is a zlow of 6, so the engine zlowers the wheel at a steady 6 zing a second, 8 to 32 in four seconds flat. Power on the mass is the zow, and it zowers.",
+  '2-c': "(2-c) Power is the sweep of torque. Grab the χ off the wall like usual, no time to slow down here: P = ωχ. At 4.0 sweep the engine's 3.0 W cranks with 0.75 N m; at 8.0, with 0.38. Twice the sweep, half the crank, and the wheel picks up at 1.5 sweep a second, then 0.75.",
+  '3-a': "(3-a) The arm's pull holds the weight with its upward part and bends the path with its inward part, mω² of the reach. Those parts stand as the arm's drop to its reach, so the reach cancels and the ball hangs g/ω² = 10/25 = 0.40 m below the hinge, 4/5 of the 0.50 m arm: a 3–4–5 about 37° off vertical. Each ball has climbed 0.10 m and hefts 1.0 J.",
+  '3-b': "(3-b) The drop g/ω² can't outgrow the 0.50 m arm. Below √(g/ℓ) = √20, about 4.5 sweep, the governor gives up and hangs straight down.",
+--- a/mansion/sets/path_features.json
++++ b/mansion/sets/path_features.json
+@@ -143,7 +143,8 @@
+           "why": "The spool balances in fifths; its two lever arms are 3/25 and 1/5 m."
+         }
+       ],
+-      "maximum_denominator": 25
++      "maximum_denominator": 25,
++      "decision_basis": "Carry the causal account: an exact numerator can be counted from the problem’s own integers. For example, the grip is 30 fifths less the center’s 8; the torques are 22 twenty-fifths less 18. This is a reason to choose a fraction, not a conversion quota."
+     },
+     {
+       "id": "explanation-register",
+@@ -448,6 +449,46 @@
+         "13-c"
+       ],
+       "evidence": "AP a-5 explicitly requests cos θ = r/R; doc wants the established language to carry later paths."
++    },
++    {
++      "id": "clown-noticing",
++      "kind": "narrative",
++      "title": "What each visitor notices",
++      "priority": "high",
++      "implementation": "editorial",
++      "status": "applied",
++      "paths": {
++        "1": {
++          "mode": "curious",
++          "starts_at": "start",
++          "note": "Materials, smells, the ruff, the spider, the mirror brooch."
++        },
++        "2": {
++          "mode": "determined",
++          "starts_at": "start",
++          "note": "Follow the cuff thread, inspect wear, watch contact, read the seated shape in the gown."
++        },
++        "3": {
++          "mode": "a bit manic",
++          "starts_at": "start",
++          "note": "A cuff within a cuff; the wrong elbow; the pinned hem; lining stops while coat goes on."
++        },
++        "4": {
++          "mode": "interleaving verse",
++          "starts_at": "start",
++          "note": "The earrings miss the return, bead and bell keep time, stripes go without a stitch, unequal eyes match."
++        }
++      },
++      "payoff": [
++        "1-d",
++        "3-d",
++        "6-a",
++        "7-b",
++        "11-c",
++        "12-c",
++        "finale"
++      ],
++      "evidence": "doc: notice different things from the clown data in each solution; choose the strongest fits by mood, move details when the house permits. No one-observation-per-room quota."
+     }
+   ]
+ }
+--- /dev/null
++++ b/mansion/sets/clown_noticing.py
+@@ -0,0 +1,74 @@
++"""Different attention along the four routes, from the workbook's Clowns table.
++Codex (OpenAI), 2026-10-23, for dr. kraemer. Model working prose.
++Keep the common clues and mechanical joins; no clowns enter the lower levels.
++The choices are deliberately uneven. A room need not supply a new observation
++to every route. Nothing in the ending or final chorus is replaced.
++"""
++
++CURTSY = "At the silver pivot, a powdered clown in damask is partway into a curtsy."
++STEAM = "Ahead, something breathes in steam."
++LIBRARY = "On the reading table, a velvet kit,"
++CHALK = "The chalk is on your cuff."
++BASIN = "Its own height pays for its motion."
++BALLROOM = "Their cycles keep time; their starting positions are still theirs to choose."
++SLEEVE = "Someone took that sleeve in, and wore it."
++HALL = "The hall asks what could announce the release."
++THUMBS = "The silk at the shoulders has faded round two small thumbprints."
++
++# Replacements keep their anchor, so the known clue/transition remains visible.
++ENTRY = {
++    1: [
++        (CURTSY, CURTSY + " The small ruff is folded like a starched napkin; a gravy-brown tear marks the white cheek."),
++        (LIBRARY, "Half-moon spectacles sit on the crazed white face. A spider has the whiskey glass to itself. " + LIBRARY),
++        (CHALK, CHALK + " The clown’s worsted has been pressed so stiff that one crease stands clear of the leg."),
++        (BASIN, BASIN + " The clown’s damp hem smells of rain just beginning; the collar, of rain that stopped yesterday."),
++        (BALLROOM, BALLROOM + " In the mirror, the clown wears a brooch of mirror glass. It holds a smaller room."),
++    ],
++    2: [
++        (CURTSY, CURTSY + " The visitor studies the curtsy: spine upright, knees flexed, rear toe crossed behind. It ought to be over by now."),
++        (CHALK, CHALK + " Each horn button has a worn spot, two fifths of its radius above its middle."),
++        (BALLROOM, BALLROOM + " In the mirror, a hoop bangle turns round the clown’s wrist. The visitor watches the contact: each part is still when it touches the skin."),
++        (SLEEVE, SLEEVE + " The amber mending is translucent. The lining under it doesn’t match the collar."),
++        (THUMBS, THUMBS + " The gown is flattened across the back, keeping the shape of someone sitting. The clown is standing."),
++    ],
++    3: [
++        (CURTSY, CURTSY + " Inside one starched cuff is another, its button fastened."),
++        (STEAM, STEAM + " The leather at the clown’s elbow shines on the side that doesn’t bend. The shaft keeps going."),
++        (LIBRARY, "With the nap, black; against it, bottle-green. The clown hasn’t turned. " + LIBRARY),
++        (CHALK, CHALK + " At the clown’s heel, the wool has twisted into a hard little cord."),
++        (BALLROOM, BALLROOM + " In the mirror, one heel has the hem pinned. Enough slack for the next step. No more."),
++    ],
++    4: [
++        (CURTSY, CURTSY + " Two earrings hang one from the other. The knife comes home; the earrings don’t."),
++        (LIBRARY, "One brace hangs loose. Two thirds down, the shoulder let it go. " + LIBRARY),
++        (CHALK, CHALK + " Shoulders square. Hips square. The shot seems to be lined up on you."),
++        (BALLROOM, BALLROOM + " In the mirror, one fold says forward; the next says back. The taffeta was cut both ways."),
++    ],
++}
++
++# These observations land after a physical result, not at every doorway.
++AFTER = {
++    2: {
++        "3-d": "The visitor follows a thread from the clown’s cuff, low along the floor, to a cotton reel.",
++    },
++    3: {
++        "11-c": "The hall clown’s shoulders are close to the cornice. The lining stops; the coat goes on.",
++    },
++    4: {
++        "6-a": "The clown has a bell at one wrist, a bead in the other palm. The bead takes the shorter road. They keep time.",
++        "11-c": "Stripes run up the clown’s stockings. Not a stitch goes with them.",
++        "12-c": "One eye is four times as bright as the other. Lean the right way and they match.",
++    },
++}
++
++def apply(items, path):
++    out = list(items)
++    for old, new in ENTRY.get(path, []):
++        count = sum(s.count(old) for _, s in out if isinstance(s, str))
++        assert count == 1, ("clown observation anchor changed", path, old, count)
++        out = [(t, s.replace(old, new) if isinstance(s, str) else s) for t, s in out]
++    for label, observation in AFTER.get(path, {}).items():
++        hits = [i for i, (t, s) in enumerate(out) if t == "p" and s.startswith(f"({label})")]
++        assert len(hits) == 1, ("clown observation part changed", path, label, len(hits))
++        out.insert(hits[0] + 1, ("i", observation))
++    return out
