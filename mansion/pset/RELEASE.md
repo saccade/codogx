@@ -8,7 +8,8 @@ PDT (UTC−07:00), equivalent to 16:31 Eastern / 20:31 UTC.
 This branch is a release candidate, not an automatic publication.
 The filename uses the requested release target. PDF metadata records
 `ReleaseTarget`, `ReleaseTimeZone`, and candidate status separately
-from the actual source PDF creation date and metadata modification date.
+from the actual new-edition creation time. The input stamp is retained as
+SourceCreationDate; ActualCreationTime includes fractional seconds.
 
 ## Pinned contents
 
@@ -21,9 +22,11 @@ from the actual source PDF creation date and metadata modification date.
 - Solutions are outside this release branch.
 
 The attached candidate preserves the checked source PDF's page content;
-only its metadata and filename are changed. A fresh local TeX compile
-was blocked by missing `siunitx.sty`; it was not replaced by another
-renderer. The checked canonical PDF was used instead.
+only its metadata and filename are changed. A complete dry run now succeeds:
+siunitx was extracted from Ubuntu’s texlive-science package into the local
+build environment, and the existing XeLaTeX build produces eleven pages
+text- and pixel-identical to the checked canonical PDF. See BUILD_CHECK.md.
+The dry-run PDF does not replace the scheduled final edition.
 
 ## Rebuild
 
@@ -33,8 +36,10 @@ With XeLaTeX, latexmk, siunitx, and pikepdf installed:
 cd mansion/pset
 latexmk -xelatex mansion_pset.tex
 python3 finish_pdf.py --timezone America/Los_Angeles --release-at 2026-10-23T13:31:00-07:00
+# At the authorized release, add --final; the clock stamp remains the real save time.
 ```
 
 Do not mistake the target timestamp for the actual creation date.
 Keep one timestamped PDF on this branch. Further source corrections
 must be rebuilt before replacing the candidate.
+
