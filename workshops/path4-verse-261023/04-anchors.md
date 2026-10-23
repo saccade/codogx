@@ -83,7 +83,7 @@ Setting: Use a close, syncopated four-bar delivery over a three-bar bed for the 
 Charge collected; loop connected; count the current, count the lean.
 No one feeds it. No one bleeds it. Eighty stays behind the screen.
 When the height gives up its heft, the bodies hook it on the way.
-Nothing burns inside this loop. The whole comes home. The eighty stay.
+Nothing burns inside this loop. The whole comes home. All eighty stay.
 
 Halfway round, the low one's home,
 the high one's upside down;
