@@ -1,45 +1,60 @@
-# Mansion — Pacific release candidate
+# Mansion — current release source
 
-Requested by dr. kraemer, 2026-10-23. Prepared by Codex (OpenAI).
+Prepared by Codex (OpenAI) for dr. kraemer, 2026-10-23.
+Branch: `release/mansion-261023-1331-pacific` in `saccade/codogx`.
 
-Release target: **2026-10-23 13:31 America/Los_Angeles**,
-PDT (UTC−07:00), equivalent to 16:31 Eastern / 20:31 UTC.
+This is the current thirteen-page problem-set source, including doc's
+opening edits, appendix punctuation, joined twin introduction/speech,
+real compilation-date display, and linked asterisk note at the very end.
+The two explanatory lines about the spring/trigger and independent phases
+are retained. Solutions and poetry are separate work.
 
-This branch is a release candidate, not an automatic publication.
-The filename uses the requested release target. PDF metadata records
-`ReleaseTarget`, `ReleaseTimeZone`, and candidate status separately
-from the actual new-edition creation time. The input stamp is retained as
-SourceCreationDate; ActualCreationTime includes fractional seconds.
+## Build from this head
 
-## Pinned contents
-
-- Source: saccade/claudog commit `59e0e1c152e76068635fb17b34809891e0d2404c`.
-- TeX blob: `c5c1c29dd1ff51c7263199bf8aefd43403c2460a`.
-- Original checked PDF: `The Mansion that did not Spin 2610231501.pdf`,
-  blob `3baf19326801b79bc9093ddaecb4981829d505cb`.
-- Contains Claude's accepted preflight corrections, including the
-  twice-as-heavy knife and negligible table friction during the cue strike.
-- Solutions are outside this release branch.
-
-The attached candidate preserves the checked source PDF's page content;
-only its metadata and filename are changed. A complete dry run now succeeds:
-siunitx was extracted from Ubuntu’s texlive-science package into the local
-build environment, and the existing XeLaTeX build produces eleven pages
-text- and pixel-identical to the checked canonical PDF. See BUILD_CHECK.md.
-The dry-run PDF does not replace the scheduled final edition.
-
-## Rebuild
-
-With XeLaTeX, latexmk, siunitx, and pikepdf installed:
+Install XeLaTeX/latexmk, siunitx (Ubuntu: texlive-science), standard fonts,
+and Python pikepdf (tested here with 10.17.0). Then:
 
 ```sh
 cd mansion/pset
-latexmk -xelatex mansion_pset.tex
-python3 finish_pdf.py --timezone America/Los_Angeles --release-at 2026-10-23T13:31:00-07:00
-# At the authorized release, add --final; the clock stamp remains the real save time.
+python3 build_pdf.py
 ```
 
-Do not mistake the target timestamp for the actual creation date.
-Keep one timestamped PDF on this branch. Further source corrections
-must be rebuilt before replacing the candidate.
+Use the wrapper, rather than compiling a previously generated date:
+it writes build_stamp.tex from the real clock before invoking the existing
+XeLaTeX chain. It produces one new PDF named with its actual
+YYYYMMDDHHMMSScc creation time and build_record.json. The first-page date
+is the actual compilation start. Metadata separately records compilation
+start/end and actual new-edition creation time, with Pacific offset.
 
+build_stamp.tex and build_record.json committed here are evidence for
+the included review PDF; they are regenerated on every build.
+
+## Appointed creation target
+
+Aim: 2026-10-23 13:31:13.31 America/Los_Angeles, PDT (UTC−07:00),
+or 16:31:13.31 Eastern.
+
+After doc lifts the release hold, invoke within sixty seconds of the target:
+
+```sh
+python3 build_pdf.py --final --aim 2026-10-23T13:31:13.31-07:00
+```
+
+The wrapper compiles, waits once if early (maximum sixty seconds), and
+captures the real save instant. If late, it saves immediately and records
+the actual offset. It does not set a fictional creation date or change
+filesystem timestamps. The target is only separate metadata. The timed
+release remains paused pending doc's “boo”; checking in this build is
+not the final release.
+
+## Checked content and provenance
+
+Base physics/source: claudog 59e0e1c. This branch adds doc's subsequent
+approved prose and layout changes, not new physical assumptions.
+Current build remains thirteen pages, no split problem statements.
+Date asterisk reaches the note on page thirteen.
+Current review PDF's exact timestamps are in build_record.json.
+
+The earlier fixed-1331 candidate and standalone metadata finisher have
+been removed to prevent accidentally publishing the stale layout or date.
+For all prior independent physics, paths, and arrow checks see BUILD_CHECK.md.

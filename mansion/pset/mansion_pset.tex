@@ -20,7 +20,9 @@
 \renewcommand{\headrulewidth}{0.4pt}
 
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{4pt}
+\setlength{\parskip}{5pt}
+\raggedbottom
+\clubpenalty=10000 \widowpenalty=10000
 \hyphenpenalty=10000 \exhyphenpenalty=10000 \emergencystretch=3em  % no words split at line ends, so pasted text keeps them whole
 \binoppenalty=10000 \relpenalty=10000  % and no formula split across two lines
 
@@ -28,7 +30,7 @@
 \newcommand{\scene}[1]{\par{\itshape #1}\par}
 \newcommand{\problem}[2]{\par\medskip\textbf{Problem #1:} #2\par\nopagebreak}
 \newcommand{\appx}[2]{\clearpage{\Large\bfseries Appendix #1: #2}\par\medskip}
-\newenvironment{parts}{\begin{itemize}[leftmargin=3.4em,labelwidth=2.8em,labelsep=0.6em,align=left,itemsep=2pt,topsep=3pt]}{\end{itemize}}
+\newenvironment{parts}{\begin{itemize}[leftmargin=3.4em,labelwidth=2.8em,labelsep=0.6em,align=left,itemsep=3pt,topsep=4pt]}{\end{itemize}}
 \newcommand{\pt}[1]{\item[\textbf{#1}]}
 \newcommand{\sv}[1]{\textsuperscript{\dag\,#1}}
 \newcommand{\half}{\text{½}}  % a half that pastes as one character
@@ -41,19 +43,21 @@
   pdfsubject={Made by dr. kraemer using Claude \& Codex as working notes for his draft of Straight→ Mechanics.},
   pdfkeywords={}, pdfcreator={}, pdfproducer={}, hidelinks}
 
+\input{build_stamp.tex}
 \begin{document}
 \thispagestyle{plain}
 \begin{center}
-{\LARGE\bfseries The Mansion that did not Spin}
+{\LARGE\bfseries The Mansion that did not Spin}\\[4pt]
+{\small \BuildStamp\textsuperscript{\hyperlink{release-note}{*}}}
 \end{center}
 
-A value marked \textsuperscript{\dag} is supplied, chosen so the house works; the mark names the appendix part where you can find out why. The thirteen problems are the mansion. Appendices a, 2, and $\gamma$ go further in.
+Any value\textsuperscript{\dag} was arranged for the visitor; the mark shows where. This mansion has thirteen problems. Appendices a, 2, and $\gamma$ will show you what's beneath.
 
 \room{The way in}
 \scene{The inquiry has a place and an hour. Left unspecified: who should arrive, and who will depart.}
-\scene{A visitor arrives to find out how it was all done. The door is unlatched. A loose question sheet lies beside a small blank book, opened to a page half-full of notes.}
-\scene{In the dining room the roast goes cold under its cover. A strip of paper moves beneath a pen. Above it swings a knife.}
-\scene{At the silver pivot, a powdered clown in damask is partway into a curtsy. The flowers on one repaired cuff face inward; every other spray faces out. The curtsy does not deepen.}
+\scene{A visitor arrives to find out how it was done. A door unlatched. A loose question sheet beside a small blank book, open to a page half-full of notes.}
+\scene{In the dining room a roast goes cold under its cover. A strip of paper is pulled along beneath a pen. Above it swings a knife.}
+\scene{At the silver pivot a powdered clown in damask is partway into a curtsy. The flowers on one repaired cuff face inward, but every other spray faces out. The curtsy does not deepen.}
 \scene{A trim silver canteen with an enamel juggler on the lid stands on the sideboard. The lock has been polished more recently than the lid.}
 \scene{The visitor watches the knife cycle across and back. On the paper, the curve cycles with it.}
 
@@ -69,6 +73,7 @@ A knife, a point mass $m = \SI{1}{kg}$ on a massless rod of length $\ell = \SI{1
 \end{parts}
 \scene{The pen begins the curve again. The lid lifts.}
 
+\clearpage
 \room{Kitchen}
 \scene{The line on the paper goes on behind the wall. Ahead, something breathes in steam. By the range, a toolbox in scorched canvas.}
 \problem{2}{The engine and the flywheel}
@@ -98,6 +103,7 @@ A uniform ladder, \SI{8}{kg} and \SI{3}{m} long, leans on a frictionless wall fr
 \pt{4-c} While both ends touch, the center moves at $L\omega/2$, where $\omega$ is the ladder's angular speed. How does that energy split between the center's motion and the turning about the center, and how fast is the center going when the top leaves the wall?
 \end{parts}
 
+\clearpage
 \room{Billiard room}
 \scene{After the ladder has left the wall, its fall trips the sear on a cocked cue. The spring pays for the shot. The ladder only lets it go. The chalk is on your cuff. On the sideboard, a clockwork diorama under a striped dome. It has a door in this room, the conservatory, and the ballroom.}
 \problem{5}{The cue ball}
@@ -118,6 +124,7 @@ A small uniform solid ball rolls back and forth across the bottom of a curved ba
 \pt{6-c} Why does the rolling ball take longer?
 \end{parts}
 
+\clearpage
 \room{Ballroom}
 \scene{The ball keeps the knife's time, and a beat that matches draws you on. Their cycles keep time; their starting positions are still theirs to choose. The striped dome's third door is here.}
 \problem{7}{The hoop}
@@ -146,6 +153,7 @@ Two point masses of \SI{1}{kg} hang one below the other on massless rods each \S
 \pt{9-c} Describe each mode in words: how does the lower mass move compared with the upper?
 \end{parts}
 
+\clearpage
 \problem{10}{The coils and the capacitor}
 \begin{parts}
 \pt{10-a} A \SI{6}{V} source charges an empty \SI{0.1}{F} capacitor through a \SI{20}{\ohm} resistor. Find the starting current and the time constant, and the current, charge, and stored energy when the capacitor reaches \SI{4}{V}.
@@ -164,6 +172,7 @@ A lossless transmission line has \SI{0.5}{\micro H/m} of inductance and \SI{0.2}
 \pt{11-c} Two sine waves of equal amplitude, at $f_+ = \SI{5}{MHz}$ and $f_- = \SI{4}{MHz}$\sv{f-4}, run in opposite directions. Their sum is a product of two factors whose crests move at $u(f_+ - f_-)/(f_+ + f_-)$ and at $u(f_+ + f_-)/(f_+ - f_-)$\sv{f-2}. Find both speeds and compare the faster with $c$. Can the faster crests carry a signal?
 \end{parts}
 
+\clearpage
 \room{Lounge}
 \scene{A signal goes down the line at $u$, and two lamps answer it, aimed at your chair from either side. Across the cold hearth, the old joey keeps a hand on the clock key and looks straight at you. They've been looking since before you sat down. The silk at the shoulders has faded round two small thumbprints. On the mantel, a traveling clock case in faded red leather.}
 \problem{12}{The two lights}
@@ -187,7 +196,7 @@ A sealed receiver moves through $S$ at the speed found in 12-c; in its own rest 
 
 % ---------------------------------------------------------------- appendix a: the cabinet
 \appx{a}{the cabinet}
-\scene{striped canvas in faded red and cream; brass corners; sawdust and lamp oil; painted stars on every lid; no one else in here; each drawer opens from its room's locked box, and you leave the way you came}
+\scene{striped canvas in faded red and cream; brass corners; sawdust and lamp oil; painted stars on every lid; no one else in here; each drawer opens from its room's box. and you leave the way you came.}
 
 \problem{a}{the kitchen's two 3--4--5s}
 \scene{Door: the kitchen. A toolbox in scorched canvas, patched with the same cloth turned inside out, its lid painted with a ringmaster's star; inside, a little governor on a stand and a spool on a strip of counter.}
@@ -211,6 +220,7 @@ A uniform ladder of mass $m$ and length $L$ leans on a frictionless wall from a 
 \end{parts}
 \scene{The back of this drawer opens into the funhouse.}
 
+\clearpage
 \problem{c}{turning about the contact}
 \scene{Doors: the conservatory, the billiard room, the ballroom. A clockwork diorama under a striped dome, its base trimmed in baize, taffeta, and moss-damp velvet, a strip for each door: a glass marble in a tin basin, a tiny cue, a wire hoop.}
 A uniform solid ball has mass $m$, radius $R$, and moment of inertia $(2/5)\,mR^2$ about its center. ($g = \SI{10}{m/s^2}$)
@@ -239,6 +249,7 @@ An $LC$ circuit has $L = \SI{0.1}{H}$.
 \end{parts}
 \scene{The back of this drawer opens into the funhouse.}
 
+\clearpage
 \problem{f}{two crests from two waves}
 \scene{Door: the hall. A hatbox in red and white stripes, rubberized against the wet; inside, a long coil of wire and two tuning forks.}
 Two waves of equal amplitude $A$ run in opposite directions on a line with wave speed $u$: $A\cos(k_1x - \omega_1t)$ to the right and $A\cos(k_2x + \omega_2t)$ to the left, with $k = \omega/u$ for each.
@@ -262,7 +273,7 @@ Seen from a frame moving at $\beta c$ in a light pulse's own direction, the puls
 
 % ---------------------------------------------------------------- appendix 2: the funhouse
 \appx{2}{the funhouse}
-\scene{mirrors on every wall, some flat and some not; a floor that tilts one way and then the other; everything you know comes back at you flipped; no one else in here}
+\scene{mirrors on every wall, some flat and some not a floor that tilts one way and then the other everything you know comes back at you flipped no one else in here}
 
 \problem{1}{the knives, flipped}
 \scene{A long mirror in which the second knife hangs upside down.}
@@ -285,6 +296,7 @@ The slow mode of the double pendulum acts like one swing $a$ with effective iner
 \end{parts}
 \scene{Trapdoor, the circuit side: windings and a capacitor the size of a hatbox, wired into the same chassis, with the chipped insulator again. The trapdoor is open.}
 
+\clearpage
 \problem{3}{two more mirrors}
 \scene{A hall of mirrors that never ends, and a lamp in it that can't decide how bright it is.}
 \begin{parts}
@@ -324,10 +336,10 @@ with the gap $\Delta\omega = 5\nu$. It starts with $Y = Y_0 \ne 0$, $X = 0$, and
 \pt{$\alpha$-4} Using $\omega_0{}^2 = 10(2 - \rt2)\,\mathrm{s^{-2}}$ and \SI{80}{mJ} in the machine, how long is the return?
 \end{parts}
 \scene{From a corner under the frame: ``Here I zam.''}
-\scene{Its twin meets its eyes.}
-\scene{``Zlam.''}
+\scene{The ghost meets its twin's eye. ``Here I zlam.''}
 \scene{The hum covers them again.}
 
+\clearpage
 \problem{$\beta$}{TEST, then RUN}
 \scene{On the chassis: a switch with two positions, TEST and RUN, and a small drive arm linked to the mechanical coordinate $a$.}
 In TEST the electrical loop is open, so $i = 0$. The drive acts only on the mechanical coordinate $a$; the other mechanical mode is absent. Thus $X = \rt\eta\,a$ obeys $\ddot X = -\omega_0{}^2X$ between taps. The drive gives $N$ short impulses, each adding the same positive increment to $\dot X$. Start from rest, and let $E_1$ be the energy one tap gives this oscillator from rest.
@@ -338,4 +350,7 @@ In TEST the electrical loop is open, so $i = 0$. The drive acts only on the mech
 \pt{$\beta$-4} In RUN the drive is disconnected and the machine is lossless. Does its energy change when its two tones line up at the return?
 \end{parts}
 
+\par\vfill{\small\leavevmode\hypertarget{release-note}{}\textsuperscript{*}Anyone who wants to protest that I should have released this ten days ago may consider themselves correct.\par}
+
 \end{document}
+
