@@ -6,7 +6,8 @@ Model working/inspiration words, not dr. kraemer’s manuscript.
 First checkpoint: [seventeen fragments](17-fragments.md), with exact excerpts,
 authorship, and source links in [the selection data](selection-17.json).
 Second checkpoint: [nine kept](09-kept.md), with the [choices and bench](selection-09.json).
-Four anchors and a first assembly follow.
+Third checkpoint: [four anchors](04-anchors.md), with physical accounts and setting notes in [the anchor data](selection-04.json).
+A first assembly follows.
 
 These are a loose kit, not a replacement for the checked reader path. Path 3
 is being read by dr. kraemer and is outside this pass. The existing final
