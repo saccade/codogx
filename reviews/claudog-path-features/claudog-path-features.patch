@@ -1,0 +1,1125 @@
+--- a/mansion/sets/build_sets.py
++++ b/mansion/sets/build_sets.py
+@@ -470,6 +470,16 @@
+ def _serial(x):
+     for old, new in SERIAL: x = x.replace(old, new)
+     return x
++
++def checked_solution(items, label, expected, replacement):
++    """A late highlight must not silently swallow a later source correction."""
++    hits = [i for i, (_, text) in enumerate(items) if isinstance(text, str) and text.startswith(label)]
++    assert len(hits) == 1, (label, "expected one source paragraph", len(hits))
++    i = hits[0]
++    assert items[i][1] == expected, (label, "source changed; reconcile before replacing")
++    out = list(items)
++    out[i] = (items[i][0], replacement)
++    return out
+ 
+ def build(k, shares=True):
+     tabs = read(f"r{k}_now.txt")
+@@ -709,9 +719,27 @@
+         if m: drawer = m.group(1)
+         elif x == SHUT: out[j] = (t, DRAFTS.get(drawer, SHUT))
+         elif x == OPEN and k in OPENS: out[j] = (t, OPENS[k].get(drawer, OPEN))
++    # doc 10-23: path 3 brushes the familiar language aside like cobwebs.
++    # The effective mass still has to be named: three kilograms is not the spool's mass.
++    if k == 3:
++        expected = "(a-4) The bottom line counts what must speed up at the axle: the mass, plus the turning carried as inertia over R². For 3.0 kg, I/R² = 1.0 kg, so I = 0.040 kg m², half of mR². That's a uniform disk. Then 6.0 N at 1 − 3/5 is 2.4 N on 3.0 kg: a = 0.80 m/s² →, the way the cord pulls. Friction pulls 4.4 N ←."
++        replacement = "(a-4) Effectively 3 kg at the axle: 2 in the mass, 1 in the turning. So I/R² = 1 kg, I = 40 g m², half of mR²: a uniform disk. Then 6 N at 1 − 3/5 leaves 2.4 N on 3 kg. The spool picks up at 4/5 m/s² →; the grip hauls 4.4 N ←."
++        out = checked_solution(out, "(a-4)", expected, replacement)
++    # a-5 explicitly asks for cos theta. Answer once, after the physical reading.
++    if k in (2, 3):
++        line = ("(a-5) To stay put, the spool asks for no torque about the contact. The pull's forward part at R balances its full pull at r: the forward fraction is r/R = 3/5. The statement calls that cos θ = r/R, so θ = 53°. The inertia never enters, because a spool that doesn't turn never asks for it." if k == 3 else
++                "(a-5) To stay put, the spool asks for no torque about the contact, so the cord's line has to pass through it. The pull's forward part at R balances its full pull at r. Its forward fraction is therefore r/R = 3/5. In the statement's notation, cos θ = r/R, so θ = 53°: the 3–4–5 again, with the 3 along the counter. The inertia never enters, because a spool that doesn't turn never asks for it.")
++        expected = "(a-5) A spool that stays put isn't turning, so the pull has no leverage about the contact. The cord leaves the hub at a tangent, r from the axle; tilted up θ, its line passes R cos θ − r from the contact. No leverage means cos θ = r/R. The inertia never enters, because a spool that doesn't turn never asks for it. With r/R = 3/5, θ = 53°: the 3–4–5 again, with the 3 along the counter."
++        out = checked_solution(out, "(a-5)", expected, line)
++    # Path 2's determined visitor finds the fractions when the energy shares need them.
++    if k == 2:
++        for j, (t, x) in enumerate(out):
++            if isinstance(x, str) and x.startswith("(6-a)"):
++                out.insert(j, ("i", "Beside the ball, the visitor writes 0.4 for the turning, 1.4 in all. No. A line through both: 2/5, 7/5. Five parts running, two turning. Seven altogether. Now the meaning stays put."))
++                break
+     if shares:   # doc 10:42: no trailing zeros; a fraction wherever a fraction is the true value (R-129)
+         import shares as _shares
+-        out = _shares.apply(out)
++        out = _shares.apply(out, path=k)
+     return out
+ 
+ def to_html(items):
+--- a/mansion/sets/p4_reel.py
++++ b/mansion/sets/p4_reel.py
+@@ -36,7 +36,7 @@
+  'a-2': "(a-2) Drop 4, reach 3, arm 5: the drop is 4/5 of ℓ, ω² = g/(ℓ · 4/5) = 25, and ω = 5.0 sweep, the kitchen's own shaft. The ball's up 0.10 m.",
+  'a-3': "(a-3) Count about the contact; its acceleration points at the axle, so the count is fair, and friction and the counter's push get no leverage there. The cord's line runs R − r above the counter and cranks F(R − r) on the inertia about the contact, I + mR², and the center speeds up at R of that pickup: a = F(1 − r/R)/(m + I/R²). The center's two ledgers say the same.",
+  'a-4': '(a-4) 3.0 kg at the axle means I/R² = 1.0 kg: I = 0.040 kg m², half of mR², a plain uniform disk. 2.4 N on 3.0 kg rolls it at 0.80 m/s² →, with friction hauling 4.4 N ←.',
+- 'a-5': "(a-5) A spool at rest isn't turning, so the pull gets no leverage about the contact: its line, R cos θ − r from the contact, has to run right through it. cos θ = r/R = 3/5, θ = 53°, whatever I is.",
++ 'a-5': "(a-5) Stay put: aim through the contact. The pull's forward part at R balances its full pull at r. Forward fraction 3/5; the statement calls it cos θ = r/R. θ = 53°, whatever I is.",
+  '4-a': f"(4-a) The ladder won't stretch, so it dots to zero against the top's velocity less the foot's: (1.8 m ← + 2.4 m ↑){D}(0.40 m/s ← + v ↑) = 0.72 m²/s + 2.4 m v = 0. The top comes down at 0.30 m/s ↓.",
+  '4-b': '(4-b) The center falls from 1.2 m to 0.80 m, and 80 N through 0.40 m lets go 32 J of heft.',
+  '4-c': "(4-c) Count about the still point, L/2 from the center: the profile there is L²/12 + L²/4 = L²/3, and all 32 J is turning about it. The center's punch takes three quarters, 24 J, and the hook about the center the other 8. 8.0 kg punching 24 J runs at √6, about 2.4 m/s, with the ladder sweeping at 2v/L, about 1.6 sweep.",
+--- a/mansion/sets/shares.py
++++ b/mansion/sets/shares.py
+@@ -1,64 +1,117 @@
+-"""No trailing zeros, and fractions wherever a fraction is the true value (doc, 10-23 10:23 and 10:42, R-129).
+-Claude (Anthropic), 2026-10-23. build_sets applies this last, to every path.
+-  - Two-figure padding goes: 6.0 N is 6 N, 0.040 is 0.04, 1.0 × 10⁸ is 10⁸.
+-  - An exact value standing alone as a quantity is written as a fraction: 0.50 m is 1/2 m, 0.040 kg m² is 1/25 kg m²,
+-    1.5 is 3/2, 0.75 N m is 3/4 N m. Exact means it was padded, or it's a half or a quarter, or it's listed in EXACT.
+-  - Other decimals (0.12 m, 2.4 m, rounded results like 0.32 m/s) and anything after "about" stay decimals.
+-  - Inside arithmetic (next to × or /) a fraction takes parentheses: 0.50 × 4.0/0.60 reads (1/2) × 4/(3/5).
+-Usage: python3 shares.py   (from mansion/sets: prints every change, in context, for review)
++"""Path-aware choices for exact relationships, not universal fraction conversion.
++Claude (Anthropic), 2026-10-23; extended and corrected by Codex (OpenAI).
++R-130 removes padding; R-131 keeps rounded results decimal and uses useful units.
+ """
+ import re
++from decimal import Decimal
+ from fractions import Fraction
++import path_features
+ 
+-DENOMS = {2, 4, 5, 8, 10, 20, 25, 50}
+-PRE = [   # sentences whose arithmetic reads better said than divided out
+-    ("Here I/R² = 0.040/0.040 = 1.0 kg.", "Here I/R² is 1/25 kg m² over 1/25 m², 1 kg."),
+-    ("The profile over R² is 0.020/0.040 = 1/2,", "The profile, 1/50 m², is half of R², 1/25 m²,"),
++NUM = re.compile(r"(?<![\d.⁰¹²³⁴⁵⁶⁷⁸⁹])(\d+)\.(\d+)(?![\d])")
++PRE = [
++    ("Here I/R² = 0.040/0.040 = 1.0 kg.",
++     "Here I/R² is 40 g m² over 0.04 m², 1 kg."),
++    ("The profile over R² is 0.020/0.040 = 1/2,",
++     "The profile is 0.02 m², half of R², 0.04 m²,"),
+     ("Setting that to 0.080 J gives", "Setting that to 80 mJ gives"),
+     ("q₀²/(2C) = 0.080 J with", "q₀²/(2C) = 80 mJ with"),
++    ("The loop on its own rings at the slow tone, 2.4 sweep, exactly.",
++     "The loop on its own rings exactly at the slow tone, about 2.4 sweep."),
++    ("ω² = 10(2 − √2) = 5.9 and 10(2 + √2) = 34",
++     "ω² = 10(2 − √2) ≈ 5.9 and 10(2 + √2) ≈ 34"),
++    ("The slow one takes τ/2.4 = 2.6 s and the fast one τ/5.8 = 1.1 s.",
++     "The slow one takes τ/ω_a ≈ 2.6 s and the fast one τ/ω_b ≈ 1.1 s."),
++    ("(2/3) × 2.4 = 1.6 and (3/2) × 2.4 = 3.6 sweep.",
++     "(2/3)ω₀ ≈ 1.6 and (3/2)ω₀ ≈ 3.6 sweep."),
++    ("ω_b − ω_a = 3.4 sweep", "ω_b − ω_a ≈ 3.4 sweep"),
++    ("q₀ = √(2 × 1.7 × 0.080) = 0.52 C", "q₀ = √(2C × 80 mJ) ≈ 0.52 C"),
++    ("q₀/C = 0.31 V", "q₀/C ≈ 0.31 V"),
++    ("10(2 − √2) = 5.9 s⁻²", "10(2 − √2) ≈ 5.9 s⁻²"),
++    ("u/9 = 1.1 × 10⁷", "u/9 ≈ 1.1 × 10⁷"),
+ ]
+-EXACT = {"0.38": "3/8", "0.05": "1/20"}   # 0.375 N m shown rounded; the conductance 1/R of 20 Ω
+-NUM = re.compile(r"(?<![\d.⁰¹²³⁴⁵⁶⁷⁸⁹])(\d+)\.(\d+)(?![\d])")
+ 
+-def convert(text, log=None):
+-    """Two-figure padding goes; a value that's exact becomes a fraction when it stands alone as a quantity.
+-    Exact means: it carried a padding zero (0.40, 6.0), or it's a half or a quarter (1.5, 0.75), or it's in EXACT.
+-    Other decimals (0.12, 2.4, 0.32) are measurements or roundings and stay. Inside arithmetic (next to × or /)
+-    a value only loses its padding, so 0.50 × 4.0/0.60 reads 0.5 × 4/0.6."""
+-    for a0, b0 in PRE: text = text.replace(a0, b0)
+-    out = []; pos = 0
+-    for m in NUM.finditer(text):
+-        a, b = m.span(); s = m.group(0); whole, dec = m.groups()
+-        before = text[max(0, a - 7):a]
+-        approx = "about" in before or "≈" in before or "near" in before
+-        stripped = dec.rstrip("0")
+-        padded = stripped != dec
+-        new = whole if not stripped else f"{whole}.{stripped}"
+-        prev = text[:a].rstrip()[-1:]; nxt = text[b:].lstrip()[:1]
+-        in_math = prev in "×/" or nxt in "×/" or text[b:b + 1] == "/"
+-        mantissa = re.match(r"\s*×\s*10", text[b:]) is not None
+-        exact = padded or stripped in ("5", "25", "75") or s in EXACT
+-        if not approx and not mantissa and exact and stripped:
+-            f = EXACT.get(s) or (lambda F: f"{F.numerator}/{F.denominator}" if F.denominator in DENOMS else None)(Fraction(new))
+-            if f:
+-                new = f
+-                if in_math or text[b:b + 1].isalpha() or text[b:b + 1] in "²√(":
+-                    new = f"({new})"
+-        if new == "1" and mantissa:   # 1 × 10⁸ is 10⁸
+-            new = ""; b = b + len(re.match(r"\s*×\s*", text[b:]).group(0))
+-        if new == s: continue
+-        out.append(text[pos:a]); out.append(new); pos = b
+-        if log is not None: log.append((s, new, text[max(0, a - 50):b + 30]))
+-    out.append(text[pos:])
+-    return "".join(out)
++def decimal(value):
++    """Finite rationals only; choosing a unit does not create a rounding."""
++    n = Decimal(value.numerator) / Decimal(value.denominator)
++    return format(n, "f").rstrip("0").rstrip(".") if n % 1 else str(int(n))
+ 
+-def apply(items, log=None):
+-    return [(t, convert(x, log) if isinstance(x, str) else x) for t, x in items]
++def compact_units(text):
++    # A base of grams makes 40 and 500 visible; kilo absorbs 1000 and above.
++    rx = r"(?<![\w./])(\d+/\d+|\d+(?:\.\d+)?)\s+(kg|g) m²(?P<spin>/s)?"
++    def inertia(m):
++        grams = Fraction(m[1]) * (1000 if m[2] == "kg" else 1)
++        value, unit = (grams / 1000, "kg") if grams >= 1000 else (grams, "g")
++        d = value.denominator
++        for prime in (2, 5):
++            while d % prime == 0:
++                d //= prime
++        if d != 1:
++            return m[0]   # Do not round an exact third merely to change the unit.
++        return decimal(value) + " " + unit + " m²" + (m["spin"] or "")
++    text = re.sub(rx, inertia, text)
++    def distance(m):
++        mm = Fraction(m[1]) * 1000
++        return f"{mm.numerator} mm" if mm.denominator == 1 and mm < 10 else m[0]
++    return re.sub(r"(?<![\w./])(0\.\d+) m(?![²\w/])", distance, text)
++
++def rounded(s, part, before, precision):
++    if s in precision["rounded_literals"]:
++        return True
++    ctx = precision["contextual_roundings"].get(s)
++    if ctx:
++        if "exact_parts" in ctx:
++            return part not in ctx["exact_parts"] or bool(re.search(ctx.get("rounded_after", r"(?!)"), before))
++        return part in ctx.get("rounded_parts", [])
++    return False
++
++def convert(text, log=None, mode="fractions", part="", plan=None):
++    """Keep authored approximation wording. Only selected exact relationships change."""
++    assert mode in {"decimals", "fractions"}, mode
++    config = path_features.feature("number-form", plan)
++    precision = config["precision"]
++    corrections = {Fraction(k): Fraction(v) for k,v in precision["corrected_exact"].items()}
++    chosen = {Fraction(v) for rule in config["fraction_choices"] if part in rule["parts"] for v in rule["values"]}
++    for old, new in PRE:
++        text = text.replace(old, new)
++    text = compact_units(text)
++    def number(m):
++        s = m[0]; value = Fraction(s)
++        if value in corrections:
++            value = corrections[value]
++        new = decimal(value)
++        before, after = text[:m.start()], text[m.end():]
++        approximate = bool(re.search(r"(?:about|near|≈)\s*$", before)) or rounded(s, part, before, precision)
++        use_fraction = mode == "fractions" and not approximate and value in chosen and value.denominator <= config["maximum_denominator"]
++        if use_fraction:
++            new = str(value)
++            prev, nxt = before.rstrip()[-1:], after.lstrip()[:1]
++            if (prev and prev in "×/") or (nxt and nxt in "×/") or after[:1] in "²√(":
++                new = f"({new})"
++        if log is not None and new != s:
++            log.append((s, new, text[max(0,m.start()-50):m.end()+30]))
++        return new
++    return NUM.sub(number, text)
++
++def apply(items, log=None, path=4, plan=None):
++    plan = plan or path_features.load()
++    reached, part, out = set(), "", []
++    for tag, text in items:
++        if isinstance(text, str):
++            if tag in {"h1", "h2", "h3"}:
++                part = ""
++            m = re.match(r"^\((\d+-[a-zαβγ]|[a-gαβγ]-\d+)\)", text)
++            if m:
++                part = m[1]; reached.add(part)
++            mode = path_features.mode_at("number-form", path, reached, plan)
++            text = convert(text, log, mode, part, plan)
++        out.append((tag, text))
++    return out
+ 
+ if __name__ == "__main__":
+     import build_sets
+-    for k in (1, 2, 3, 4):
+-        log = []
+-        apply(build_sets.build(k, shares=False), log)
++    for k in (1,2,3,4):
++        log=[]
++        apply(build_sets.build(k, shares=False), log, path=k)
+         print(f"== path {k}: {len(log)} changes")
+-        for s, new, ctx in log: print(f"  {s} -> {new or '(dropped)'}   | {ctx}")
++        for s,new,ctx in log:
++            print(f"  {s} -> {new} | {ctx}")
+--- /dev/null
++++ b/mansion/sets/path_features.json
+@@ -0,0 +1,453 @@
++{
++  "schema_version": 1,
++  "authorship": "Claude's terminology planner extended by Codex (OpenAI), 2026-10-23, for dr. kraemer.",
++  "features": [
++    {
++      "id": "number-form",
++      "kind": "notation",
++      "title": "Decimals → explanatory exact fractions",
++      "priority": "high",
++      "implementation": "automatic",
++      "status": "applied",
++      "meaning": "Fractions reveal exact shares, reciprocal pairs, and common parts of a balance. They are not a costume for every number. Approximate results stay decimals or exact roots; ordinary values use compact units. Above one, a chosen fraction is improper, never mixed.",
++      "paths": {
++        "1": {
++          "mode": "decimals",
++          "starts_at": "start",
++          "note": "Mostly legible decimals; keep illuminating ratios and identities."
++        },
++        "2": {
++          "mode": "decimals",
++          "starts_at": "start",
++          "then": {
++            "mode": "fractions",
++            "starts_at": "6-a"
++          },
++          "note": "The determined visitor sees fifths at 6-a; later fractions are chosen for a relationship, not required for every result."
++        },
++        "3": {
++          "mode": "fractions",
++          "starts_at": "start",
++          "note": "Established exact ratios from the start; rounded results remain readable decimals or roots."
++        },
++        "4": {
++          "mode": "fractions",
++          "starts_at": "start",
++          "note": "Exact relationships available to verse; decimals and compact units remain available for ordinary quantities."
++        }
++      },
++      "payoff": [
++        "3-c",
++        "3-d",
++        "4-a",
++        "10-d",
++        "13-c"
++      ],
++      "evidence": "doc: path 1 mostly decimals; path 2 drops them soon; path 3 fractions from the start. doc: toward the middle the determined visitor finds decimals obscure the meaning; fractions bring it back. doc: 40 g m2. R-131: no approximate fractions; inertia/spin in g m², kilo/milli prefixes carry zeros. doc: paperclip behavior is optimizing the visible rule until it loses its purpose.",
++      "precision": {
++        "corrected_exact": {
++          "0.38": "3/8"
++        },
++        "rounded_literals": [
++          "0.32",
++          "6.3",
++          "3.2",
++          "0.64",
++          "1.3",
++          "4.7",
++          "4.5",
++          "0.17",
++          "1.7",
++          "0.85",
++          "2.8",
++          "5.8",
++          "5.9",
++          "2.6",
++          "1.1",
++          "0.14",
++          "0.24",
++          "0.041",
++          "0.41",
++          "3.4",
++          "0.52",
++          "0.31",
++          "0.65",
++          "0.19"
++        ],
++        "contextual_roundings": {
++          "2.4": {
++            "exact_parts": [
++              "3-c",
++              "3-d",
++              "a-4",
++              "4-a",
++              "4-b",
++              "b-1",
++              "b-2",
++              "b-3",
++              "b-4"
++            ],
++            "rounded_after": "√6\\s*=\\s*$"
++          },
++          "1.6": {
++            "rounded_parts": [
++              "4-c",
++              "10-d",
++              "2-γ"
++            ]
++          },
++          "3.6": {
++            "rounded_parts": [
++              "10-d",
++              "2-γ"
++            ]
++          },
++          "1.8": {
++            "rounded_parts": [
++              "1-γ"
++            ]
++          }
++        },
++        "note": "These identify roundings already present in the checked model. Changing number style never promotes them to exact physical results."
++      },
++      "allowed_modes": [
++        "decimals",
++        "fractions"
++      ],
++      "fraction_choices": [
++        {
++          "parts": [
++            "2-c"
++          ],
++          "values": [
++            "0.75",
++            "0.375"
++          ],
++          "why": "Twice the sweep, half the torque: 3/4 and 3/8."
++        },
++        {
++          "parts": [
++            "3-c",
++            "3-d",
++            "a-3",
++            "a-4"
++          ],
++          "values": [
++            "0.8",
++            "1.6",
++            "2.4",
++            "4.4",
++            "0.12",
++            "0.2"
++          ],
++          "why": "The spool balances in fifths; its two lever arms are 3/25 and 1/5 m."
++        }
++      ],
++      "maximum_denominator": 25
++    },
++    {
++      "id": "explanation-register",
++      "kind": "structure",
++      "title": "Full explanation → highlight → verse",
++      "priority": "high",
++      "implementation": "editorial",
++      "status": "in progress",
++      "paths": {
++        "1": {
++          "mode": "full",
++          "starts_at": "start",
++          "note": "Full explanation where it first earns its place."
++        },
++        "2": {
++          "mode": "reprise",
++          "starts_at": "start",
++          "note": "New terms land fully; familiar explanations shorten."
++        },
++        "3": {
++          "mode": "reel",
++          "starts_at": "start",
++          "note": "A bit manic: familiar language brushed past like cobwebs; preserve the distinction that makes the result true."
++        },
++        "4": {
++          "mode": "verse",
++          "starts_at": "start",
++          "note": "Compact all-verse saga; the checked prose is the present source, not a completed verse path."
++        }
++      },
++      "payoff": [
++        "2-c",
++        "9-c",
++        "ending"
++      ],
++      "evidence": "R-110, R-128; doc's all-verse brief. No new length quota. doc: path 1 works in standard language; by path 3 brush past it like cobwebs."
++    },
++    {
++      "id": "directional-english",
++      "kind": "poetry",
++      "title": "Directions carried by strong English",
++      "priority": "high",
++      "implementation": "editorial",
++      "status": "available",
++      "paths": {
++        "1": {
++          "mode": "introduce",
++          "starts_at": "3-c",
++          "note": "Introduce the arrows and their physical meanings."
++        },
++        "2": {
++          "mode": "use",
++          "starts_at": "start",
++          "note": "Established parts and directions."
++        },
++        "3": {
++          "mode": "use",
++          "starts_at": "start",
++          "note": "Familiar direction words carry their meaning."
++        },
++        "4": {
++          "mode": "full-range",
++          "starts_at": "start",
++          "note": "Dive, rise, retreat, advance; verbs, adjectives, and prepositions do the work when the contextual reading is clear. Greater precision in English, not sloppiness."
++        }
++      },
++      "payoff": [
++        "shanty",
++        "ending"
++      ],
++      "evidence": "doc's high-priority poetry rule, path 4 only; port and starboard in the shanty."
++    },
++    {
++      "id": "stanza-glosses",
++      "kind": "poetry",
++      "title": "Stanza frames and margin equations",
++      "priority": "normal",
++      "implementation": "editorial",
++      "status": "workshop",
++      "paths": {
++        "1": {
++          "mode": "off",
++          "starts_at": "start"
++        },
++        "2": {
++          "mode": "off",
++          "starts_at": "start"
++        },
++        "3": {
++          "mode": "off",
++          "starts_at": "start"
++        },
++        "4": {
++          "mode": "selective",
++          "starts_at": "as-needed",
++          "note": "⌜…⌟ selects an algebraic strand; ⌝…⌞ cuts out words carrying another strand. Align a compact equation in the margin; keep enjambment."
++        }
++      },
++      "payoff": [
++        "Poetry / stanza glosses"
++      ],
++      "evidence": "Approved three workshop examples. No count or coverage quota."
++    },
++    {
++      "id": "rhythmic-structure",
++      "kind": "poetry",
++      "title": "Interleaving rhythms that do physics",
++      "priority": "high",
++      "implementation": "editorial",
++      "status": "planned",
++      "paths": {
++        "1": {
++          "mode": "prose",
++          "starts_at": "start"
++        },
++        "2": {
++          "mode": "prose",
++          "starts_at": "start"
++        },
++        "3": {
++          "mode": "chorus-ending",
++          "starts_at": "ending"
++        },
++        "4": {
++          "mode": "interleaving",
++          "starts_at": "start",
++          "note": "Let exchanges, 4:9 returns, changes of meter, and shanty labor rhyme with the mechanism. Styles are choices, not one assigned genre per room."
++        }
++      },
++      "payoff": [
++        "10-c",
++        "13-c",
++        "shanty",
++        "ending"
++      ],
++      "evidence": "Poetry / Fresh rhythms and Claude's Harlequin Clockwork. Meter can turn with a quantity."
++    },
++    {
++      "id": "narrative-recurrence",
++      "kind": "narrative",
++      "title": "Recognizable structure, changed returns",
++      "priority": "high",
++      "implementation": "editorial",
++      "status": "in progress",
++      "paths": {
++        "1": {
++          "mode": "slow-burn",
++          "starts_at": "start"
++        },
++        "2": {
++          "mode": "deeper",
++          "starts_at": "start"
++        },
++        "3": {
++          "mode": "hurry",
++          "starts_at": "start"
++        },
++        "4": {
++          "mode": "deja-vu",
++          "starts_at": "uneven",
++          "note": "Unexamined recognition. The global structure becomes predictable once understood, without becoming matchy. Recurrences can change what earlier words meant."
++        }
++      },
++      "payoff": [
++        "understage",
++        "ending"
++      ],
++      "evidence": "Narrative intrigue; doc's Fibonacci mobile clarification."
++    },
++    {
++      "id": "book-interlude",
++      "kind": "poetry",
++      "title": "An advertisement that keeps doing physics",
++      "priority": "normal",
++      "implementation": "editorial",
++      "status": "planned",
++      "paths": {
++        "1": {
++          "mode": "off",
++          "starts_at": "start"
++        },
++        "2": {
++          "mode": "off",
++          "starts_at": "start"
++        },
++        "3": {
++          "mode": "off",
++          "starts_at": "start"
++        },
++        "4": {
++          "mode": "ad-rhythm",
++          "starts_at": "to-place",
++          "note": "Brief promotion of straight→ mechanics, continuing the physical explanation."
++        }
++      },
++      "payoff": [
++        "path 4 saga"
++      ],
++      "evidence": "doc's saga brief; placement remains an editorial choice."
++    },
++    {
++      "id": "finale",
++      "kind": "structure",
++      "title": "The existing chorus and last line",
++      "priority": "high",
++      "implementation": "editorial",
++      "status": "protected",
++      "paths": {
++        "1": {
++          "mode": "keep",
++          "starts_at": "ending"
++        },
++        "2": {
++          "mode": "keep",
++          "starts_at": "ending"
++        },
++        "3": {
++          "mode": "keep",
++          "starts_at": "ending"
++        },
++        "4": {
++          "mode": "preserve-verbatim",
++          "starts_at": "ending",
++          "note": "Preserve the existing chorus; nothing follows “Something keeps your time.”"
++        }
++      },
++      "payoff": [
++        "ending"
++      ],
++      "evidence": "User's protected finale; the plan does not rewrite it."
++    },
++    {
++      "id": "path-tone",
++      "kind": "narrative",
++      "title": "Curious → determined → manic → interleaving verse",
++      "priority": "high",
++      "implementation": "editorial",
++      "status": "planned",
++      "paths": {
++        "1": {
++          "mode": "curious",
++          "starts_at": "start",
++          "note": "Wonder and investigation."
++        },
++        "2": {
++          "mode": "determined",
++          "starts_at": "start",
++          "note": "Pursue the mechanism."
++        },
++        "3": {
++          "mode": "a bit manic",
++          "starts_at": "start",
++          "note": "Things move; established terms need no ceremony."
++        },
++        "4": {
++          "mode": "interleaving verse",
++          "starts_at": "start",
++          "note": "Includes a shanty. No single mood or meter imposed on the whole saga."
++        }
++      },
++      "payoff": [
++        "2-c",
++        "a-4",
++        "a-5",
++        "finale"
++      ],
++      "evidence": "doc: 'the tone of path 1 is curious. path 2 is determined. path 3 is a bit manic. path 4 is... well, it has a shanty in it. most physics isn’t done in shanty form.'"
++    },
++    {
++      "id": "trig-to-parts",
++      "kind": "notation",
++      "title": "Textbook trigonometry → physical parts",
++      "priority": "high",
++      "implementation": "editorial",
++      "status": "in progress",
++      "paths": {
++        "1": {
++          "mode": "slow introduction",
++          "starts_at": "start",
++          "note": "AP requests at a-1, a-5, f-1 retain their formula; do not restart the vocabulary in later paths."
++        },
++        "2": {
++          "mode": "parts first, requested formulas once",
++          "starts_at": "start",
++          "note": "AP requests at a-1, a-5, f-1 retain their formula; do not restart the vocabulary in later paths."
++        },
++        "3": {
++          "mode": "parts first, requested formulas once",
++          "starts_at": "start",
++          "note": "AP requests at a-1, a-5, f-1 retain their formula; do not restart the vocabulary in later paths."
++        },
++        "4": {
++          "mode": "parts first, requested formulas once",
++          "starts_at": "start",
++          "note": "AP requests at a-1, a-5, f-1 retain their formula; do not restart the vocabulary in later paths."
++        }
++      },
++      "payoff": [
++        "3-d",
++        "a-5",
++        "13-b",
++        "13-c"
++      ],
++      "evidence": "AP a-5 explicitly requests cos θ = r/R; doc wants the established language to carry later paths."
++    }
++  ]
++}
+--- /dev/null
++++ b/mansion/sets/path_features.py
+@@ -0,0 +1,136 @@
++"""Shared notation, narrative, and poetry plan.
++Codex (OpenAI), 2026-10-23. Extends Claude's planners; editorial features describe
++choices, not a claim that regex can judge a poem. The numeric formatter reads the
++same data the planning view displays.
++"""
++import copy, html, json, re
++from pathlib import Path
++
++MANIFEST = Path(__file__).with_name("path_features.json")
++
++def load(path=None):
++    data = json.loads(Path(path or MANIFEST).read_text())
++    assert data["schema_version"] == 1
++    ids = [f["id"] for f in data["features"]]
++    assert len(ids) == len(set(ids)), "duplicate feature ID"
++    for f in data["features"]:
++        assert set(f["paths"]) == {"1", "2", "3", "4"}, f["id"]
++        assert f["implementation"] in {"automatic", "editorial"}
++        if f.get("allowed_modes"):
++            for state in f["paths"].values():
++                assert state["mode"] in f["allowed_modes"], f["id"]
++                if state.get("then"):
++                    assert state["then"]["mode"] in f["allowed_modes"], f["id"]
++        if f["id"] == "number-form":
++            for state in f["paths"].values():
++                for anchor in (state["starts_at"], state.get("then", {}).get("starts_at", "start")):
++                    assert anchor == "start" or re.fullmatch(r"\d+-[a-zαβγ]|[a-gαβγ]-\d+", anchor), anchor
++    return data
++
++def feature(fid, data=None):
++    return next(f for f in (data or load())["features"] if f["id"] == fid)
++
++def mode_at(fid, path, reached=(), data=None):
++    state = feature(fid, data)["paths"][str(path)]
++    later = state.get("then")
++    return later["mode"] if later and later["starts_at"] in reached else state["mode"]
++
++def observe(items, path, data=None):
++    data = data or load()
++    reached, numbers = set(), []
++    for tag, raw in items:
++        text = re.sub(r"</?[^>]+>", "", raw)
++        part = re.match(r"^\((\d+-[a-zαβγ]|[a-gαβγ]-\d+)\)", text)
++        if part: reached.add(part.group(1))
++        mode = mode_at("number-form", path, reached, data)
++        ds = re.findall(r"(?<![\d.])\d+\.\d+(?!\d)", text)
++        fs = re.findall(r"(?<![\d/])\d+/\d+(?![\d/])", text)
++        if ds or fs:
++            numbers.append({"part": part.group(1) if part else "", "mode": mode,
++                            "decimals": len(ds), "fractions": len(fs),
++                            "text": text[:220]})
++    return {"path": path, "features": [
++        {"id": f["id"], "kind": f["kind"], "title": f["title"],
++         "implementation": f["implementation"], "status": f["status"],
++         "priority": f["priority"], "state": f["paths"][str(path)]}
++        for f in data["features"]],
++        "numbers": numbers,
++        "decimal_count": sum(n["decimals"] for n in numbers),
++        "fraction_count": sum(n["fractions"] for n in numbers),
++        "mixed_number_passages": [n for n in numbers if n["decimals"] and n["fractions"]]}
++
++def markdown(data=None):
++    data = data or load()
++    lines = ["## Path features: notation, form, and poetic choices", "",
++             "One plan shared with the builder. Automatic means a presentation policy can be checked; "
++             "editorial means a choice to read and assess. Planned verse is not reported as applied.", "",
++             "| Feature | Kind / priority | State | Path 1 | Path 2 | Path 3 | Path 4 |",
++             "|---|---|---|---|---|---|---|"]
++    for f in data["features"]:
++        cells = []
++        for k in range(1,5):
++            s = f["paths"][str(k)]
++            cell = s["mode"] + " @ " + s["starts_at"]
++            if s.get("then"): cell += " → " + s["then"]["mode"] + " @ " + s["then"]["starts_at"]
++            if s.get("note"): cell += ": " + s["note"]
++            cells.append(cell.replace("|", "\\|"))
++        lines.append("| " + " | ".join([f["title"], f["kind"]+" / "+f["priority"],
++                                         f["status"]+" ("+f["implementation"]+")"]+cells) + " |")
++    return "\n".join(lines)+"\n"
++
++def panel(data=None, observations=None):
++    data = data or load()
++    payload = json.dumps({"plan": data, "observed": observations or []}, ensure_ascii=False).replace("</", "<\\/")
++    return r'''<section id="path-feature-plan">
++<h2>Notation, form, and poetic changes</h2>
++<p class="sub">The same plan drives number formatting and displays editorial choices.
++Changing a control previews a plan; Export saves it. Nothing here writes to Google Docs.
++Observations describe the current build, not the preview. Poetry has no automatic correctness score.</p>
++<p><label>Show <select id="feature-kind"><option value="">all kinds</option>
++<option>notation</option><option>structure</option><option>poetry</option><option>narrative</option></select></label>
++<button id="features-export" type="button">Export plan JSON</button>
++<button id="features-reset" type="button">Reset preview</button></p>
++<div class="scroll"><table><thead><tr><th>Feature</th><th>Path 1</th><th>Path 2</th><th>Path 3</th><th>Path 4</th></tr></thead>
++<tbody id="feature-rows"></tbody></table></div>
++<p id="feature-observed" class="sub"></p>
++<script id="feature-data" type="application/json">''' + payload + r'''</script>
++<script>
++(() => {
++const data=JSON.parse(document.getElementById("feature-data").textContent);
++let plan=structuredClone(data.plan);
++const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
++const modes=["off","decimals","fractions","full","reprise","reel","verse","introduce","use","full-range","selective","prose","chorus-ending","interleaving","slow-burn","deeper","hurry","deja-vu","ad-rhythm","keep","preserve-verbatim"];
++function select(value, attr, choices) {
++  return '<select '+attr+'>'+choices.map(x=>'<option'+(x===value?' selected':'')+'>'+esc(x)+'</option>').join('')+'</select>';
++}
++function render(){
++ const kind=document.getElementById("feature-kind").value;
++ document.getElementById("feature-rows").innerHTML=plan.features.filter(f=>!kind||f.kind===kind).map(f=>{
++ let row='<tr><th scope="row">'+esc(f.title)+'<br><small>'+esc(f.kind+' · '+f.priority+' · '+f.implementation)+'<br>'+esc(f.status)+'</small></th>';
++ for(let k=1;k<=4;k++){ const s=f.paths[k], a='data-feature="'+esc(f.id)+'" data-path="'+k+'"';
++ row+='<td>'+select(s.mode,a+' data-field="mode"',f.allowed_modes||Array.from(new Set([s.mode,...modes])))+
++ '<br><label>Begins <input '+a+' data-field="starts_at" value="'+esc(s.starts_at)+'" size="9"></label>';
++ if(s.then) row+='<br>'+select(s.then.mode,a+' data-field="then.mode"',f.allowed_modes||modes)+
++ '<br><label>Switch at '+select(s.then.starts_at,a+' data-field="then.starts_at"',["start",...Array.from({length:13},(_,i)=>(i+1)+"-a")])+'</label>';
++ row+='<p>'+esc(s.note||'')+'</p></td>';
++ }return row+'</tr>';
++ }).join("");
++ document.getElementById("feature-observed").textContent=data.observed.map(o=>
++ 'Built path '+o.path+': '+o.decimal_count+' decimal literals, '+o.fraction_count+
++ ' fraction literals. Counts describe the forms, not a target to maximize.').join(' ');
++}
++document.getElementById("feature-kind").addEventListener("change",render);
++document.getElementById("feature-rows").addEventListener("change",e=>{
++ const a=e.target.dataset;if(!a.feature)return;
++ const feature=plan.features.find(f=>f.id===a.feature),s=feature.paths[a.path];
++ if(a.field.startsWith("then."))s.then[a.field.slice(5)]=e.target.value;else s[a.field]=e.target.value;
++ feature.status="planned";
++});
++document.getElementById("features-reset").addEventListener("click",()=>{plan=structuredClone(data.plan);render();});
++document.getElementById("features-export").addEventListener("click",()=>{
++ const blob=new Blob([JSON.stringify(plan,null,2)+"\n"],{type:"application/json"});
++ const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download="path_features.json";a.click();URL.revokeObjectURL(u);
++});
++render();
++})();
++</script></section>'''
+--- /dev/null
++++ b/mansion/sets/test_path_features.py
+@@ -0,0 +1,69 @@
++"""Boundary and preservation checks for the shared path plan.
++Codex (OpenAI), 2026-10-23. Run in mansion/sets: python3 -m unittest test_path_features.py
++"""
++import copy, re, unittest
++from fractions import Fraction
++import build_sets, path_features, shares
++
++class PlanChecks(unittest.TestCase):
++    def test_transition_is_data_not_a_hidden_path_rule(self):
++        data=path_features.load()
++        self.assertEqual(path_features.mode_at("number-form",1,["3-c"],data),"decimals")
++        self.assertEqual(path_features.mode_at("number-form",2,["1-c"],data),"decimals")
++        self.assertEqual(path_features.mode_at("number-form",2,["2-a"],data),"decimals")
++        self.assertEqual(path_features.mode_at("number-form",2,["6-a"],data),"fractions")
++        self.assertEqual(path_features.mode_at("number-form",3,[],data),"fractions")
++        path_features.feature("number-form",data)["paths"]["2"]["then"]["starts_at"]="2-c"
++        sample=[("p","(2-a) 1.6 N"),("p","(2-c) 0.75 crank"),("p","0.375 crank")]
++        got=shares.apply(sample,path=2,plan=data)
++        self.assertIn("1.6 N",got[0][1])
++        self.assertIn("3/4 crank",got[1][1])
++        self.assertIn("3/8 crank",got[2][1])
++    def test_spool_force_and_torque_are_preserved(self):
++        f=Fraction
++        self.assertEqual(f(8,5),6-f(22,5))
++        self.assertEqual(f(22,5)*f(1,5)-6*f(3,25),f(1,25)*4)
++        sample=[("p","(3-c) The center needs 1.6 N; friction is 4.4 N."),
++                ("eq","(m + I/R²)a = F(1 − r/R)"),
++                ("p","2.4 N at the axle.")]
++        out=shares.apply(sample,path=3)
++        self.assertIn("8/5 N",out[0][1]); self.assertIn("22/5 N",out[0][1])
++        self.assertEqual(out[2][1],"12/5 N at the axle.")
++    def test_rounding_is_not_promoted_to_exactness(self):
++        self.assertEqual("√6, about 2.4 m/s",shares.convert("√6, about 2.4 m/s",mode="fractions",part="4-c"))
++        self.assertEqual("q₀ ≈ 0.52 C",shares.convert("q₀ ≈ 0.52 C",mode="fractions",part="13-a"))
++        self.assertIn("3/8",shares.convert("χ = 0.38 crank",mode="fractions",part="2-c"))
++        self.assertEqual("χ = 0.375 crank",shares.convert("χ = 0.38 crank",mode="decimals",part="2-c"))
++        self.assertEqual(shares.convert("6.0 N",mode="decimals"),"6 N")
++        self.assertEqual("pile up every 1.8 s",shares.convert("pile up every 1.8 s",part="1-γ"))
++        self.assertEqual("0.041 m/s",shares.convert("0.041 m/s",part="9-c"))
++    def test_units_and_the_built_roundings(self):
++        self.assertEqual("40 g m²; 500 g m²; 1 kg m²; 40 g m²/s; 5 mm",shares.convert("0.040 kg m²; 0.50 kg m²; 1000 g m²; 0.04 kg m²/s; 0.005 m"))
++        self.assertEqual("1/3 kg m²",shares.convert("1/3 kg m²"))
++        for k in (1,2,3,4):
++            text="\n".join(s for _,s in build_sets.build(k))
++            self.assertIsNone(re.search(r"(?:about|≈)\s+\(?\d+/\d+",text))
++            self.assertNotIn("63/10 strokes",text)
++            self.assertIn("3/5",text)
++            self.assertGreater(path_features.observe(build_sets.build(k),k)["decimal_count"],0)
++    def test_a_source_edit_cannot_be_silently_overwritten(self):
++        with self.assertRaises(AssertionError):
++            build_sets.checked_solution([("p","(a-4) a later correction")],"(a-4)","(a-4) the old source","replacement")
++    def test_poetry_states_are_editorial_not_automatic_proof(self):
++        data=path_features.load()
++        for feature in data["features"]:
++            if feature["kind"] in {"poetry","narrative"}:
++                self.assertEqual(feature["implementation"],"editorial")
++        self.assertEqual(path_features.feature("rhythmic-structure",data)["status"],"planned")
++        self.assertEqual(path_features.feature("finale",data)["status"],"protected")
++    def test_export_has_one_four_path_plan(self):
++        data=path_features.load()
++        self.assertEqual(len({f["id"] for f in data["features"]}),len(data["features"]))
++        self.assertTrue(all(set(f["paths"])=={"1","2","3","4"} for f in data["features"]))
++        panel=path_features.panel(data)
++        self.assertIn('id="features-export"',panel)
++        self.assertIn('id="features-reset"',panel)
++        self.assertIn('Nothing here writes to Google Docs',panel)
++
++if __name__=="__main__":
++    unittest.main()
+--- a/mansion/sets/paths_plan.py
++++ b/mansion/sets/paths_plan.py
+@@ -7,6 +7,7 @@
+ measured on the current builds (lineup_sets.pieces); statements and rooms are counted separately.
+ """
+ import html, json, sys
++import path_features
+ 
+ H = " "  # hair space: arrows hug their operator (R-100)
+ DOT = f"{H}·{H}"
+@@ -198,7 +199,7 @@
+ 
+ def md():
+     o = ["# The four paths, planned (working note, Claude, 2026-10-22 12:50)", "",
+-         "Written by Claude (Anthropic) for dr. kraemer. A plan, not yet applied. One problem set, four solution paths.",
++         "Written by Claude (Anthropic) for dr. kraemer; shared feature controls extended by Codex (OpenAI), 2026-10-23. Applied and planned choices are labeled separately. One problem set, four solution paths.",
+          "Generated by paths_plan.py; edit there.", "",
+          "Path 1 explains each idea fully where it first pays rent. Paths 2-4 quote it in shorter forms (R-110), keep a level's new words full where they land, and can stop briefly to admire the view (R-111).", "",
+          "## The forms", ""] + [f"- **{a}**: {b}" for a, b in FORMS] + ["", "## Notation ideas", "",
+@@ -206,7 +207,7 @@
+     o += [f"| {r[0]} | {r[2]} | {r[3]} | {r[4]} | {r[5]} | {r[6]} |" for r in IDEAS]
+     o += ["", "## Words", "", "| Word | Lands | Said as | Pays rent next | Later paths | View |", "|---|---|---|---|---|---|"]
+     o += [f"| {w} | path {k}, {where} | {said} | {rent} | {later} | {view} |" for w, k, where, said, rent, later, view in WORDS]
+-    o += ["", "## Pieces: solution length now → target (thousand characters)", "",
++    o += ["", "## Pieces: current length → historical estimate (thousand characters)", "", "The estimates are old planning aids, not user quotas or requirements.", "",
+           "| Piece | Path 1 | Path 2 | Path 3 | Path 4 |", "|---|---|---|---|---|"]
+     for name, now, tgt, f in PIECES:
+         cells = [("-" if n is None else f"{n} → {t}: {ff}") for n, t, ff in zip(now, tgt, f)]
+@@ -216,7 +217,7 @@
+     o.append("| whole path | " + " | ".join(f"{round(FIXED[i] + tot(i, 1), 1)} → {round(FIXED[i] + tot(i, 2), 1)}" for i in range(4)) + " |")
+     o += ["", "## Views (R-111)", "", "| Path | Where | The view | Why there |", "|---|---|---|---|"]
+     o += [f"| {k} | {w} | {v} | {why} |" for k, w, v, why in VIEWS]
+-    return "\n".join(o) + "\n"
++    return "\n".join(o) + "\n\n" + path_features.markdown()
+ 
+ 
+ def e(s):
+@@ -231,6 +232,8 @@
+ 
+ 
+ def page():
++    import build_sets
++    feature_panel = path_features.panel(observations=[path_features.observe(build_sets.build(k), k) for k in range(1,5)])
+     leg = "".join(f'<div class="leg"><span class="f f-{a.lower()}">{a}</span><span>{e(b)}</span></div>' for a, b in FORMS)
+     ideas = "".join(f'<tr class="k-{r[1]}"><th scope="row">{e(r[0])}</th>' + "".join(f"<td>{e(c)}</td>" for c in r[2:6]) + f'<td class="rent">{e(r[6])}</td></tr>' for r in IDEAS)
+     words = ""
+@@ -316,10 +319,11 @@
+ </style>
+ <div class="wrap">
+ <h1>The four paths</h1>
+-<p class="by">Written by Claude (Anthropic), 2026-10-22, for dr. kraemer. A plan, not yet applied.</p>
++<p class="by">Written by Claude (Anthropic), 2026-10-22, for dr. kraemer; shared feature controls extended by Codex (OpenAI), 2026-10-23. Applied and planned choices are labeled separately.</p>
+ <p class="lede">One problem set, four solution paths. Path 1 explains each idea fully where it first pays rent. Paths 2–4 quote it in shorter and shorter forms, keep a level's new words full where they land, and now and then stop for a sentence to admire the view.</p>
+ <div class="legend">{leg}</div>
+ 
++{feature_panel}
+ <h2>Notation ideas</h2>
+ <p class="sub">In order of arrival in path 1. A blue edge marks the textbook form that's kept until it looks goofy, red marks the arrows, brown a rule that holds everywhere. Numbers in parentheses are problems.</p>
+ <div class="scroll"><table>
+@@ -333,7 +337,7 @@
+ <tbody>{words}</tbody></table></div>
+ 
+ <h2>Pieces</h2>
+-<p class="sub">Solution text only, in thousands of characters: the current build, then the target. Rooms, scenes and endings are the same text whatever the pace, so they're counted below, apart; the statements live in the problem set.</p>
++<p class="sub">Solution text only, in thousands of characters: the current build, then a historical estimate. These old planning estimates are not user quotas or requirements. Rooms, scenes and endings are counted below, apart; the statements live in the problem set.</p>
+ <div class="scroll pieces"><table>
+ <thead><tr><th>Piece</th><th>Path 1</th><th>Path 2</th><th>Path 3</th><th>Path 4</th></tr></thead>
+ <tbody>{pieces}{sums}</tbody></table></div>
+@@ -352,7 +356,8 @@
+ </div>"""
+ 
+ 
+-open(sys.argv[1], "w").write(page())
+-open(__file__.replace("paths_plan.py", "BALANCE.md"), "w").write(md())
+-print("solutions now", [tot(i, 1) for i in range(4)], "target", [tot(i, 2) for i in range(4)])
+-print("paths now", [round(FIXED[i] + tot(i, 1), 1) for i in range(4)], "target", [round(FIXED[i] + tot(i, 2), 1) for i in range(4)])
++if __name__ == "__main__":
++    open(sys.argv[1], "w").write(page())
++    open(__file__.replace("paths_plan.py", "BALANCE.md"), "w").write(md())
++    print("solutions now", [tot(i, 1) for i in range(4)], "target", [tot(i, 2) for i in range(4)])
++    print("paths now", [round(FIXED[i] + tot(i, 1), 1) for i in range(4)], "target", [round(FIXED[i] + tot(i, 2), 1) for i in range(4)])
+--- a/mansion/sets/gaps.py
++++ b/mansion/sets/gaps.py
+@@ -9,6 +9,7 @@
+ """
+ import json, re, sys
+ import lineup_sets
++import path_features
+ 
+ H = " "
+ TERMS = [  # name, regex, path where it first can appear
+@@ -76,7 +77,8 @@
+             if d > 0: gaps.append({"from": a["at"], "to": b["at"], "len": d, "after": a["piece"], "back": b["piece"], "nod": b["gloss"]})
+         terms.append({"name": tname, "level": lvl, "hits": hits, "gaps": gaps,
+                       "glosses": sum(h["gloss"] for h in hits), "uses": len(hits)})
+-    return {"k": k, "total": total, "bounds": bounds, "terms": terms}
++    return {"k": k, "total": total, "bounds": bounds, "terms": terms,
++            "path_features": path_features.observe(lineup_sets.build_sets.build(k), k)}
+ 
+ if __name__ == "__main__":
+     data = [run(k) for k in (1, 2, 3, 4)]
+--- a/mansion/sets/gaps_page.py
++++ b/mansion/sets/gaps_page.py
+@@ -71,6 +71,10 @@
+   <span><svg width="16" height="16" aria-hidden="true"><rect x="2" y="2" width="12" height="12" fill="none" stroke="var(--amber)" stroke-width="2"></rect></svg>back after a long gap, cold</span>
+ </div>
+ <div class="score" id="score"></div>
++<details><summary>Notation and poetic changes in this path</summary>
++<p>From the same path_features.json used by the planning matrix and number formatter.
++These are states and editorial choices, not an automatic score for a poem.</p>
++<div id="path-features"></div></details>
+ <h2 id="h-lists">What the dial picks out</h2>
+ <div class="lists">
+   <div><h3>Comes back cold: candidates for a nod</h3><div id="cold"></div></div>
+@@ -90,6 +94,11 @@
+ const esc = s => s.replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+ function draw() {
+   const d = DATA[K - 1], x = a => LABEL + a / d.total * (W - LABEL - 10);
++  const f=d.path_features;
++  document.getElementById("path-features").innerHTML=f ? '<p>'+f.decimal_count+' decimal literals; '+f.fraction_count+
++    ' fraction literals in the current build.</p>'+f.features.map(x=>'<p><b>'+esc(x.title)+'</b>: '+esc(x.state.mode)+
++    ' from '+esc(x.state.starts_at)+(x.state.then?' → '+esc(x.state.then.mode)+' at '+esc(x.state.then.starts_at):'')+
++    ' · '+esc(x.implementation)+' · '+esc(x.status)+(x.state.note?'<br>'+esc(x.state.note):'')+'</p>').join('') : '';
+   const H = TOP + d.terms.length * ROW + 10;
+   let s = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Uses and glosses of each term along path ${K}">`;
+   d.bounds.forEach(([a, n], i) => {
+--- /dev/null
++++ b/mansion/sets/PATH_FEATURES_REVIEW.md
+@@ -0,0 +1,61 @@
++# Review: path features, not a growing pile of formatter exceptions
++
++Written by Codex (OpenAI), 2026-10-23, for Claude and dr. kraemer.
++
++## What changed
++
++Claude's four-path matrix and forgetting-gap page now display a shared
++[path_features.json](path_features.json) plan. It represents notation, explanatory
++register, poetic form, directional English, stanza glosses, rhythmic interleaving,
++narrative recurrence, the book interlude, and the protected finale.
++
++Every feature records a stable ID, kind, priority, implementation type, state per
++path, where it begins or changes, payoff locations, source/evidence, and whether
++it is applied, available, in progress, planned, or protected. The existing
++terminology tables and use/gloss counts remain; this extends those tools.
++
++The numeric formatter reads this same plan. The user's current choice is:
++path 1 mostly decimals with revealing ratios retained; path 2 begins in decimals
++and switches at 6-a, after the rolling ball makes the fifths visible; paths 3 and 4 can use established exact fractions from the start, improper
++above one. This does not require a fraction for every value. Rounded results
++stay decimals or exact roots. A small, explicit catalog selects meaningful
++exact balances, with a denominator bound. Inertia/spin use grams with useful prefixes.
++
++The planning page provides a feature-kind filter, per-path modes and onset
++controls, a reset, and JSON export. A changed control is a preview and marks the
++feature planned; it does not edit Docs. The displayed observed counts always
++refer to the current build, not the unbuilt preview. Replace the manifest with
++an exported plan, rebuild, review the diff, then sync the path tabs.
++
++The gaps page adds a collapsible feature summary per path. Editorial choices
++have no automatic poetry score. A regex can count forms; it cannot prove that a
++verse carries its equation well.
++
++## Review focus
++
++- Is the data model broad enough for the other notation transitions, without
++  pretending that an editorial judgment is an executable rule?
++- Does the path 2 transition land where the fifths reveal the mechanism? It is now one
++  manifest edit, not a Python special case.
++- No rounded fractions are generated. Read the selected exact fractions for
++  whether they actually expose the relationship. Counts are observations, not
++  a conversion target. No mechanical “about” insertion.
++- R-130 remains unchanged; the added number-choice policy is R-131.
++- The a-4/a-5 highlights assert their full expected source before replacing it.
++- The existing planner's length targets are old model estimates, not user quotas.
++  The new panel labels them as historical. Do not turn them into requirements.
++- Keep the existing four-path meanings, source equations, independent checks,
++  and final chorus protected.
++
++## Run
++
++    cd mansion/sets
++    python3 -m unittest test_path_features.py
++    python3 build_sets.py
++    python3 repeats.py
++    python3 check_levels.py
++    python3 paths_plan.py four_paths.html
++    python3 gaps.py gaps.json
++    python3 gaps_page.py gaps.json forgetting_gaps.html
++
++Then use the existing set_doc patch/style/verify chain in ../BUILDING.md.
+--- a/mansion/BUILDING.md
++++ b/mansion/BUILDING.md
+@@ -114,3 +114,11 @@
+ - All four path tabs matched the build after doc's last line edits (cosines and fractions, 10:23). The builder's output is unchanged since then. repeats.py finds no repeated lines, and arrows.py passes 97 of 97.
+ - The live count is always the last "Count:" line in Discussion.
+ - Up next is in the Next tab: path 4 as an all-verse saga, then highlights instead of reruns in paths 2 and 3.
++
++## Shared path features (Codex extension, 10-23)
++
++`sets/path_features.json` is the shared plan for number form and editorial transitions. `path_features.py` validates it and serves both the four-path planner and gaps page. `shares.apply(..., path=k)` reads the number-form state and transition anchor. Exact roots stay symbolic; rounded values remain decimals. Only selected exact relationships become fractions, with a denominator bound. Chosen fractions above one are improper, not mixed. Inertia/spin use grams with kilo as needed; no mechanical “about” insertion. R-130 remains intact; the new choices are R-131.
++
++The preview controls filter features, change per-path modes and onsets, reset, and export JSON; they never write to Docs. Exported changes are proposals: replace the manifest, rebuild, inspect, then use the existing guarded tab write chain. Counts describe the current build, not an unbuilt preview. Poetry has editorial states, not an automatic quality score. Old length estimates are historical planning aids, not quotas.
++
++Review: `sets/PATH_FEATURES_REVIEW.md`. Checks: `cd mansion/sets && python3 -m unittest test_path_features.py`; then the usual build, repeats, level, and tab verification checks. Rebuild `paths_plan.py four_paths.html`, `gaps.py gaps.json`, and `gaps_page.py gaps.json forgetting_gaps.html` when the plan changes. This extension does not assemble the verse saga or change the AP problem set.
+--- a/mansion/workbook/tabs/craft.md
++++ b/mansion/workbook/tabs/craft.md
+@@ -18,6 +18,10 @@
+ -- American spelling, with contractions by default (R-083). Oxford comma, always (R-121).
+ -- 20% next to a number, and a fraction in prose (R-114). Anything that's properly a fraction is written as one: r/R = 3/5, γ = 5/4, never 0.60 (R-129). Past path 1, a cosine appears only where the problem set asks for one. Hair spaces between symbols (R-094).
+ -- Round hard: if 96 against 100 matters, find the real variable. A made-up number is exact, so it carries no padding: 6 N, not 6.0 N, and 1/25 kg m², not 0.040 (doc, 10-23 10:49; R-130). Only a rounded result keeps two figures. Play units stay in full dog mode; statements stay standard.
++- Numbers serve the relationship (R-131). Keep a useful exact ratio as a fraction, improper above one. A rounded result stays a two-figure decimal, or the bare exact root where it reads better; never an approximate fraction. Path 1 is mostly decimals; the determined Path 2 visitor sees the point of fifths near the middle. Later paths can use that language from the start without dressing every number as a fraction. Inertia and spin use g m² and g m²/s, with kilo swallowing 1000 and above; milli carries small lengths such as 5 mm. A unit choice can remove an unnecessary fraction. The formatter never inserts “about” into a sentence.
++## The paths have a temper
++Path 1 is curious. Path 2 is determined. Path 3 is a bit manic: familiar standard language goes by like cobwebs. Path 4 interleaves verse forms, including a shanty; most physics is not done in shanty form. This is a direction for the writing, not a claim that the verse saga is already assembled.
++The shared plan is `mansion/sets/path_features.json`. The four-path planner and forgetting-gap page show its modes, entry points, payoffs, and applied/planned states. Number presentation reads the same plan; poetic decisions remain editorial. Preview controls export a proposal, never silently edit the paths.
+ ## The mansion and the ending
+ The route begins in third person, and "you" creeps in: the chalk is on your cuff, the ribbon is already in your hand, the clown looks at you from the lounge. The mystery entangles the visitor with the victim and the culprit. It's supernatural, not time travel, and it's one continuous house: the cabinet, funhouse, and understage deepen it rather than starting three more. The clown never moves onstage and is never met below the mansion. The clown's presentation shifts by room, stays gender-vague, and is never sexual. The revelations come in order: hand-mending, a maker's kit, one wearer behind the costumes, then the unfinished work of squaring the circle. The house grew around that work, and the clown's interventions keep the driven machine from crashing.
+ Energy has to come from somewhere. A catch can release a local spring without powering the shot. The isolated, lossless RUN keeps its 80 mJ, since free tones lining up add nothing; keep that account separate from the driven TEST.
+--- a/mansion/workbook/tabs/next.md
++++ b/mansion/workbook/tabs/next.md
+@@ -17,6 +17,8 @@
+ - Sources: [Loose verses](tab:loose), [Fresh rhythms](tab:fresh), [Claude's verses](tab:verses), and [Narrative intrigue](tab:intrigue). The live [path 4](tab:path4) is the checked prose version, with its six déjà vu touches, ready to be reshaped.
+ ## Then
+ - Highlights, not reruns, in paths 2 and 3 (R-110, R-128): each long explanation lives in one path (doc 10:20). sets/reruns.py counts 36 long explanations that appear in more than one path, 27 of them in path 3, mostly re-said from path 2. Give the later path a highlight or a nod instead; path 3's 2-c is the model (10:17). Path 3 keeps that hurry the whole way through: things are moving, and the tension builds (10:21). Path 3 carries the body algebra and earns its chorus. There's no length target.
++## Shared planner extension
++Codex extended the terminology tools with `sets/path_features.json`: notation, explanatory register, direction words, stanza glosses, rhythm, narrative recurrence, path tone, and the protected finale. Number progression is implemented; the verse choices are marked planned or in progress. `sets/PATH_FEATURES_REVIEW.md` gives Claude a concrete review brief. No rounded fractions: R-131 keeps approximate results decimal or symbolic. Review the selected exact fractions for actual explanatory value.
+ ## Not done, so don't claim it
+ - The verse saga hasn't been assembled. Nothing from the poetry tabs is in a path yet.
+ - sin and cos are gone from the middle material only where words read better (R-075). Kept on purpose: the statements' own cos θ, the spool's line at a-5, the basin's height, and f-1's identity, which is the subject.
