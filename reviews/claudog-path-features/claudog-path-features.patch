@@ -1,18 +1,38 @@
 --- a/mansion/sets/build_sets.py
 +++ b/mansion/sets/build_sets.py
-@@ -709,9 +709,24 @@
+@@ -470,6 +470,16 @@
+ def _serial(x):
+     for old, new in SERIAL: x = x.replace(old, new)
+     return x
++
++def checked_solution(items, label, expected, replacement):
++    """A late highlight must not silently swallow a later source correction."""
++    hits = [i for i, (_, text) in enumerate(items) if isinstance(text, str) and text.startswith(label)]
++    assert len(hits) == 1, (label, "expected one source paragraph", len(hits))
++    i = hits[0]
++    assert items[i][1] == expected, (label, "source changed; reconcile before replacing")
++    out = list(items)
++    out[i] = (items[i][0], replacement)
++    return out
+ 
+ def build(k, shares=True):
+     tabs = read(f"r{k}_now.txt")
+@@ -709,9 +719,27 @@
          if m: drawer = m.group(1)
          elif x == SHUT: out[j] = (t, DRAFTS.get(drawer, SHUT))
          elif x == OPEN and k in OPENS: out[j] = (t, OPENS[k].get(drawer, OPEN))
 +    # doc 10-23: path 3 brushes the familiar language aside like cobwebs.
 +    # The effective mass still has to be named: three kilograms is not the spool's mass.
 +    if k == 3:
-+        out = [(t, "(a-4) Effectively 3 kg at the axle: 2 in the mass, 1 in the turning. So I/R² = 1 kg, I = 1/25 kg m², half of mR²: a uniform disk. Then 6 N at 1 − 3/5 leaves 2.4 N on 3 kg. The spool picks up at 4/5 m/s² →; the grip hauls 4.4 N ←." if isinstance(x, str) and x.startswith("(a-4)") else x) for t, x in out]
++        expected = "(a-4) The bottom line counts what must speed up at the axle: the mass, plus the turning carried as inertia over R². For 3.0 kg, I/R² = 1.0 kg, so I = 0.040 kg m², half of mR². That's a uniform disk. Then 6.0 N at 1 − 3/5 is 2.4 N on 3.0 kg: a = 0.80 m/s² →, the way the cord pulls. Friction pulls 4.4 N ←."
++        replacement = "(a-4) Effectively 3 kg at the axle: 2 in the mass, 1 in the turning. So I/R² = 1 kg, I = 40 g m², half of mR²: a uniform disk. Then 6 N at 1 − 3/5 leaves 2.4 N on 3 kg. The spool picks up at 4/5 m/s² →; the grip hauls 4.4 N ←."
++        out = checked_solution(out, "(a-4)", expected, replacement)
 +    # a-5 explicitly asks for cos theta. Answer once, after the physical reading.
 +    if k in (2, 3):
 +        line = ("(a-5) To stay put, the spool asks for no torque about the contact. The pull's forward part at R balances its full pull at r: the forward fraction is r/R = 3/5. The statement calls that cos θ = r/R, so θ = 53°. The inertia never enters, because a spool that doesn't turn never asks for it." if k == 3 else
 +                "(a-5) To stay put, the spool asks for no torque about the contact, so the cord's line has to pass through it. The pull's forward part at R balances its full pull at r. Its forward fraction is therefore r/R = 3/5. In the statement's notation, cos θ = r/R, so θ = 53°: the 3–4–5 again, with the 3 along the counter. The inertia never enters, because a spool that doesn't turn never asks for it.")
-+        out = [(t, line if isinstance(x, str) and x.startswith("(a-5)") else x) for t, x in out]
++        expected = "(a-5) A spool that stays put isn't turning, so the pull has no leverage about the contact. The cord leaves the hub at a tangent, r from the axle; tilted up θ, its line passes R cos θ − r from the contact. No leverage means cos θ = r/R. The inertia never enters, because a spool that doesn't turn never asks for it. With r/R = 3/5, θ = 53°: the 3–4–5 again, with the 3 along the counter."
++        out = checked_solution(out, "(a-5)", expected, line)
 +    # Path 2's determined visitor finds the fractions when the energy shares need them.
 +    if k == 2:
 +        for j, (t, x) in enumerate(out):
@@ -26,11 +46,6 @@
      return out
  
  def to_html(items):
-@@ -733,3 +748,4 @@
-         open(f"set{k}.html", "w").write(to_html(items))
-         open(f"set{k}.txt", "w").write("\n".join(("## " if t.startswith("h") else "") + re.sub("</?(b|em)>", "", s) for t, s in items))
-         print(k, len(items), sum(len(s) for _, s in items))
-+
 --- a/mansion/sets/p4_reel.py
 +++ b/mansion/sets/p4_reel.py
 @@ -36,7 +36,7 @@
@@ -42,14 +57,9 @@
   '4-a': f"(4-a) The ladder won't stretch, so it dots to zero against the top's velocity less the foot's: (1.8 m ← + 2.4 m ↑){D}(0.40 m/s ← + v ↑) = 0.72 m²/s + 2.4 m v = 0. The top comes down at 0.30 m/s ↓.",
   '4-b': '(4-b) The center falls from 1.2 m to 0.80 m, and 80 N through 0.40 m lets go 32 J of heft.',
   '4-c': "(4-c) Count about the still point, L/2 from the center: the profile there is L²/12 + L²/4 = L²/3, and all 32 J is turning about it. The center's punch takes three quarters, 24 J, and the hook about the center the other 8. 8.0 kg punching 24 J runs at √6, about 2.4 m/s, with the ladder sweeping at 2v/L, about 1.6 sweep.",
-@@ -116,3 +116,4 @@
-             dropping = False
-         res.append((t, x))
-     return res
-+
 --- a/mansion/sets/shares.py
 +++ b/mansion/sets/shares.py
-@@ -1,64 +1,99 @@
+@@ -1,64 +1,117 @@
 -"""No trailing zeros, and fractions wherever a fraction is the true value (doc, 10-23 10:23 and 10:42, R-129).
 -Claude (Anthropic), 2026-10-23. build_sets applies this last, to every path.
 -  - Two-figure padding goes: 6.0 N is 6 N, 0.040 is 0.04, 1.0 × 10⁸ is 10⁸.
@@ -58,12 +68,12 @@
 -  - Other decimals (0.12 m, 2.4 m, rounded results like 0.32 m/s) and anything after "about" stay decimals.
 -  - Inside arithmetic (next to × or /) a fraction takes parentheses: 0.50 × 4.0/0.60 reads (1/2) × 4/(3/5).
 -Usage: python3 shares.py   (from mansion/sets: prints every change, in context, for review)
-+"""Path-aware number presentation, from path_features.json.
-+Claude (Anthropic), 2026-10-23; extended by Codex (OpenAI) for doc's
-+decimal-to-fraction progression. The plan, not a global replacement list, chooses
-+where a notation is used. Approximate numbers remain approximate.
++"""Path-aware choices for exact relationships, not universal fraction conversion.
++Claude (Anthropic), 2026-10-23; extended and corrected by Codex (OpenAI).
++R-130 removes padding; R-131 keeps rounded results decimal and uses useful units.
  """
  import re
++from decimal import Decimal
  from fractions import Fraction
 +import path_features
  
@@ -74,19 +84,27 @@
 +NUM = re.compile(r"(?<![\d.⁰¹²³⁴⁵⁶⁷⁸⁹])(\d+)\.(\d+)(?![\d])")
 +PRE = [
 +    ("Here I/R² = 0.040/0.040 = 1.0 kg.",
-+     "Here I/R² is 1/25 kg m² over 1/25 m², 1 kg."),
++     "Here I/R² is 40 g m² over 0.04 m², 1 kg."),
 +    ("The profile over R² is 0.020/0.040 = 1/2,",
-+     "The profile, 1/50 m², is half of R², 1/25 m²,"),
++     "The profile is 0.02 m², half of R², 0.04 m²,"),
      ("Setting that to 0.080 J gives", "Setting that to 80 mJ gives"),
      ("q₀²/(2C) = 0.080 J with", "q₀²/(2C) = 80 mJ with"),
 +    ("The loop on its own rings at the slow tone, 2.4 sweep, exactly.",
 +     "The loop on its own rings exactly at the slow tone, about 2.4 sweep."),
++    ("ω² = 10(2 − √2) = 5.9 and 10(2 + √2) = 34",
++     "ω² = 10(2 − √2) ≈ 5.9 and 10(2 + √2) ≈ 34"),
++    ("The slow one takes τ/2.4 = 2.6 s and the fast one τ/5.8 = 1.1 s.",
++     "The slow one takes τ/ω_a ≈ 2.6 s and the fast one τ/ω_b ≈ 1.1 s."),
++    ("(2/3) × 2.4 = 1.6 and (3/2) × 2.4 = 3.6 sweep.",
++     "(2/3)ω₀ ≈ 1.6 and (3/2)ω₀ ≈ 3.6 sweep."),
++    ("ω_b − ω_a = 3.4 sweep", "ω_b − ω_a ≈ 3.4 sweep"),
++    ("q₀ = √(2 × 1.7 × 0.080) = 0.52 C", "q₀ = √(2C × 80 mJ) ≈ 0.52 C"),
++    ("q₀/C = 0.31 V", "q₀/C ≈ 0.31 V"),
++    ("10(2 − √2) = 5.9 s⁻²", "10(2 − √2) ≈ 5.9 s⁻²"),
++    ("u/9 = 1.1 × 10⁷", "u/9 ≈ 1.1 × 10⁷"),
  ]
 -EXACT = {"0.38": "3/8", "0.05": "1/20"}   # 0.375 N m shown rounded; the conductance 1/R of 20 Ω
 -NUM = re.compile(r"(?<![\d.⁰¹²³⁴⁵⁶⁷⁸⁹])(\d+)\.(\d+)(?![\d])")
-+PRECISION = path_features.feature("number-form")["precision"]
-+EXACT = {s: Fraction(v) for s, v in PRECISION["corrected_exact"].items()}
-+ROUNDED = set(PRECISION["rounded_literals"])
  
 -def convert(text, log=None):
 -    """Two-figure padding goes; a value that's exact becomes a fraction when it stands alone as a quantity.
@@ -95,34 +113,13 @@
 -    a value only loses its padding, so 0.50 × 4.0/0.60 reads 0.5 × 4/0.6."""
 -    for a0, b0 in PRE: text = text.replace(a0, b0)
 -    out = []; pos = 0
-+def rounded(s, part, before, after):
-+    if s in ROUNDED:
-+        return True
-+    ctx = PRECISION["contextual_roundings"].get(s)
-+    if ctx:
-+        if "exact_parts" in ctx:
-+            return part not in ctx["exact_parts"] or bool(re.search(ctx.get("rounded_after", r"(?!)"), before))
-+        return part in ctx.get("rounded_parts", [])
-+    return False
-+
-+def convert(text, log=None, mode="fractions", part=""):
-+    """Only numeric literals change. Roots, letters, and existing ratios are retained."""
-+    assert mode in {"decimals", "fractions"}, mode
-+    for old, new in path_features.feature("number-form").get("display_units", {}).items():
-+        text = text.replace(old, new)
-+    for old, new in PRE:
-+        text = text.replace(old, new)
-+    out, pos = [], 0
-     for m in NUM.finditer(text):
+-    for m in NUM.finditer(text):
 -        a, b = m.span(); s = m.group(0); whole, dec = m.groups()
 -        before = text[max(0, a - 7):a]
 -        approx = "about" in before or "≈" in before or "near" in before
-+        a, b = m.span()
-+        s = m.group(0)
-+        whole, dec = m.groups()
-         stripped = dec.rstrip("0")
+-        stripped = dec.rstrip("0")
 -        padded = stripped != dec
-         new = whole if not stripped else f"{whole}.{stripped}"
+-        new = whole if not stripped else f"{whole}.{stripped}"
 -        prev = text[:a].rstrip()[-1:]; nxt = text[b:].lstrip()[:1]
 -        in_math = prev in "×/" or nxt in "×/" or text[b:b + 1] == "/"
 -        mantissa = re.match(r"\s*×\s*10", text[b:]) is not None
@@ -138,34 +135,72 @@
 -        if new == s: continue
 -        out.append(text[pos:a]); out.append(new); pos = b
 -        if log is not None: log.append((s, new, text[max(0, a - 50):b + 30]))
-+        before, after = text[:a], text[b:]
-+        explicit_approx = bool(re.search(r"(?:about|near|≈)\s*$", before))
-+        prev, nxt = before.rstrip()[-1:], after.lstrip()[:1]
-+        in_math = bool(prev and prev in "×/") or bool(nxt and nxt in "×/")
-+        mantissa = re.match(r"\s*×\s*10", after) is not None
-+        if mode == "fractions" and stripped:
-+            f = EXACT.get(s, Fraction(new))
-+            new = str(f)
-+            if f.denominator != 1 and (in_math or mantissa or after[:1] in "²√("):
-+                new = f"({new})"
-+        prefix = text[pos:a]
-+        if mode == "fractions" and s not in EXACT and rounded(s, part, before, after) and not explicit_approx:
-+            if re.search(r"=\s*$", prefix):
-+                prefix = re.sub(r"=\s*$", "≈ ", prefix)
-+            elif not in_math:
-+                new = "about " + new
-+        if new == "1" and mantissa:
-+            new = ""
-+            b += len(re.match(r"\s*×\s*", after).group(0))
-+        out.extend((prefix, new))
-+        pos = b
-+        if log is not None and (new != s or prefix != text[a-len(prefix):a]):
-+            log.append((s, new, text[max(0,a-50):m.end()+30]))
-     out.append(text[pos:])
-     return "".join(out)
+-    out.append(text[pos:])
+-    return "".join(out)
++def decimal(value):
++    """Finite rationals only; choosing a unit does not create a rounding."""
++    n = Decimal(value.numerator) / Decimal(value.denominator)
++    return format(n, "f").rstrip("0").rstrip(".") if n % 1 else str(int(n))
  
 -def apply(items, log=None):
 -    return [(t, convert(x, log) if isinstance(x, str) else x) for t, x in items]
++def compact_units(text):
++    # A base of grams makes 40 and 500 visible; kilo absorbs 1000 and above.
++    rx = r"(?<![\w./])(\d+/\d+|\d+(?:\.\d+)?)\s+(kg|g) m²(?P<spin>/s)?"
++    def inertia(m):
++        grams = Fraction(m[1]) * (1000 if m[2] == "kg" else 1)
++        value, unit = (grams / 1000, "kg") if grams >= 1000 else (grams, "g")
++        d = value.denominator
++        for prime in (2, 5):
++            while d % prime == 0:
++                d //= prime
++        if d != 1:
++            return m[0]   # Do not round an exact third merely to change the unit.
++        return decimal(value) + " " + unit + " m²" + (m["spin"] or "")
++    text = re.sub(rx, inertia, text)
++    def distance(m):
++        mm = Fraction(m[1]) * 1000
++        return f"{mm.numerator} mm" if mm.denominator == 1 and mm < 10 else m[0]
++    return re.sub(r"(?<![\w./])(0\.\d+) m(?![²\w/])", distance, text)
++
++def rounded(s, part, before, precision):
++    if s in precision["rounded_literals"]:
++        return True
++    ctx = precision["contextual_roundings"].get(s)
++    if ctx:
++        if "exact_parts" in ctx:
++            return part not in ctx["exact_parts"] or bool(re.search(ctx.get("rounded_after", r"(?!)"), before))
++        return part in ctx.get("rounded_parts", [])
++    return False
++
++def convert(text, log=None, mode="fractions", part="", plan=None):
++    """Keep authored approximation wording. Only selected exact relationships change."""
++    assert mode in {"decimals", "fractions"}, mode
++    config = path_features.feature("number-form", plan)
++    precision = config["precision"]
++    corrections = {Fraction(k): Fraction(v) for k,v in precision["corrected_exact"].items()}
++    chosen = {Fraction(v) for rule in config["fraction_choices"] if part in rule["parts"] for v in rule["values"]}
++    for old, new in PRE:
++        text = text.replace(old, new)
++    text = compact_units(text)
++    def number(m):
++        s = m[0]; value = Fraction(s)
++        if value in corrections:
++            value = corrections[value]
++        new = decimal(value)
++        before, after = text[:m.start()], text[m.end():]
++        approximate = bool(re.search(r"(?:about|near|≈)\s*$", before)) or rounded(s, part, before, precision)
++        use_fraction = mode == "fractions" and not approximate and value in chosen and value.denominator <= config["maximum_denominator"]
++        if use_fraction:
++            new = str(value)
++            prev, nxt = before.rstrip()[-1:], after.lstrip()[:1]
++            if (prev and prev in "×/") or (nxt and nxt in "×/") or after[:1] in "²√(":
++                new = f"({new})"
++        if log is not None and new != s:
++            log.append((s, new, text[max(0,m.start()-50):m.end()+30]))
++        return new
++    return NUM.sub(number, text)
++
 +def apply(items, log=None, path=4, plan=None):
 +    plan = plan or path_features.load()
 +    reached, part, out = set(), "", []
@@ -175,10 +210,9 @@
 +                part = ""
 +            m = re.match(r"^\((\d+-[a-zαβγ]|[a-gαβγ]-\d+)\)", text)
 +            if m:
-+                part = m.group(1)
-+                reached.add(part)
++                part = m[1]; reached.add(part)
 +            mode = path_features.mode_at("number-form", path, reached, plan)
-+            text = convert(text, log, mode, part)
++            text = convert(text, log, mode, part, plan)
 +        out.append((tag, text))
 +    return out
  
@@ -193,11 +227,10 @@
          print(f"== path {k}: {len(log)} changes")
 -        for s, new, ctx in log: print(f"  {s} -> {new or '(dropped)'}   | {ctx}")
 +        for s,new,ctx in log:
-+            print(f"  {s} -> {new or '(dropped)'} | {ctx}")
-+
++            print(f"  {s} -> {new} | {ctx}")
 --- /dev/null
 +++ b/mansion/sets/path_features.json
-@@ -0,0 +1,428 @@
+@@ -0,0 +1,453 @@
 +{
 +  "schema_version": 1,
 +  "authorship": "Claude's terminology planner extended by Codex (OpenAI), 2026-10-23, for dr. kraemer.",
@@ -205,11 +238,11 @@
 +    {
 +      "id": "number-form",
 +      "kind": "notation",
-+      "title": "Decimals → common fractions",
++      "title": "Decimals → explanatory exact fractions",
 +      "priority": "high",
 +      "implementation": "automatic",
 +      "status": "applied",
-+      "meaning": "Change presentation by path without changing the quantity. Ratios that explain a relationship remain fractions in every path. Values above one use improper fractions, never mixed numbers. Rounded values remain approximations.",
++      "meaning": "Fractions reveal exact shares, reciprocal pairs, and common parts of a balance. They are not a costume for every number. Approximate results stay decimals or exact roots; ordinary values use compact units. Above one, a chosen fraction is improper, never mixed.",
 +      "paths": {
 +        "1": {
 +          "mode": "decimals",
@@ -223,17 +256,17 @@
 +            "mode": "fractions",
 +            "starts_at": "6-a"
 +          },
-+          "note": "The determined visitor crosses out the decimals at the rolling-ball shares: 2/5 turning, 7/5 in all; 5/7 of the arc repays the extra turning immediately."
++          "note": "The determined visitor sees fifths at 6-a; later fractions are chosen for a relationship, not required for every result."
 +        },
 +        "3": {
 +          "mode": "fractions",
 +          "starts_at": "start",
-+          "note": "Fractions from the beginning; exact roots stay roots."
++          "note": "Established exact ratios from the start; rounded results remain readable decimals or roots."
 +        },
 +        "4": {
 +          "mode": "fractions",
 +          "starts_at": "start",
-+          "note": "Established notation available to the verse; numbers can also be spoken."
++          "note": "Exact relationships available to verse; decimals and compact units remain available for ordinary quantities."
 +        }
 +      },
 +      "payoff": [
@@ -243,7 +276,7 @@
 +        "10-d",
 +        "13-c"
 +      ],
-+      "evidence": "doc: path 1 mostly decimals; path 2 drops them soon; path 3 fractions from the start. doc: toward the middle the determined visitor finds decimals obscure the meaning; fractions bring it back. doc: 40 g m2.",
++      "evidence": "doc: path 1 mostly decimals; path 2 drops them soon; path 3 fractions from the start. doc: toward the middle the determined visitor finds decimals obscure the meaning; fractions bring it back. doc: 40 g m2. R-131: no approximate fractions; inertia/spin in g m², kilo/milli prefixes carry zeros. doc: paperclip behavior is optimizing the visible rule until it loses its purpose.",
 +      "precision": {
 +        "corrected_exact": {
 +          "0.38": "3/8"
@@ -314,11 +347,36 @@
 +        "decimals",
 +        "fractions"
 +      ],
-+      "display_units": {
-+        "0.040 kg m²": "40 g m²",
-+        "0.04 kg m²": "40 g m²",
-+        "1/25 kg m²": "40 g m²"
-+      }
++      "fraction_choices": [
++        {
++          "parts": [
++            "2-c"
++          ],
++          "values": [
++            "0.75",
++            "0.375"
++          ],
++          "why": "Twice the sweep, half the torque: 3/4 and 3/8."
++        },
++        {
++          "parts": [
++            "3-c",
++            "3-d",
++            "a-3",
++            "a-4"
++          ],
++          "values": [
++            "0.8",
++            "1.6",
++            "2.4",
++            "4.4",
++            "0.12",
++            "0.2"
++          ],
++          "why": "The spool balances in fifths; its two lever arms are 3/25 and 1/5 m."
++        }
++      ],
++      "maximum_denominator": 25
 +    },
 +    {
 +      "id": "explanation-register",
@@ -628,7 +686,7 @@
 +}
 --- /dev/null
 +++ b/mansion/sets/path_features.py
-@@ -0,0 +1,137 @@
+@@ -0,0 +1,136 @@
 +"""Shared notation, narrative, and poetry plan.
 +Codex (OpenAI), 2026-10-23. Extends Claude's planners; editorial features describe
 +choices, not a claim that regex can judge a poem. The numeric formatter reads the
@@ -688,7 +746,7 @@
 +        "numbers": numbers,
 +        "decimal_count": sum(n["decimals"] for n in numbers),
 +        "fraction_count": sum(n["fractions"] for n in numbers),
-+        "decimal_candidates": [n for n in numbers if n["mode"] == "fractions" and n["decimals"]]}
++        "mixed_number_passages": [n for n in numbers if n["decimals"] and n["fractions"]]}
 +
 +def markdown(data=None):
 +    data = data or load()
@@ -748,7 +806,7 @@
 + }).join("");
 + document.getElementById("feature-observed").textContent=data.observed.map(o=>
 + 'Built path '+o.path+': '+o.decimal_count+' decimal literals, '+o.fraction_count+
-+ ' fraction literals; '+o.decimal_candidates.length+' passages to inspect in fraction regions.').join(' ');
++ ' fraction literals. Counts describe the forms, not a target to maximize.').join(' ');
 +}
 +document.getElementById("feature-kind").addEventListener("change",render);
 +document.getElementById("feature-rows").addEventListener("change",e=>{
@@ -765,14 +823,13 @@
 +render();
 +})();
 +</script></section>'''
-+
 --- /dev/null
 +++ b/mansion/sets/test_path_features.py
-@@ -0,0 +1,58 @@
+@@ -0,0 +1,69 @@
 +"""Boundary and preservation checks for the shared path plan.
 +Codex (OpenAI), 2026-10-23. Run in mansion/sets: python3 -m unittest test_path_features.py
 +"""
-+import copy, unittest
++import copy, re, unittest
 +from fractions import Fraction
 +import build_sets, path_features, shares
 +
@@ -784,11 +841,12 @@
 +        self.assertEqual(path_features.mode_at("number-form",2,["2-a"],data),"decimals")
 +        self.assertEqual(path_features.mode_at("number-form",2,["6-a"],data),"fractions")
 +        self.assertEqual(path_features.mode_at("number-form",3,[],data),"fractions")
-+        path_features.feature("number-form",data)["paths"]["2"]["then"]["starts_at"]="4-a"
-+        sample=[("p","(2-a) 1.6 N"),("p","(3-c) 1.6 N"),("p","(4-a) 1.6 N")]
++        path_features.feature("number-form",data)["paths"]["2"]["then"]["starts_at"]="2-c"
++        sample=[("p","(2-a) 1.6 N"),("p","(2-c) 0.75 crank"),("p","0.375 crank")]
 +        got=shares.apply(sample,path=2,plan=data)
-+        self.assertIn("1.6 N",got[1][1])
-+        self.assertIn("8/5 N",got[2][1])
++        self.assertIn("1.6 N",got[0][1])
++        self.assertIn("3/4 crank",got[1][1])
++        self.assertIn("3/8 crank",got[2][1])
 +    def test_spool_force_and_torque_are_preserved(self):
 +        f=Fraction
 +        self.assertEqual(f(8,5),6-f(22,5))
@@ -800,14 +858,25 @@
 +        self.assertIn("8/5 N",out[0][1]); self.assertIn("22/5 N",out[0][1])
 +        self.assertEqual(out[2][1],"12/5 N at the axle.")
 +    def test_rounding_is_not_promoted_to_exactness(self):
-+        self.assertIn("about 12/5",shares.convert("√6, about 2.4 m/s",mode="fractions",part="4-c"))
-+        self.assertIn("≈ 13/25",shares.convert("q₀ = 0.52 C",mode="fractions",part="13-a"))
++        self.assertEqual("√6, about 2.4 m/s",shares.convert("√6, about 2.4 m/s",mode="fractions",part="4-c"))
++        self.assertEqual("q₀ ≈ 0.52 C",shares.convert("q₀ ≈ 0.52 C",mode="fractions",part="13-a"))
 +        self.assertIn("3/8",shares.convert("χ = 0.38 crank",mode="fractions",part="2-c"))
++        self.assertEqual("χ = 0.375 crank",shares.convert("χ = 0.38 crank",mode="decimals",part="2-c"))
 +        self.assertEqual(shares.convert("6.0 N",mode="decimals"),"6 N")
-+    def test_generated_number_regions(self):
-+        for k in (2,3,4):
-+            self.assertFalse(path_features.observe(build_sets.build(k),k)["decimal_candidates"])
-+        self.assertGreater(path_features.observe(build_sets.build(1),1)["decimal_count"],0)
++        self.assertEqual("pile up every 1.8 s",shares.convert("pile up every 1.8 s",part="1-γ"))
++        self.assertEqual("0.041 m/s",shares.convert("0.041 m/s",part="9-c"))
++    def test_units_and_the_built_roundings(self):
++        self.assertEqual("40 g m²; 500 g m²; 1 kg m²; 40 g m²/s; 5 mm",shares.convert("0.040 kg m²; 0.50 kg m²; 1000 g m²; 0.04 kg m²/s; 0.005 m"))
++        self.assertEqual("1/3 kg m²",shares.convert("1/3 kg m²"))
++        for k in (1,2,3,4):
++            text="\n".join(s for _,s in build_sets.build(k))
++            self.assertIsNone(re.search(r"(?:about|≈)\s+\(?\d+/\d+",text))
++            self.assertNotIn("63/10 strokes",text)
++            self.assertIn("3/5",text)
++            self.assertGreater(path_features.observe(build_sets.build(k),k)["decimal_count"],0)
++    def test_a_source_edit_cannot_be_silently_overwritten(self):
++        with self.assertRaises(AssertionError):
++            build_sets.checked_solution([("p","(a-4) a later correction")],"(a-4)","(a-4) the old source","replacement")
 +    def test_poetry_states_are_editorial_not_automatic_proof(self):
 +        data=path_features.load()
 +        for feature in data["features"]:
@@ -826,7 +895,6 @@
 +
 +if __name__=="__main__":
 +    unittest.main()
-+
 --- a/mansion/sets/paths_plan.py
 +++ b/mansion/sets/paths_plan.py
 @@ -7,6 +7,7 @@
@@ -895,7 +963,7 @@
  <div class="scroll pieces"><table>
  <thead><tr><th>Piece</th><th>Path 1</th><th>Path 2</th><th>Path 3</th><th>Path 4</th></tr></thead>
  <tbody>{pieces}{sums}</tbody></table></div>
-@@ -352,7 +356,9 @@
+@@ -352,7 +356,8 @@
  </div>"""
  
  
@@ -908,7 +976,6 @@
 +    open(__file__.replace("paths_plan.py", "BALANCE.md"), "w").write(md())
 +    print("solutions now", [tot(i, 1) for i in range(4)], "target", [tot(i, 2) for i in range(4)])
 +    print("paths now", [round(FIXED[i] + tot(i, 1), 1) for i in range(4)], "target", [round(FIXED[i] + tot(i, 2), 1) for i in range(4)])
-+
 --- a/mansion/sets/gaps.py
 +++ b/mansion/sets/gaps.py
 @@ -9,6 +9,7 @@
@@ -929,11 +996,6 @@
  
  if __name__ == "__main__":
      data = [run(k) for k in (1, 2, 3, 4)]
-@@ -87,3 +89,4 @@
-             long = [g for g in t["gaps"] if g["len"] > 4000]
-             print(f"  {t['name']:22s} uses {t['uses']:3d} glosses {t['glosses']:2d} first {t['hits'][0]['piece']:>4s}  long gaps: "
-                   + ", ".join(f"{g['after']}→{g['back']} {g['len']//1000}k{' nod' if g['nod'] else ''}" for g in long))
-+
 --- a/mansion/sets/gaps_page.py
 +++ b/mansion/sets/gaps_page.py
 @@ -71,6 +71,10 @@
@@ -959,14 +1021,9 @@
    const H = TOP + d.terms.length * ROW + 10;
    let s = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Uses and glosses of each term along path ${K}">`;
    d.bounds.forEach(([a, n], i) => {
-@@ -142,3 +151,4 @@
- </script>"""
- open(sys.argv[2], "w").write(page.replace("__DATA__", json.dumps(data, ensure_ascii=False).replace("</", "<\\/")))
- print("wrote", sys.argv[2])
-+
 --- /dev/null
 +++ b/mansion/sets/PATH_FEATURES_REVIEW.md
-@@ -0,0 +1,60 @@
+@@ -0,0 +1,61 @@
 +# Review: path features, not a growing pile of formatter exceptions
 +
 +Written by Codex (OpenAI), 2026-10-23, for Claude and dr. kraemer.
@@ -985,10 +1042,10 @@
 +
 +The numeric formatter reads this same plan. The user's current choice is:
 +path 1 mostly decimals with revealing ratios retained; path 2 begins in decimals
-+and switches at 6-a, after the rolling ball makes the fifths visible; paths 3 and 4 use fractions
-+from the start, with improper forms above one. Existing roots stay symbolic.
-+Displayed roundings remain approximate; the precision catalog distinguishes
-+the ladder's exact 2.4 m from a mode's rounded 2.4 sweep.
++and switches at 6-a, after the rolling ball makes the fifths visible; paths 3 and 4 can use established exact fractions from the start, improper
++above one. This does not require a fraction for every value. Rounded results
++stay decimals or exact roots. A small, explicit catalog selects meaningful
++exact balances, with a denominator bound. Inertia/spin use grams with useful prefixes.
 +
 +The planning page provides a feature-kind filter, per-path modes and onset
 +controls, a reset, and JSON export. A changed control is a preview and marks the
@@ -1006,9 +1063,11 @@
 +  pretending that an editorial judgment is an executable rule?
 +- Does the path 2 transition land where the fifths reveal the mechanism? It is now one
 +  manifest edit, not a Python special case.
-+- Read the rounded fractional approximations for natural English. Exact roots
-+  alone may read better than some approximate fractions; that is a useful A/B
-+  call for doc, not a reason to manufacture an exact rational model.
++- No rounded fractions are generated. Read the selected exact fractions for
++  whether they actually expose the relationship. Counts are observations, not
++  a conversion target. No mechanical “about” insertion.
++- R-130 remains unchanged; the added number-choice policy is R-131.
++- The a-4/a-5 highlights assert their full expected source before replacing it.
 +- The existing planner's length targets are old model estimates, not user quotas.
 +  The new panel labels them as historical. Do not turn them into requirements.
 +- Keep the existing four-path meanings, source equations, independent checks,
@@ -1026,7 +1085,6 @@
 +    python3 gaps_page.py gaps.json forgetting_gaps.html
 +
 +Then use the existing set_doc patch/style/verify chain in ../BUILDING.md.
-+
 --- a/mansion/BUILDING.md
 +++ b/mansion/BUILDING.md
 @@ -114,3 +114,11 @@
@@ -1036,19 +1094,18 @@
 +
 +## Shared path features (Codex extension, 10-23)
 +
-+`sets/path_features.json` is the shared plan for number form and editorial transitions. `path_features.py` validates it and serves both the four-path planner and gaps page. `shares.apply(..., path=k)` reads the number-form state and transition anchor. Exact roots stay symbolic; precision metadata keeps displayed roundings approximate. Common fractions above one are improper, not mixed.
++`sets/path_features.json` is the shared plan for number form and editorial transitions. `path_features.py` validates it and serves both the four-path planner and gaps page. `shares.apply(..., path=k)` reads the number-form state and transition anchor. Exact roots stay symbolic; rounded values remain decimals. Only selected exact relationships become fractions, with a denominator bound. Chosen fractions above one are improper, not mixed. Inertia/spin use grams with kilo as needed; no mechanical “about” insertion. R-130 remains intact; the new choices are R-131.
 +
 +The preview controls filter features, change per-path modes and onsets, reset, and export JSON; they never write to Docs. Exported changes are proposals: replace the manifest, rebuild, inspect, then use the existing guarded tab write chain. Counts describe the current build, not an unbuilt preview. Poetry has editorial states, not an automatic quality score. Old length estimates are historical planning aids, not quotas.
 +
 +Review: `sets/PATH_FEATURES_REVIEW.md`. Checks: `cd mansion/sets && python3 -m unittest test_path_features.py`; then the usual build, repeats, level, and tab verification checks. Rebuild `paths_plan.py four_paths.html`, `gaps.py gaps.json`, and `gaps_page.py gaps.json forgetting_gaps.html` when the plan changes. This extension does not assemble the verse saga or change the AP problem set.
 --- a/mansion/workbook/tabs/craft.md
 +++ b/mansion/workbook/tabs/craft.md
-@@ -17,7 +17,10 @@
- -- "The ladder is sweeping," where a contraction would read as possessive (R-098).
+@@ -18,6 +18,10 @@
  -- American spelling, with contractions by default (R-083). Oxford comma, always (R-121).
  -- 20% next to a number, and a fraction in prose (R-114). Anything that's properly a fraction is written as one: r/R = 3/5, γ = 5/4, never 0.60 (R-129). Past path 1, a cosine appears only where the problem set asks for one. Hair spaces between symbols (R-094).
---- Round hard: if 96 against 100 matters, find the real variable. A made-up number is exact, so it carries no padding: 6 N, not 6.0 N, and 1/25 kg m², not 0.040 (doc, 10-23 10:49; R-130). Only a rounded result keeps two figures. Play units stay in full dog mode; statements stay standard.
-+-- Round hard: if 96 against 100 matters, find the real variable. A made-up number is exact, so it carries no padding: 6 N, not 6.0 N, and 1/25 kg m², not 0.040 (doc, 10-23 10:49; R-130). A rounded result stays explicitly approximate. Path 1 stays mostly in legible decimals, with fractions where they show the relationship. Path 2 begins with decimals; near the middle the determined visitor crosses them out when the rolling ball reveals 2/5 of turning, 7/5 in all, paid back by a 5/7 arc; paths 3 and 4 use fractions from the start, improper above one. Existing exact roots stay roots. Play units stay in full dog mode; statements stay standard.
+ -- Round hard: if 96 against 100 matters, find the real variable. A made-up number is exact, so it carries no padding: 6 N, not 6.0 N, and 1/25 kg m², not 0.040 (doc, 10-23 10:49; R-130). Only a rounded result keeps two figures. Play units stay in full dog mode; statements stay standard.
++- Numbers serve the relationship (R-131). Keep a useful exact ratio as a fraction, improper above one. A rounded result stays a two-figure decimal, or the bare exact root where it reads better; never an approximate fraction. Path 1 is mostly decimals; the determined Path 2 visitor sees the point of fifths near the middle. Later paths can use that language from the start without dressing every number as a fraction. Inertia and spin use g m² and g m²/s, with kilo swallowing 1000 and above; milli carries small lengths such as 5 mm. A unit choice can remove an unnecessary fraction. The formatter never inserts “about” into a sentence.
 +## The paths have a temper
 +Path 1 is curious. Path 2 is determined. Path 3 is a bit manic: familiar standard language goes by like cobwebs. Path 4 interleaves verse forms, including a shanty; most physics is not done in shanty form. This is a direction for the writing, not a claim that the verse saga is already assembled.
 +The shared plan is `mansion/sets/path_features.json`. The four-path planner and forgetting-gap page show its modes, entry points, payoffs, and applied/planned states. Number presentation reads the same plan; poetic decisions remain editorial. Preview controls export a proposal, never silently edit the paths.
@@ -1062,7 +1119,7 @@
  ## Then
  - Highlights, not reruns, in paths 2 and 3 (R-110, R-128): each long explanation lives in one path (doc 10:20). sets/reruns.py counts 36 long explanations that appear in more than one path, 27 of them in path 3, mostly re-said from path 2. Give the later path a highlight or a nod instead; path 3's 2-c is the model (10:17). Path 3 keeps that hurry the whole way through: things are moving, and the tension builds (10:21). Path 3 carries the body algebra and earns its chorus. There's no length target.
 +## Shared planner extension
-+Codex extended the terminology tools with `sets/path_features.json`: notation, explanatory register, direction words, stanza glosses, rhythm, narrative recurrence, path tone, and the protected finale. Number progression is implemented; the verse choices are marked planned or in progress. `sets/PATH_FEATURES_REVIEW.md` gives Claude a concrete review brief. Review the rounded fractions for natural reading before choosing any broader rewrite.
++Codex extended the terminology tools with `sets/path_features.json`: notation, explanatory register, direction words, stanza glosses, rhythm, narrative recurrence, path tone, and the protected finale. Number progression is implemented; the verse choices are marked planned or in progress. `sets/PATH_FEATURES_REVIEW.md` gives Claude a concrete review brief. No rounded fractions: R-131 keeps approximate results decimal or symbolic. Review the selected exact fractions for actual explanatory value.
  ## Not done, so don't claim it
  - The verse saga hasn't been assembled. Nothing from the poetry tabs is in a path yet.
  - sin and cos are gone from the middle material only where words read better (R-075). Kept on purpose: the statements' own cos θ, the spool's line at a-5, the basin's height, and f-1's identity, which is the subject.
