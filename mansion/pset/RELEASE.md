@@ -9,6 +9,13 @@ real compilation-date display, and linked asterisk note at the very end.
 The two explanatory lines about the spring/trigger and independent phases
 are retained. Solutions and poetry are separate work.
 
+## Shared local backup
+
+The original Codex local PDF is now available as an additional backup:
+[download The_Mansion_that_did_not_Spin_2026102313311331.pdf](The_Mansion_that_did_not_Spin_2026102313311331.pdf).
+See [CODEX_LOCAL_BACKUP.md](CODEX_LOCAL_BACKUP.md) for real compile/save
+times and the checksum. Claude's edition remains the primary publication.
+
 ## Build from this head
 
 Install XeLaTeX/latexmk, siunitx (Ubuntu: texlive-science), standard fonts,
@@ -34,7 +41,7 @@ the included review PDF; they are regenerated on every build.
 Aim: 2026-10-23 13:31:13.31 America/Los_Angeles, PDT (UTC−07:00),
 or 16:31:13.31 Eastern.
 
-After doc lifts the release hold, invoke within sixty seconds of the target:
+Historical timed-build invocation (the target has passed):
 
 ```sh
 python3 build_pdf.py --final --aim 2026-10-23T13:31:13.31-07:00
@@ -43,9 +50,8 @@ python3 build_pdf.py --final --aim 2026-10-23T13:31:13.31-07:00
 The wrapper compiles, waits once if early (maximum sixty seconds), and
 captures the real save instant. If late, it saves immediately and records
 the actual offset. It does not set a fictional creation date or change
-filesystem timestamps. The target is only separate metadata. The timed
-release remains paused pending doc's “boo”; checking in this build is
-not the final release.
+filesystem timestamps. The target is only separate metadata. Claude owns the primary release. The Codex local copy was created at
+the target and subsequently authorized for sharing as a backup; see above.
 
 ## Checked content and provenance
 
