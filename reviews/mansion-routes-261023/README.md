@@ -1,38 +1,42 @@
-# Mansion routes: clown attention and storage-first zing
+# Mansion routes and the current Dog Math snapshot
 
 Written by Codex (OpenAI), 2026-10-23, for dr. kraemer and Claude.
-These are model working/inspiration words, not dr. kraemer's manuscript.
+Model working/inspiration words, not dr. kraemer's manuscript.
 
-This is a seven-file source handoff for `saccade/claudog`, based on
-`b81531c7f95fdcc433f37684a14a29ab8486da06`. The earlier planner handoff
-in codogx PR #3 is already integrated in that base; do not reapply it.
+The adjacent `mansion-routes.patch` targets claudog
+`a450df6ff449dc4822138ec56399e77cd783cea9`, including Claude's newly
+preserved Dog Math history. PR #3's planner is already in the base.
 
-## What this lands
+## What changes
 
-- Different observations from the existing Clowns table suit the four paths:
-  curious materials and small discoveries; determined tracing and inspection;
-  a manic succession of wrong details; cycles, returns, and patterns in Path 4.
-  No per-room quota. The common clues and the first quiet second person remain.
-- Ghost energy is kept: added velocity keeps zip, added sweep keeps zing.
-  Body energy is stored: the velocity of added motion stores punch; the sweep
-  of added spin stores hook. All four worked paths follow the additions,
-  including their checks; half-square energy shortcuts are removed.
-  Geometric halves and phase half-sums remain separate mathematical facts.
-- Earlier approved running edits: Path 3's single 5 mm rise, downward fraction
-  before the statement's required cosine, and the grip's fifths; Path 1's
-  equivalent ring; Path 2's torque count in twenty-fifths; the causal-number
-  principle in the feature plan.
+- Each path notices different details from the existing Clowns table,
+  chosen for its mood. Common clues, the frozen clown, and the final choruses
+  remain. No per-room quota was imposed.
+- All four worked energy accounts follow additions of motion, spin, charge,
+  or flux at their velocity, sweep, voltage, or current. Ghost energy is
+  **kept**: added velocity keeps zip; added sweep keeps zing. Body energy is
+  stored. Half-square energy shortcuts are removed from explanations and
+  worked checks. The AP statements are unchanged; geometric halves and
+  phase half-sums remain separate mathematical facts.
+- Earlier approved edits remain: the single 5 mm rise, the downward fraction,
+  the grip's fifths, the equivalent ring, and the torque count in twenty-fifths.
+- The current live Dog Math is preserved as the next text snapshot in
+  `docs/dog-math/doc-snapshots/`. Twelve scoped energy edits were made in the
+  live original. Its prior hand edits remain, and terminal newlines alone are
+  normalized in the snapshot. The older snapshots are untouched.
+- Craft and Next record the energy rule and pending canonical integration.
 
-The AP statements and final choruses are unchanged. Dog Math’s live wording
-was preserved before its scoped energy edits; that current text is versioned
-in `docs/dog_math.txt` with one terminal newline. The dated older copy remains
-intact. Craft and Next record the rule and pending source integration. The reader tabs already
-contain these edits and verified against the local build. This PR stores the
-patch; merging it in codogx does not apply it to claudog.
+Claude clarified the manual's history: no dedicated assembly program existed.
+It was hand-edited through 47 text versions and then edited in Google Docs,
+using the shared `typeset/` tools for wrapping and checks. The Google Doc stays
+the source of truth. Do not regenerate it from a snapshot. Its newest previous
+snapshot matches the pre-edit live text after blank-line and Markdown-export
+normalization; the snapshot diff is not a reason to undo hand edits.
 
 ## Apply in claudog
 
-From a current claudog checkout, save the adjacent `mansion-routes.patch` and run:
+Merging this PR stores a handoff in codogx. It does not apply the patch to
+claudog. From a current claudog checkout, save the adjacent patch and run:
 
 ```sh
 git apply --check --whitespace=error /path/to/mansion-routes.patch
@@ -46,32 +50,24 @@ python3 gaps.py gaps.json
 python3 gaps_page.py gaps.json forgetting_gaps.html
 ```
 
-Review and commit the seven changed sources and regenerated outputs in claudog.
-If the checkout has moved and the check fails, reconcile the source changes;
-do not force the patch or rebuild the live tabs from an older source.
-Use the existing `mansion/BUILDING.md` sync/verify chain if the reader tabs have
-changed since this handoff. Keep any newer reader edits.
+Review and commit the eight changed sources plus regenerated outputs in
+claudog. If the check fails on newer work, reconcile; do not force the patch.
+The reader tabs and live manual already have the text changes. Follow the
+existing `mansion/BUILDING.md` verification chain before any later tab write,
+preserving intervening reader edits.
 
 ## Validation
 
-- Patch passes `git apply --check --whitespace=error` against the captured base.
-  Applying it reproduces all seven checked local source files byte for byte.
-- Seven existing feature tests pass; all four paths build; no repeated whole lines.
-- All four native path tabs verify for text and formatting against that build.
-- Protected final choruses compare unchanged against the pre-pass reader text.
-- No physics model changed; the independent physics harness was not rerun for
-  this editorial pass.
+- `git apply --check --whitespace=error` passes; applying the patch reproduces
+  all eight local source files byte for byte.
+- Seven existing feature tests pass; all four paths build without repeated
+  whole lines. A contextual audit finds no half-square energy shortcuts in
+  the solution text. The protected final choruses compare unchanged.
+- The live manual matches the new snapshot, apart from terminal newlines.
+  Native path text and formatting are verified using the existing tools.
+- Physics models are unchanged; no new renderer or blind derivation was made.
 
-Seven source files: `mansion/sets/build_sets.py`, `p4_reel.py`,
-`path_features.json`, and new `clown_noticing.py` in that directory;
-`mansion/workbook/tabs/craft.md` and `next.md`; and new `docs/dog_math.txt`.
-
-The repo README identified the Google Doc as canonical. This current manual
-text is now versioned without overwriting the older dated copy or losing
-hand edits. The original Dog Math assembly program was not located: the
-related builders inspected produce the Straight Dope or old house sets. Ask
-Claude for the original builder and its inputs; no replacement renderer was
-created. Reconcile that builder against this live-derived text before any
-regeneration. Fixed-width typesetting tools already live in `typeset/`.
-Generated pages are rebuilt in the canonical repository rather than duplicated
-here. No private workbook snapshots or coordination logs are included.
+Source scope: four `mansion/sets/` files (`build_sets.py`, `p4_reel.py`,
+`path_features.json`, new `clown_noticing.py`); Craft and Next Markdown sources;
+the Dog Math lineage README; and one new live-manual text snapshot. No private
+workbook snapshots or coordination logs are in this handoff.

@@ -418,6 +418,21 @@
  - **Time the glosses to forgetting, not to a beat** (R-117). A new term gets a few uses in a row so it settles. After a long gap it gets a nod, not a stop. The gaps tool measures characters, not memory: a picture to inspect, nothing to chant by.
  - **Highlights, not reruns.** Path 1 pays for full first explanations, said plainly like something true and obvious. Later paths give reprises and shorter and shorter highlights, take their time over the new arrivals, and can carry an old name in parentheses. Nobody sits through the same cutscene four times (R-111). Each long explanation lives in one path; the others get a highlight or a nod (doc, 10-23 10:20; R-128). sets/reruns.py in claudog lists the reruns. Path 3 keeps the hurry the whole way through: things are moving, and the tension builds (doc, 10-23 10:21).
  - **Bodies stay offstage until there's something to do** (doc, 10-22 17:17 to 17:25). The book's body factor (× U, read "of body U") comes in only where two bodies need keeping apart, in paths 3 and 4. doc's line leads it: "The knife of the knife was the knife all along, but the knife of a ladder has nothing to be, and no place to go."
+--- a/docs/dog-math/README.md
++++ b/docs/dog-math/README.md
+@@ -17,3 +17,12 @@
+ - **Export the live doc and diff it against the newest snapshot.** Every difference is either an edit made since then or export noise. Read each one; don't "fix" it back.
+ - **Commit each new export as the next snapshot,** named "Dog Math doc as read YYMMDDHHMM", so the history keeps growing in one place.
+ - **A rule check** (round numbers, unit plurals, contractions) can flag lines, but it reports. It doesn't edit the doc, since a flagged line may be one doc wrote on purpose.
++
++## Current snapshot, 2026-10-23
++
++Codex preserved the live document, including intervening hand edits, before
++making doc’s requested energy-account changes. The next snapshot is
++`Dog Math doc as read 2610231338.txt`. Ghost energy is kept; worked energy
++accounts follow additions rather than half-square shortcuts. The older
++snapshots and all text versions remain untouched. The Google Doc stays the
++source of truth; this snapshot is evidence, never a regeneration input.
 --- /dev/null
 +++ b/mansion/sets/clown_noticing.py
 @@ -0,0 +1,74 @@
@@ -496,7 +511,7 @@
 +        out.insert(hits[0] + 1, ("i", observation))
 +    return out
 --- /dev/null
-+++ b/docs/dog_math.txt
++++ b/docs/dog-math/doc-snapshots/Dog Math doc as read 2610231338.txt
 @@ -0,0 +1,1256 @@
 +DOG MATH
 +========
