@@ -1,0 +1,9 @@
+manim==0.22.0
+pint==0.26.2
+numpy==2.3.5
+scipy==1.17.0
+sympy==1.14.0
+ipywidgets==8.1.9
+ipykernel==7.4.0
+nbformat==5.11.1
+pytest==9.1.1
