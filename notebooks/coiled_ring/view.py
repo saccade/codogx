@@ -32,6 +32,27 @@ def trace(points, color=COPPER, width=1.5, fill=0):
     return shape.set_points_as_corners(np.vstack((points, points[0])))
 
 
+def field_arrows(offset=(0, 0, 0)):
+    """The uniform field, drawn as four ghost arrows pointing up."""
+    arrows = VGroup()
+    for x in [-1.1, 1.1]:
+        for y in [-.65, .65]:
+            arrows.add(Arrow(project((x,y,-.75)), project((x,y,1.1)),
+                             color=GHOST, stroke_width=1, stroke_opacity=.55,
+                             buff=0, max_tip_length_to_length_ratio=.05))
+    return arrows.shift(offset)
+
+
+def ring_figure(case, points, area):
+    """The posed wire, its shaft, and its area arrow, in the oblique view."""
+    axis = shaft(case)
+    normal = area / np.linalg.norm(area)
+    return VGroup(trace(project(points)),
+                  Line(project(-1.6*axis), project(1.6*axis), color=GHOST, stroke_width=2),
+                  Arrow(project([0,0,0]), project(.9*normal), color=INK,
+                        buff=0, stroke_width=2, max_tip_length_to_length_ratio=.14))
+
+
 class RingView:
     def __init__(self, pixels=1100):
         self.camera = Camera(pixel_width=pixels, pixel_height=round(pixels*9/16),
@@ -47,25 +68,15 @@ class RingView:
             label('One circuit around the hole; many windings around the tube.', [0, -3.65, 0], 18),
             Line([0, -2.5, 0], [0, 2.45, 0], color=GHOST, stroke_width=.7),
         )
-        for x in [-1.1, 1.1]:
-            for y in [-.65, .65]:
-                self.fixed.add(Arrow(project((x,y,-.75)), project((x,y,1.1)),
-                                     color=GHOST, stroke_width=1, stroke_opacity=.55,
-                                     buff=0, max_tip_length_to_length_ratio=.05))
+        self.fixed.add(field_arrows())
 
     def still(self, case, time=0, forces=True):
         state = state_at(case, time)
         p = state.forces.positions
         stride = max(1, case.samples_per_winding//32)
         objects = VGroup(self.fixed,
-                         trace(project(p[::stride])),
+                         ring_figure(case, p[::stride], state.flux.area),
                          trace(shadow(p[::stride]), fill=.07))
-        axis = shaft(case)
-        objects.add(Line(project(-1.6*axis), project(1.6*axis), color=GHOST, stroke_width=2))
-        area = state.flux.area
-        normal = area / np.linalg.norm(area)
-        objects.add(Arrow(project([0,0,0]), project(.9*normal), color=INK,
-                          buff=0, stroke_width=2, max_tip_length_to_length_ratio=.14))
         if forces:
             indices = np.linspace(0, len(p), 61, endpoint=False, dtype=int)
             for index in indices:

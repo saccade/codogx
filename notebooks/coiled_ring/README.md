@@ -93,3 +93,15 @@ arithmetic by hand; Claude's independent execution is still pending.
   the area arrow's exact sweep at the measured area. The convergence table now
   tests area measurement alone. The force account remains independent. The
   force column labels linked flux "not used."
+
+## Capture (added by Claude, 2026-10-25)
+
+`Claude-Capture-2610251244.ipynb` is the notebook version of the write-up "Claude Capture
+2610251224": the linked flux a radian of turning catches, measured in catch (Wb/rad).
+`capture_view.py` draws linkage and capture over a turn with the same Manim camera setup,
+and `explore_capture` turns the ring by hand. `ring.capture` is the one place capture is
+computed: the field dotted with the area arrow's sweep about the shaft. `follow_flux`
+takes its torque from it. `test_capture.py` checks it against a small turn, a simulated
+voltmeter, and the summed wire forces. `units.txt` gains `catch`, and `rad` as another
+name for the stroke. The ring's angle counts away from face-on, so its captures read
+with the opposite sign from the write-up, which counts toward alignment.

@@ -102,13 +102,20 @@ class Flux(NamedTuple):
     torque: float              # crank about the shaft
 
 
+def capture(case, angle):
+    """Linked flux caught per stroke of turning about the shaft; catch = weber per stroke.
+    The area arrow sweeps: dA = (shaft x A) dθ, so dλ = B · (shaft x A) dθ. Claude."""
+    area = pose(area_arrow(case), case, angle)
+    field = np.array([0., 0., case.values['field']])
+    return float(np.dot(field, np.cross(shaft(case), area)))
+
+
 def follow_flux(case, angle):
     """The area arrow sweeps about the shaft; follow its flux directly."""
     area = pose(area_arrow(case), case, angle)
     field = np.array([0., 0., case.values['field']])
     current = case.values['current']
-    swept_area = np.cross(shaft(case), area)
-    torque = current * np.dot(field, swept_area)
+    torque = current * capture(case, angle)          # the capture of the current
     moment = current * np.cross(area, field)
     return Flux(float(np.dot(field, area)), moment, area, float(torque))
 

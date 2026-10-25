@@ -3,7 +3,7 @@ meter = [length] = m
 kilogram = [mass] = kg
 second = [time] = s
 ampere = [current] = A
-stroke = [swing]
+stroke = [swing] = rad = radian
 hand = meter / 10
 lump = kilogram
 sheet = meter * meter
@@ -16,5 +16,6 @@ sweep = stroke / second
 volt = pow / ampere = V
 weber = volt * second = Wb
 tesla = weber / sheet = T
+catch = weber / stroke
 foot = 0.3048 * meter = ft
 inch = foot / 12 = in
