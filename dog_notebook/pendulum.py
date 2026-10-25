@@ -9,12 +9,12 @@ from typing import NamedTuple
 
 import numpy as np
 from scipy.integrate import solve_ivp
-from manim import Camera, VGroup, Line, Circle, Dot, DashedLine, Arc, Arrow
-from manim import WHITE, BLACK, TEAL_D, GRAY, UP, DOWN, RIGHT
-
+from drawing import Canvas, COBALT, TEAL, save_movie
 from ledger import number
 
-COBALT = "#24489c"
+UP = np.array([0., 1.])
+DOWN = -UP
+RIGHT = np.array([1., 0.])
 
 
 @dataclass(frozen=True)
@@ -69,60 +69,40 @@ def bob_at(lever, angle, pivot):
     return pivot + lever * (np.sin(angle) * RIGHT + np.cos(angle) * DOWN)
 
 
-def picture(case, state, scale=6, pivot=3.5 * UP):
-    """Draw one physical state, with scale in scene units per meter."""
+def picture(case, state, scale=6, pivot=3.5 * UP, canvas=None):
+    """Draw one state; scale is scene units per meter."""
+    canvas = canvas if canvas is not None else Canvas()
+    canvas.clear()
     lever = scale * case.values['length']
-    start = case.values['release']
-    angle, sweep = state.angle, state.sweep
-    bob = bob_at(lever, angle, pivot)
-    run = lever * sweep * (np.cos(angle) * RIGHT + np.sin(angle) * UP)
-    return VGroup(
-        DashedLine(pivot, pivot + lever * DOWN, color=GRAY),
-        Arc(radius=lever, arc_center=pivot,
-            start_angle=-np.pi/2 - start, angle=2 * start, color=GRAY),
-        Line(pivot, bob, color=BLACK, stroke_width=3),
-        Dot(pivot, color=BLACK),
-        Circle(radius=0.28, color=COBALT, fill_opacity=1).move_to(bob),
-        Arrow(bob, bob + run / 10, buff=0, color=TEAL_D),
-    )
+    start = abs(case.values['release'])
+    bob = bob_at(lever, state.angle, pivot)
+    run = lever * state.sweep * (np.cos(state.angle) * RIGHT + np.sin(state.angle) * UP)
+    for fraction in np.arange(0, 1, 0.04):
+        canvas.line([pivot + fraction * lever * DOWN,
+                     pivot + min(1, fraction + 0.02) * lever * DOWN])
+    angles = np.linspace(-start, start, 100)
+    canvas.line([bob_at(lever, angle, pivot) for angle in angles])
+    canvas.line([pivot, bob], 'black', 3)
+    canvas.circle(pivot, 0.06, 'black', 'black')
+    canvas.circle(bob, 0.28, COBALT, COBALT)
+    canvas.arrow(bob, bob + run / 10, TEAL)
+    return canvas.snapshot()
 
 
 class View:
     def __init__(self, pixels=480, scale=6, width=10):
         self.scale = scale
-        self.camera = Camera(pixel_width=pixels, pixel_height=pixels,
-                             frame_width=width, frame_height=width,
-                             background_color=WHITE)
+        self.camera = Canvas(pixels=pixels, width=width)
 
     def draw(self, case, state):
-        self.camera.reset()
-        self.camera.capture_mobjects([picture(case, state, self.scale)])
-        return self.camera.get_image().copy()
+        return picture(case, state, self.scale, canvas=self.camera)
 
     def still(self, case, time=0):
         return self.draw(case, state_at(case, time))
 
 
 def movie(case, seconds=3, folder="movies", scale=6):
-    from manim import Scene, ValueTracker, always_redraw, linear, tempconfig
-
-    class Swinging(Scene):
-        def construct(self):
-            clock = ValueTracker(0)
-            self.add(always_redraw(lambda: picture(
-                case, state_at(case, clock.get_value()), scale)))
-            self.play(clock.animate.set_value(seconds),
-                      run_time=seconds, rate_func=linear)
-
-    settings = dict(pixel_width=480, pixel_height=480, frame_rate=25,
-                    frame_width=10, frame_height=10, format="mp4",
-                    background_color=WHITE, media_dir=folder,
-                    verbosity="WARNING", progress_bar="none",
-                    output_file="swinging")
-    with tempconfig(settings):
-        scene = Swinging()
-        scene.render()
-        return str(scene.renderer.file_writer.movie_file_path)
+    return save_movie(case, View(scale=scale), seconds, folder, 'swinging')
 
 
 # Claude's original entry points use hand and stroke.

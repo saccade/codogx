@@ -1,103 +1,84 @@
-# Bring me a pendulum
+# Dog-math notebooks
 
-Claude's working prototype, extended by Codex for doc, 2026-10-24.
+Claude's prototype and flux extension; shared trajectory and controls by Codex.
+Pillow rendering and GIF export by Codex, 2026-10-24, for dr. kraemer.
 
-Open **pendulum.ipynb**. It starts with a one-metre pendulum: 10 hand,
-1 lump, released from 0.6 stroke under 1 dog per second. The still is a
-direct Python call. The next cell gives play, a time slider, physical knobs,
-unit choices, zoom, and heft and hook beside the picture.
+Open **flux.ipynb** for Claude's new charge-in-flux scene, or
+**pendulum.ipynb** for the pendulum. These notebooks draw with Pillow and
+use ipywidgets for play, scrubbing, quantities, and unit choices.
 
-This is an ideal pendulum with a fixed pivot, a massless rod, and a point
-mass. It keeps swinging. Its equation is the full sine equation, so a larger
-release takes longer than the small-angle approximation predicts.
+## Run on the existing Mac setup
 
-## Try it
-
-Use Python 3.11 or later with Manim's Cairo/Pango prerequisites and FFmpeg
-installed. In this directory:
+Keep using the working `dog-math` Conda environment. Download and extract this
+branch's ZIP, then open a Terminal in its `dog_notebook` folder. With the default
+Downloads location and extraction name:
 
 ```sh
+conda activate dog-math
+cd /Users/kraemer/Downloads/codogx-dog-notebook-light-261024/dog_notebook
 python -m pip install -r requirements.txt
-python -m pytest -q
-jupyter lab pendulum.ipynb
+jupyter lab flux.ipynb
 ```
 
-JupyterLab is the notebook host; install it separately if needed. Restart
-the kernel after changing the unit definitions.
+Choose **Run → Run All Cells**, then press **Play** in the Explore panel.
+The Share cell exports and displays an animated GIF. It needs no FFmpeg.
+Manim, Cairo, and Pango are not dependencies of this version. Keeping an existing
+Manim installation is fine; no environment rebuild or uninstall is needed.
 
-The first useful call is deliberately small:
+Python 3.12 or later is required by the pinned Pint version. The existing
+Python 3.13 environment is suitable. A fresh Python environment also needs
+JupyterLab (`python -m pip install jupyterlab`).
+
+The environment chooses Python and packages; the directory chooses files.
+Launch Jupyter from this folder so imports find these companion modules.
+
+## One motion, several views
+
+`Pendulum.trajectory` solves the full sine equation once with SciPy's
+`solve_ivp` and keeps its dense output. `state_at` samples it. The flux case
+uses Claude's analytic circular or straight trajectory. Live frames, stills,
+and GIFs all read the same states.
+
+`drawing.py` contains a small Pillow canvas: lines, circles, and arrows in
+scene coordinates. It draws at twice the requested resolution and downsamples
+for smooth edges. Each snapshot owns its pixels. The canvas is reused while
+scrubbing; the physics stays separate from the picture.
 
 ```python
-from pendulum import Pendulum, View, state_at
+from flux import ChargeInFlux, View, state_at
 
-case = Pendulum(length=(10, 'hand'), release=(0.6, 'stroke'))
+case = ChargeInFlux()
 view = View()
-view.still(case, time=0.3)
+view.still(case, time=0.4)
+state_at(case, 0.4)
 ```
 
-`state_at(case, 0.3)` returns angle, sweep, speed, heft, and hook. Times are
-seconds within the case's duration, which defaults to six seconds. Angles
-use stroke, sweep uses stroke per second, speed uses cat, and energies use
-thump. Heft is zero at the bottom. The teal arrow shows the instantaneous
-velocity multiplied by a tenth of a second.
+For exports, `movie(case, seconds=3)` now returns a GIF filename. Display it with
+`IPython.display.Image(filename=...)`. Both notebooks use that call.
+The drawing functions `picture` return Pillow images; `flux.marks` returns
+mark centers, and `flux.path` returns sampled positions.
 
-## One motion, several ways to look
+## Units and scope
 
-`Pendulum.trajectory` solves once with SciPy's `solve_ivp` and keeps its
-dense output. `state_at` samples that trajectory. The still, interactive
-panel, and native Manim movie all use it. Scrubbing backward reads the same
-motion. A `View` keeps one camera, clears it, and copies each finished image.
+`book_units.txt` is the ledger. Pint carries the independent stroke dimension.
+`ledger.py` also supplies Claude's four-count algebra view from those definitions.
+`panels.py` defines dog, SI, and imperial display choices. Restart the kernel
+after changing definitions.
 
-Changing length, mass, gravity, or release starts a fresh release. Changing
-units or zoom keeps the current instant. Drawing scale is scene units per
-metre; it changes the picture's size independently of the physics.
+This change preserves Claude's motion calculations, units, and proposed
+stroke rules. The algebra tests check the stated conventions; their agreement
+does not establish those conventions as measured physical laws. Physics review
+continues separately.
 
-## Units and panels
+The uploaded bundle contains the flux and pendulum notebooks. The knife recorder
+and dining-room scene from the separate Codex bundle are not part of this import.
 
-`book_units.txt` is the ledger: one named construction per line, longhand,
-as in doc's onir glyphs. Pint reads it. Stroke has its own base dimension,
-so a crank times a stroke is a thump, while a crank alone stays a crank.
+## Check
 
-The solver boundary converts length to metres, gravity to zoom, and angle
-to a count of strokes. There, one stroke is interpreted as one radian by
-the sine equation. Stroke retains its separate dimension in the ledger.
-`ledger.py` also supplies the four counts used by Claude's original algebra
-tests; both views come from the same definitions.
-
-`panels.py` offers dog, SI, and imperial choices for the knobs and readouts.
-A reader can add another dictionary of units. For example:
-
-```python
-from panels import panels
-panels['bench'] = dict(panels['imperial'], length='inch')
+```sh
+python -m pytest -q
 ```
 
-Then create another `explore(case, view)` panel. New unit names go in
-`book_units.txt`. The product-table button grid and student ledger with
-missing names are the next pieces to add; the present panel supplies the
-pendulum's controls.
-
-## What was checked
-
-All 13 tests from Claude's archive passed before the changes and remain
-unchanged. The full suite now has 27 passing tests. Added checks cover exact
-unit conversions, stroke separation, equivalent physical inputs, energy
-conservation, mass and gravity effects, deterministic scrubbing, copied
-camera frames, and panel callbacks.
-
-The notebook's five code cells executed in-process, including a direct still,
-the widget, and the native Manim movie. The notebook contains their outputs
-and saved widget state. This host cannot open a Jupyter kernel socket, so
-live browser playback has not been checked here. The embedded movie and
-`preview/pendulum.gif` provide portable motion previews.
-
-One metre under 10 zoom at this release begins with about 1.75 thump.
-Across six seconds, the measured energy error was below 9e-10 thump.
-Warm state lookup averaged 0.012 ms and a 360-pixel still about 7 ms on this
-host; notebook transport adds its own time.
-
-The book's “0.1 ponder under 10 zoom” heft row remains a question for doc.
-The ledger preserves ponder as lump at a lever.
-
-The source archive includes the two original Claude commits and the Codex
-extension, so Claude can inspect the change directly with `git show`.
+Tests cover units, equivalent inputs, energy, perpendicular magnetic force,
+rewinding, snapshot ownership, widget callbacks, field marks, and GIF export.
+See `PROVENANCE.md` for the source and rendering change history.

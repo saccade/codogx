@@ -11,11 +11,9 @@ from functools import cached_property
 from typing import NamedTuple
 
 import numpy as np
-from manim import Camera, VGroup, Line, Circle, Dot, Arrow, VMobject
-from manim import WHITE, GRAY, TEAL_D, RED_D, LIGHT_GRAY, UP, RIGHT
+from drawing import Canvas, COBALT, TEAL, RED, GRAY, save_movie
 
 from ledger import number
-from pendulum import COBALT
 
 
 @dataclass(frozen=True)
@@ -79,41 +77,33 @@ def state_at(case, time):
     return State(time, place, velocity, push, p['speed'], punch, bend)
 
 
-def flat(point):
-    return point[0] * RIGHT + point[1] * UP
-
-
 MARK = "#a0a0a0"
 
 
-def mark(center, coming_up):
-    ring = Circle(radius=0.1, color=MARK, stroke_width=2).move_to(center)
-    if coming_up:                                   # up out of the page: a dot
-        return VGroup(ring, Dot(center, radius=0.03, color=MARK))
-    d = 0.065                                       # down into the page: a cross
-    return VGroup(ring,
-                  Line(center + d * (UP + RIGHT), center - d * (UP + RIGHT), color=MARK, stroke_width=2),
-                  Line(center + d * (UP - RIGHT), center - d * (UP - RIGHT), color=MARK, stroke_width=2))
+def mark(canvas, center, coming_up):
+    center = np.asarray(center)
+    canvas.circle(center, 0.1, MARK)
+    if coming_up:
+        canvas.circle(center, 0.03, MARK, MARK)
+    else:
+        for direction in (np.array([1., 1.]), np.array([1., -1.])):
+            canvas.line([center - 0.065 * direction, center + 0.065 * direction], MARK)
 
 
 def marks(field, scale, width):
-    """One mark per weber.  Flux per sheet is an axis arrow and carries a stroke;
-    the sheet it goes through is a meter crossed with a meter, which takes the
-    stroke away again, so 5 weber*stroke/sheet puts 5 marks on each sheet."""
-    if field == 0:                                  # no flux, nothing to mark
-        return VGroup()
-    spacing = 1 / np.sqrt(abs(field))               # meter between marks
+    """One mark per weber; return centers in scene coordinates."""
+    if field == 0:
+        return np.empty((0, 2))
+    spacing = 1 / np.sqrt(abs(field))
     count = int(np.ceil(width / scale / 2 / spacing))
     rows = spacing * (np.arange(-count, count) + 0.5)
-    return VGroup(*[mark(flat((x, y)) * scale, field > 0) for x in rows for y in rows])
+    return np.array([(x, y) for x in rows for y in rows]) * scale
 
 
 def path(case, time, scale, points=120):
     begin = max(0.0, time - turn_time(case))
     times = np.linspace(begin, time, points)
-    line = VMobject(color=GRAY, stroke_width=2)
-    line.set_points_as_corners([flat(state_at(case, t).place) * scale for t in times])
-    return line
+    return np.array([state_at(case, t).place for t in times]) * scale
 
 
 def turn_time(case):
@@ -121,43 +111,36 @@ def turn_time(case):
     return np.inf if case.bend == 0 else 2 * np.pi / abs(case.bend)
 
 
-def sign(center, positive):
-    d = 0.12
-    bars = [Line(center - d * RIGHT, center + d * RIGHT, color=WHITE, stroke_width=3)]
-    if positive:
-        bars.append(Line(center - d * UP, center + d * UP, color=WHITE, stroke_width=3))
-    return bars
-
-
-def picture(case, state, scale=6, width=10):
+def picture(case, state, scale=6, width=10, canvas=None):
     """Draw one state, with scale in scene units per meter."""
-    here = flat(state.place) * scale
-    run = flat(state.velocity) * scale / 10                        # a tenth of a second's run
-    added = flat(state.push) / case.values['mass'] * scale / 100   # run added in a tenth of a second
-    shown = [marks(case.values['field'], scale, width)]
+    canvas = canvas if canvas is not None else Canvas(width=width)
+    canvas.clear()
+    for center in marks(case.values['field'], scale, width):
+        mark(canvas, center, case.values['field'] > 0)
     if state.speed > 0:
-        shown.append(path(case, state.time, scale))
-    shown += [
-        Circle(radius=0.22, color=COBALT, fill_opacity=1).move_to(here),
-        *sign(here, case.values['charge'] >= 0),
-        Arrow(here, here + run, buff=0, color=TEAL_D),
-        Arrow(here, here + added, buff=0, color=RED_D),
-    ]
-    return VGroup(*shown)
+        canvas.line(path(case, state.time, scale), GRAY)
+    here = state.place * scale
+    run = state.velocity * scale / 10
+    added = state.push / case.values['mass'] * scale / 100
+    canvas.circle(here, 0.22, COBALT, COBALT)
+    canvas.line([here - (0.12, 0), here + (0.12, 0)], 'white', 3)
+    if case.values['charge'] > 0:
+        canvas.line([here - (0, 0.12), here + (0, 0.12)], 'white', 3)
+    if case.values['charge'] == 0:
+        canvas.circle(here, 0.08, 'white')
+    canvas.arrow(here, here + run, TEAL)
+    canvas.arrow(here, here + added, RED)
+    return canvas.snapshot()
 
 
 class View:
     def __init__(self, pixels=480, scale=6, width=10):
         self.scale = scale
         self.width = width
-        self.camera = Camera(pixel_width=pixels, pixel_height=pixels,
-                             frame_width=width, frame_height=width,
-                             background_color=WHITE)
+        self.camera = Canvas(pixels=pixels, width=width)
 
     def draw(self, case, state):
-        self.camera.reset()
-        self.camera.capture_mobjects([picture(case, state, self.scale, self.width)])
-        return self.camera.get_image().copy()
+        return picture(case, state, self.scale, self.width, self.camera)
 
     def still(self, case, time=0):
         return self.draw(case, state_at(case, time))
@@ -251,22 +234,4 @@ def explore(case, view):
 
 
 def movie(case, seconds=3, folder="movies", scale=6):
-    from manim import Scene, ValueTracker, always_redraw, linear, tempconfig
-
-    class Bending(Scene):
-        def construct(self):
-            clock = ValueTracker(0)
-            self.add(always_redraw(lambda: picture(
-                case, state_at(case, clock.get_value()), scale)))
-            self.play(clock.animate.set_value(seconds),
-                      run_time=seconds, rate_func=linear)
-
-    settings = dict(pixel_width=480, pixel_height=480, frame_rate=25,
-                    frame_width=10, frame_height=10, format="mp4",
-                    background_color=WHITE, media_dir=folder,
-                    verbosity="WARNING", progress_bar="none",
-                    output_file="bending")
-    with tempconfig(settings):
-        scene = Bending()
-        scene.render()
-        return str(scene.renderer.file_writer.movie_file_path)
+    return save_movie(case, View(scale=scale), seconds, folder, 'bending')

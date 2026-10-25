@@ -6,7 +6,7 @@ import pytest
 from pint import DimensionalityError
 
 from ledger import number
-from pendulum import Pendulum, View, state_at, picture
+from pendulum import Pendulum, View, state_at, bob_at
 
 
 def test_unit_scales_are_exact():
@@ -64,9 +64,12 @@ def test_book_gravity_sets_the_period():
 def test_zoom_changes_the_picture_and_keeps_the_state():
     case = Pendulum()
     state = state_at(case, 0.4)
-    small = picture(case, state, scale=4)
-    large = picture(case, state, scale=6)
-    assert large[2].get_length() == pytest.approx(1.5 * small[2].get_length())
+    pivot = np.array([0., 3.5])
+    small = bob_at(4 * case.values['length'], state.angle, pivot)
+    large = bob_at(6 * case.values['length'], state.angle, pivot)
+    assert np.linalg.norm(large - pivot) == pytest.approx(1.5 * np.linalg.norm(small - pivot))
+    assert np.any(np.array(View(scale=4).draw(case, state)) !=
+                  np.array(View(scale=6).draw(case, state)))
     assert state_at(case, 0.4) == state
 
 
