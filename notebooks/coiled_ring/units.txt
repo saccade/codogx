@@ -1,0 +1,20 @@
+# Explicit definitions keep strokes in the book's ledger.
+meter = [length] = m
+kilogram = [mass] = kg
+second = [time] = s
+ampere = [current] = A
+stroke = [swing]
+hand = meter / 10
+lump = kilogram
+sheet = meter * meter
+lever = meter / stroke
+push = lump * meter / second ** 2 = newton = N
+thump = push * meter = joule = J
+crank = push * lever
+pow = thump / second = watt = W
+sweep = stroke / second
+volt = pow / ampere = V
+weber = volt * second = Wb
+tesla = weber / sheet = T
+foot = 0.3048 * meter = ft
+inch = foot / 12 = in
