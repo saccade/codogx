@@ -1,0 +1,8 @@
+movies/
+__pycache__/
+*.png
+pendulum_ran.ipynb
+.pytest_cache/
+
+.ipynb_checkpoints/
+qa/
