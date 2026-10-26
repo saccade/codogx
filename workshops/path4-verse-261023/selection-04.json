@@ -1,0 +1,54 @@
+{
+  "stage": "four anchors",
+  "anchors": [
+    {
+      "id": "A",
+      "seed": "P05",
+      "title": "The office of stillness",
+      "author": "Claude; one precision edit by Codex",
+      "verse": "what does the hoop say\nwhen it(rolling)\ntouches the floor? it\nsays\n\nnothing:\n          for one\n                    not even a moment\nthe bottom of the moving\nis the still\n                    est thing in the\nworld(\nand then it isn't)\n                    and then the next one is\n\ntop goes on\nat twice the center’s pace;bottom\ngoes\n     not\n          at\n               all\n& the hoop,who\nis all of its points at once,\n                    goes\n                         on",
+      "place": "Ballroom, 7-b and c-4; a quiet return to the knife’s end-point pause.",
+      "surface": "Fractured syntax and the still / est split hold the eye while the body goes on.",
+      "interior": "One material point has zero ground velocity for an instant; the next takes over. The contact is not a permanent hinge.",
+      "score": "Leave an unhurried even pulse beneath the broken lines. No new line obliges a new beat. The clock does not pause with the word still."
+    },
+    {
+      "id": "B",
+      "seed": "P10",
+      "title": "The crew in the hatbox",
+      "author": "Codex; new wire version of the earlier work-song frame",
+      "verse": "PORT:      Six volts aboard from port, away—\nSTARBOARD: Six volts from starboard, clear—\nTOGETHER:  Twelve on the can where the currents meet,\n           and not an ampere here.\n\nCALL:      Has either wave been eaten?\nCREW:      Both pass with all they brought.\nCALL:      Then what was all that quiet worth?\nCREW:      More than you thought.\n\nCALL:      That stripe was there before the knock?\nCREW:      The waves were there before.\nCALL:      Then who brings word of casting off?\nCREW:      The wave—from hand to door.",
+      "place": "The hall’s striped hatbox, Drawer f; its line and two tuning forks lead naturally into Mirror 3.",
+      "surface": "Two hauling accents per response; port and starboard first sing apart, then arrive together.",
+      "interior": "At the named overlap, 6 V plus 6 V gives 12 V; the opposed 0.12 A currents cancel. Both traveling waves retain their energy. A crest can precede a message; a new signal still travels with the wave.",
+      "score": "The common response is companionable at first. Remove the regular response after the question about quiet; the next voice comes from too close. Port and starboard are the song’s two opposed approaches, not directions secretly attached to a page."
+    },
+    {
+      "id": "C",
+      "seed": "P14",
+      "feeders": [
+        "P13",
+        "P11",
+        "P15"
+      ],
+      "title": "The false stop",
+      "author": "Claude’s shrinking charge and long-line reversal; Codex’s four opening bars and quiet counter-account",
+      "verse": "Charge collected; loop connected; count the current, count the lean.\nNo one feeds it. No one bleeds it. Eighty stays behind the screen.\nWhen the height gives up its heft, the bodies hook it on the way.\nNothing burns inside this loop. The whole comes home. All eighty stay.\n\nHalfway round, the low one's home,\nthe high one's upside down;\nthe can lets go, and lets go, and lets\ngo:\nfive\nin thirteen\nleft,\nno current\nin the wire.\nThe clock says\nstop.\n\nStop? Not likely! Not a moment! Bottom's where it all gets going!\nBoth the rods are through the vertical and flying, flat-out flying,\nhundred forty-four of every hundred sixty-nine in motion;\nwhat the can let go of didn't leave, it's swinging through the middle,\nfive and twelve and thirteen out of two and three, and nothing missing!",
+      "place": "13-c and Appendix γ, α-3/α-4: the same machine and the same halfway instant, seen from another account.",
+      "surface": "Dense internal echoes prepare a staircase of shorter lines. Stop is seized by a suddenly overfull line.",
+      "interior": "At T/2, i=0 and the rods pass vertical at maximum kinetic energy. Charge is 5/13 of q₀; the can holds 25/169 and the rods 144/169 of the total. This is not a claim that the capacitor’s charge or energy never goes lower at another time. The whole free RUN retains 80 mJ.",
+      "score": "Use a close, syncopated four-bar delivery over a three-bar bed for the opening only; the mismatch is a speech device, not an assertion of the mode ratio. Then let the low/faster voices use the actual four-against-nine grid over one return. At its halfway point the low grid lands and the high is halfway between returns. Keep P11’s tally almost inaudible beneath the rush."
+    },
+    {
+      "id": "D",
+      "seed": "P17",
+      "title": "The mansion takes the room back",
+      "author": "Codex; existing protected ending, unchanged",
+      "verse": "The blacks on the nail are still warm.\nThe circle is still waiting for its square. The house is what grew around the unfinished work.\nThe notes in the book are cues, and some are interruptions: a missed beat, a drive released, time for the heat to leave. The clown has been forestalling the crash.\nThe last cue is the sound of your footsteps.\nThe clock begins a turn.\nFrom charge to charge, the machine zams and zlams.\nOne voice starts. Another joins it. Then another.\nThe last comes from where you’re sitting.\nThe can cans charge. The coil coils flux.\nThe field cranks through a little lean.\nWhat leaves the can comes back as hook;\nthe lifted weights keep some unseen.\nThe heft gives way. The sweep grows loud.\nThe current turns. The charge comes home.\nTwo currents cancel down the hall:\nthe cans stay full. The stripe goes on.\nTwo lights balance. Neither stops.\nTheir movement cancels. Mass remains.\nFour turns low and nine turns high:\nthe clock brings every part in line.\nTwo thirds, three halves; a half, a two:\neach glass and its reflection, one.\nThe house counts five where you count four.\nThe knife comes home between the beats.\nThe rods are still.\nThe coil is quiet.\nThe can is full.\nThe chair is where you left it.\nYou never left it.\nYou stop singing.\nSomething keeps your time.",
+      "place": "The existing Ending 4, last.",
+      "surface": "The extra rhythmic apparatus leaves; the house’s measured stresses return.",
+      "interior": "The can comes home full; rods and coil are quiet; the receiver is at rest in the chair’s frame. The same kept account and own time complete the visit.",
+      "score": "Do not overlay the fast syllables on this chorus. Let one voice enter the old cadence, then others, and let them leave unevenly. No prose or new verse follows its last line."
+    }
+  ]
+}

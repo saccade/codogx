@@ -1,0 +1,38 @@
+{
+  "stage": "nine",
+  "kept": [
+    "P01",
+    "P03",
+    "P05",
+    "P10",
+    "P11",
+    "P13",
+    "P14",
+    "P15",
+    "P17"
+  ],
+  "reasons": {
+    "P01": "The first beat is ordinary enough to become unbearable when it comes back. Keep the cold roast. No explanation of the refrain.",
+    "P03": "Three little sentences do a whole power balance; keep this as a quick kitchen hinge, not a second major climax.",
+    "P05": "The point of contact passes the office of stillness onward. Its broken line can make that visible without saying it twice.",
+    "P10": "Keep the work-song engine, but move its developed version to the hall hatbox and the two opposed waves. The miniature line and tuning forks give port and starboard somewhere to sing. The ribbon version remains intact in the seventeen.",
+    "P11": "The energy-time tally is the quiet third ledger. The store is whole; the count grows older. It must not sound like newly created energy.",
+    "P13": "The descending type and the diminishing charge prepare a false full stop. Five in thirteen is charge, not the can’s energy share.",
+    "P14": "This is the reversal worth building toward. The rods take the silence away; the electrical pause is not an empty machine.",
+    "P15": "The return gets a real two-voice rhythm, four against nine, without pretending that recurrences add energy.",
+    "P17": "This is the house’s voice. Keep its existing words and thin the added rhythmic machinery before it begins."
+  },
+  "bench": {
+    "P02": "The gravity pause is good, but it would preview the central store/motion reversal too explicitly. Keep on the bench.",
+    "P04": "The reversal is exact; four neat short lines make it too easy here. It can return if the spool needs air.",
+    "P06": "Lovely exit through the body, but another whole ghost lesson would slow this route.",
+    "P07": "A strong field-work sentence. Keep as a reserve margin gloss; the existing finale already carries it.",
+    "P08": "The late conversational answers are useful rhythm, but the final “Right” lets the pressure off too soon. Reuse the device, not the exchange verbatim.",
+    "P09": "Strong information/stripe distinction; it can become material inside the shanty rather than a second standalone song.",
+    "P12": "The driven/free distinction is necessary whenever TEST enters. No need to drag TEST into this first assembly just to keep the verse.",
+    "P16": "The pronoun change is potent but could announce the solution. It is withheld for a later narrative need."
+  },
+  "small_revision": {
+    "P05": "The top has twice the center’s pace; not twice every other point’s pace."
+  }
+}
